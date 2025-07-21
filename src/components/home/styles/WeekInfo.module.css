@@ -1,0 +1,61 @@
+.container {
+  margin-bottom: 1.5rem;
+}
+
+.weekCard {
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1rem;
+  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.10);
+  overflow: hidden;
+}
+
+.weekHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.weekTitle {
+  font-size: 1.125rem;
+  font-weight: bold;
+  color: var(--color-text);
+}
+
+.dateRange {
+  font-size: 1rem;
+  color: var(--color-text);
+}
+
+.warning {
+  display: flex;
+  align-items: center;
+
+  gap: 0.4rem;
+  padding: .75rem;
+  border-radius: var(--radius-sm);
+}
+
+.warningIcon {
+  color: var(--color-destructive);
+  flex-shrink: 0;
+}
+
+.warningText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.warningTitle {
+  font-size: 0.75rem;
+  color: var(--color-destructive);
+  font-weight: 700;
+}
+
+.warningSubtext {
+  font-size: 0.75rem;
+  color: var(--color-destructive);
+} 

@@ -1,46 +1,61 @@
 import * as React from "react"
+import styles from "./styles/button.module.css"
+
+type ButtonVariant = 'full' | 'outline' | 'text';
+type ButtonAlign = 'left' | 'center' | 'right';
 
 interface ButtonProps extends React.ComponentProps<"button"> {
-  iconLeft?: React.ReactNode
-  iconRight?: React.ReactNode
-  children: React.ReactNode
+    available?: boolean;
+    variant?: ButtonVariant
+    align?: ButtonAlign
+    iconLeft?: React.ReactNode
+    iconRight?: React.ReactNode
+    children: React.ReactNode
 }
 
 function Button({
-  className,
-  iconLeft,
-  iconRight,
-  children,
-  ...props
-}: ButtonProps) {
-  return (
-    <button
-      className={`${styles.button} ${className || ''}`}
-      {...props}
-    >
-      {iconLeft && <div className={styles.icon}>{iconLeft}</div>}
-      {children}
-      {iconRight && <div className={styles.icon}>{iconRight}</div>}
-    </button>
-  )
-}
+    available = true,
+    variant = 'full',
+    className,
+    align = 'center',
+    iconLeft,
+    iconRight,
+    children,
+    ...props
+    }: ButtonProps) {
 
-const styles = {
-  button: `
-    inline-flex items-center justify-center gap-2 
-    whitespace-nowrap rounded-md text-sm font-medium 
-    transition-all disabled:pointer-events-none 
-    disabled:opacity-50 outline-none
-    h-10 px-4 py-2 w-full
-    bg-primary font-bold shadow-xs hover:bg-primary/90 text-white
-    focus-visible:border-ring focus-visible:ring-ring/50 
-    focus-visible:ring-[3px]
-  `,
-  icon: `
-    flex items-center justify-center pointer-events-none
-    [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 
-    shrink-0 [&_svg]:shrink-0
-  `
+    const getVariantStyle = (variant: ButtonVariant) => {
+        if (variant === 'outline') return styles.button_outline;
+        if (variant === 'text') return styles.button_text;
+        else return styles.button
+    }
+
+    const getAlignStyle = (align: ButtonAlign) => {
+        if (align === 'left') return styles.button_left;
+        if (align === 'right') return styles.button_right;
+        else return styles.button_center;
+    }
+
+    const getAvailableStyle = (available: boolean) => {
+        if (!available) return styles.not_available;
+    }
+
+    return (
+        <button
+        className={`
+            ${styles.button} 
+            ${getVariantStyle(variant)} 
+            ${getAlignStyle(align)} 
+            ${getAvailableStyle(available)} 
+            ${className || ''}
+        `}
+        {...props}
+        >
+            {iconLeft && <div className={styles.icon}>{iconLeft}</div>}
+                {children}
+            {iconRight && <div className={styles.icon}>{iconRight}</div>}
+        </button>
+    )
 }
 
 export { Button }

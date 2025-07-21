@@ -1,0 +1,42 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  background-color: var(--color-slate-100);
+  position: relative;
+  z-index: 20;
+}
+
+.menuButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: var(--color-text);
+  transition: color 0.2s ease;
+}
+
+.menuButton:hover {
+  color: var(--color-primary);
+}
+
+.notificationButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  color: var(--color-text);
+  transition: color 0.2s ease;
+  position: relative;
+}
+
+.notificationButton:hover {
+  color: var(--color-primary);
+} 

@@ -1,14 +1,15 @@
 "use client"
-import LoginView from "@/components/login/LoginView";
-import SplashView from "@/components/login/SplashView"
-import ForgotPasswordView from "@/components/login/ForgotPasswordView"
+import Login from "@/components/login/Login";
+import Splash from "@/components/login/Splash"
+import ForgotPassword from "@/components/login/ForgotPassword"
 import { Button } from "@/components/ui/button"
 import { ArrowRightIcon } from "lucide-react"
 import { useState } from "react"
+import styles from "./page.module.css"
 
 type ViewType = 'splash' | 'login' | 'forgotPassword';
 
-export default function Login() {
+export default function LoginPage() {
 
     const [view, setView] = useState<ViewType>('splash');
 
@@ -17,19 +18,22 @@ export default function Login() {
     }
 
     return (
-        <div>
+        <div className={styles.container}>
             {view === 'splash' && (
-                <SplashView onEnterClick={() => handleViewChange('login')}/>
+                <Splash onEnterClick={() => handleViewChange('login')}/>
             )}
 
             {view === 'login' && (
-                <LoginView/>
+                <Login 
+                    onForgotPasswordClick={() => handleViewChange('forgotPassword')}
+                    onBackClick={() => handleViewChange('splash')}
+                />
             )}
             
             {view === 'forgotPassword' && (
-                <ForgotPasswordView 
-                    onBackToLogin={() => handleViewChange('login')}
-                    onBackToSplash={() => handleViewChange('splash')}
+                <ForgotPassword 
+                    onEnterClick={() => handleViewChange('login')}
+                    onBackClick={() => handleViewChange('login')}
                 />
             )}            
         </div>
