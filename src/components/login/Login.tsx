@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { InputText } from "@/components/ui/InputText";
 import { InputPassword } from "@/components/ui/InputPassword";
 import { Checkbox } from "@/components/ui/Checkbox";

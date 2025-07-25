@@ -1,6 +1,6 @@
 'use client'
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { Bed, LucideSalad } from "lucide-react";
 import { Header } from "@/components/home/Header";
 import { DateSection } from "@/components/home/DateSection";

@@ -1,39 +1,43 @@
 import React from 'react';
-import { Home, LucideSalad, Bed, User } from 'lucide-react';
+import { Home, LucideSalad, Bed, UserRound } from 'lucide-react';
 import styles from './styles/Footer.module.css';
+import { usePathname } from 'next/navigation';
+import Link from 'next/link';
 
-interface FooterProps {
-  activeTab?: 'home' | 'refeicoes' | 'hospedagem' | 'perfil';
-}
+export function Footer() {
 
-export function Footer({ activeTab = 'home' }: FooterProps) {
-  const tabs = [
-    { id: 'home', label: 'Home', icon: Home },
-    { id: 'refeicoes', label: 'Refeições', icon: LucideSalad },
-    { id: 'hospedagem', label: 'Hospedagem', icon: Bed },
-    { id: 'perfil', label: 'Perfil', icon: User },
-  ];
+    const pathname = usePathname();
 
-  return (
-    <footer className={styles.footer}>
-        <div className={styles.tabContainer}>
+    
+    const tabs = [
+        { id: 'home', href: '/', label: 'Home', icon: Home },
+        { id: 'refeicoes', href: '/refeicoes', label: 'Refeições', icon: LucideSalad },
+        { id: 'hospedagem', href: '/hospedagem', label: 'Hospedagem', icon: Bed },
+        { id: 'perfil', href: '/perfil', label: 'Perfil', icon: UserRound },
+    ];
 
-            {tabs.map((tab) => {
-                const IconComponent = tab.icon;
-                const isActive = activeTab === tab.id;
-                
-                return (
-                    <button 
-                    key={tab.id}
-                    className={`${styles.tab} ${isActive ? styles.tabActive : ''}`}
-                    >
-                        <IconComponent size={20} className={styles.tabIcon} />
-                        <span className={styles.tabLabel}>{tab.label}</span>
-                    </button>
-                );
-            })}
+    return (
+        <footer className={styles.footer}>
+            <div className={styles.tabContainer}>
 
-        </div>
-    </footer>
-  );
+                {tabs.map((tab) => {
+                    const IconComponent = tab.icon;
+                    
+                    return (
+                        <Link
+                        key={tab.id}
+                        href={tab.href}
+                        className={`
+                            ${styles.tab} 
+                            ${pathname === tab.href ? styles.tabActive : ''}`}
+                        >
+                            <IconComponent size={24} className={`${styles.tabIcon} ${pathname === tab.href ? styles.tabIconActive : ''}`} />
+                            <span className={styles.tabLabel}>{tab.label}</span>
+                        </Link>
+                    );
+                })}
+
+            </div>
+        </footer>
+    );
 } 

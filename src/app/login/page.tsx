@@ -2,7 +2,7 @@
 import Login from "@/components/login/Login";
 import Splash from "@/components/login/Splash"
 import ForgotPassword from "@/components/login/ForgotPassword"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/Button"
 import { ArrowRightIcon } from "lucide-react"
 import { useState } from "react"
 import styles from "./page.module.css"
