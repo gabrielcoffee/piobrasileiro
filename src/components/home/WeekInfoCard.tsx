@@ -1,6 +1,6 @@
 import React from 'react';
 import { AlertCircle } from 'lucide-react';
-import styles from './styles/WeekInfo.module.css';
+import styles from './styles/WeekInfoCard.module.css';
 
 interface WeekInfoProps {
   curWeek: number;

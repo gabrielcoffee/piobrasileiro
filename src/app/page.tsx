@@ -5,7 +5,7 @@ import { Bed, LucideSalad } from "lucide-react";
 import { Header } from "@/components/home/Header";
 import { DateSection } from "@/components/home/DateSection";
 import { PageTitle } from "@/components/home/PageTitle";
-import { WeekInfo } from "@/components/home/WeekInfo";
+import { WeekInfo } from "@/components/home/WeekInfoCard";
 import { Footer } from "@/components/home/Footer";
 import { Divider } from "@/components/home/Divider";
 import styles from "./page.module.css";

@@ -1,15 +1,9 @@
 import styles from './styles/MealDaysSection.module.css';
 
 export function MealDaysSection() {
-    const currentDate = new Date();
-    const weekday = currentDate.toLocaleDateString('pt-BR', { weekday: 'long' });
-    const date = currentDate.toLocaleDateString('pt-BR', { 
-        day: 'numeric', 
-        month: 'numeric', 
-    });
+    const today = new Date();
 
     const getMondayDate = () => {
-        const today = new Date();
         const monday = new Date(today);
         const weekDay = today.getDay();
         monday.setDate(today.getDate() - weekDay + 1);
@@ -18,7 +12,6 @@ export function MealDaysSection() {
     }
 
     const getSundayDate = () => {
-        const today = new Date();
         const sunday = new Date(today);
         const weekDay = today.getDay();
         sunday.setDate(today.getDate() - weekDay + 7);
@@ -29,8 +22,6 @@ export function MealDaysSection() {
     function getWeekRangeText() {
         const monday = getMondayDate();
         const sunday = getSundayDate();
-
-        console.log(monday, sunday);
 
         const isSameMonth: boolean = monday.split('/')[1] === sunday.split('/')[1];
 
