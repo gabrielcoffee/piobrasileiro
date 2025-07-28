@@ -1,5 +1,6 @@
 import * as React from "react"
 import styles from "./styles/Button.module.css"
+import Link from "next/link";
 
 type ButtonVariant = 'full' | 'outline' | 'text';
 type ButtonAlign = 'left' | 'center' | 'right';
@@ -11,6 +12,7 @@ interface ButtonProps extends React.ComponentProps<"button"> {
     iconLeft?: React.ReactNode
     iconRight?: React.ReactNode
     children: React.ReactNode
+    href?: string
 }
 
 function Button({
@@ -21,6 +23,7 @@ function Button({
     iconLeft,
     iconRight,
     children,
+    href,
     ...props
     }: ButtonProps) {
 
@@ -41,6 +44,23 @@ function Button({
     }
 
     return (
+        href ? (
+            <Link
+            href={href}
+            className={`
+                ${styles.button} 
+                ${getVariantStyle(variant)} 
+                ${getAlignStyle(align)} 
+                ${getAvailableStyle(available)} 
+                ${className || ''}
+            `}
+            {...(props as React.ComponentProps<"a">)}
+            >
+                {iconLeft && <div className={styles.icon}>{iconLeft}</div>}
+                    {children}
+                {iconRight && <div className={styles.icon}>{iconRight}</div>}
+            </Link>
+        ) : (
         <button
         className={`
             ${styles.button} 
@@ -55,6 +75,7 @@ function Button({
                 {children}
             {iconRight && <div className={styles.icon}>{iconRight}</div>}
         </button>
+        )
     )
 }
 

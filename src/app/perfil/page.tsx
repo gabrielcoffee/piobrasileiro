@@ -37,7 +37,7 @@ export default function PerfilPage() {
                     <ImageSelector 
                         onImageChange={handleImageChange}
                     />
-                    
+
                     <InputText 
                         className={styles.input}
                         label="Nome Completo:" 

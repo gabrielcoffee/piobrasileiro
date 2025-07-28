@@ -8,6 +8,11 @@ import { Button } from "@/components/ui/Button";
 import styles from "./page.module.css";
 
 export default function HospedagemPage() {
+
+    function handleExternalLink() {
+        window.open('https://www.google.com', '_blank');
+    }
+
     return (
         <div className={styles.container}>
             <Header/>
@@ -22,7 +27,7 @@ export default function HospedagemPage() {
                         }
                     />
 
-                    <Button variant="full" iconLeft={<Bed/>}>
+                    <Button onClick={handleExternalLink} variant="full" iconLeft={<Bed/>}>
                         Solicitar hospedagem
                     </Button>
                 </div>

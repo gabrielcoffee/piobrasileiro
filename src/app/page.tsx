@@ -9,6 +9,7 @@ import { WeekInfo } from "@/components/home/WeekInfoCard";
 import { Footer } from "@/components/general/Footer";
 import { Divider } from "@/components/ui/Divider";
 import styles from "./page.module.css";
+import Link from "next/link";
 
 export default function HomePage() {
     return (
@@ -35,7 +36,7 @@ export default function HomePage() {
                     isBooked={false}
                 />
 
-                <Button variant="full" iconLeft={<LucideSalad/>}>
+                <Button href="/refeicoes" variant="full" iconLeft={<LucideSalad/>}>
                     Marcar refeições
                 </Button>
             </div>
@@ -53,7 +54,7 @@ export default function HomePage() {
                     }
                 />
 
-                <Button variant="full" iconLeft={<Bed/>}>
+                <Button href="/hospedagem" variant="full" iconLeft={<Bed/>}>
                     Solicitar hospedagem
                 </Button>
             </div>
