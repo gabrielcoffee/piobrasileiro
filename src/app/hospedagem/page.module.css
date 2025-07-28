@@ -1,0 +1,6 @@
+.container {
+    margin-left: 24px;
+    margin-right: 24px;
+    padding-bottom: 6rem; /* Space for fixed footer */
+    min-height: 100vh;
+}

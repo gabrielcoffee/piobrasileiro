@@ -1,0 +1,25 @@
+.container {
+    margin-left: 24px;
+    margin-right: 24px;
+    padding-bottom: 6rem; /* Space for fixed footer */
+    min-height: 100vh;
+}
+
+.passwordButton {
+    margin-top: 1rem;
+    justify-content: flex-start;
+    font-weight: 400;
+}
+
+.inputsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.input {
+    background-color: var(--color-background);
+    border: none;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 1rem;
+}

@@ -5,7 +5,7 @@ place all the class names first
 .container {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 2rem;
 }
 
 .textAndButtonContainer {
@@ -13,6 +13,7 @@ place all the class names first
     flex-direction: row;
     justify-content: space-between; 
     align-items: center;
+    gap: 1rem;
 }
 
 .checkButton {
@@ -37,6 +38,10 @@ place all the class names first
     padding: 0.5rem;
 }
 
+.daySelectorText {
+    font-size: 0.9rem;
+    font-weight: 400;
+}
 
 
 .daysContainer {

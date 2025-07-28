@@ -2,12 +2,12 @@
 
 import { Button } from "@/components/ui/Button";
 import { Bed, LucideSalad } from "lucide-react";
-import { Header } from "@/components/home/Header";
+import { Header } from "@/components/general/Header";
 import { DateSection } from "@/components/home/DateSection";
 import { PageTitle } from "@/components/home/PageTitle";
 import { WeekInfo } from "@/components/home/WeekInfoCard";
-import { Footer } from "@/components/home/Footer";
-import { Divider } from "@/components/home/Divider";
+import { Footer } from "@/components/general/Footer";
+import { Divider } from "@/components/ui/Divider";
 import styles from "./page.module.css";
 
 export default function HomePage() {

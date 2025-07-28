@@ -1,8 +1,8 @@
 'use client'
 
-import { Header } from "@/components/home/Header";
-import { Footer } from "@/components/home/Footer";
-import { Divider } from "@/components/home/Divider";
+import { Header } from "@/components/general/Header";
+import { Footer } from "@/components/general/Footer";
+import { Divider } from "@/components/ui/Divider";
 import styles from "./page.module.css";
 import { MealDaysSection } from "@/components/refeicoes/MealDaysSection";
 import DaySelector from "@/components/refeicoes/DaySelector";
