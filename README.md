@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PIO Brasileiro
 
-## Getting Started
+Sistema de gerenciamento de refeições para o Colégio PIO, desenvolvido para facilitar o agendamento e controle de refeições dos alunos e funcionários.
 
-First, run the development server:
+## Sobre o Projeto
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+O PIO Brasileiro é uma aplicação web moderna que permite aos usuários:
+- Agendar refeições (almoço e jantar) para diferentes dias da semana
+- Gerenciar perfis de usuário
+- Visualizar notificações sobre prazos de agendamento
+- Selecionar opções de refeição (no colégio ou para levar)
+- Adicionar convidados às refeições
+
+## Tecnologias Utilizadas
+
+### Frontend
+- **Next.js 14** - Framework React com App Router
+- **TypeScript** - Tipagem estática para maior segurança do código
+- **React** - Biblioteca para construção de interfaces
+- **CSS Modules** - Estilização modular e escopada
+- **Lucide React** - Biblioteca de ícones
+
+### Desenvolvimento
+- **ESLint** - Linting e formatação de código
+- **PostCSS** - Processamento de CSS
+
+### Estrutura do Projeto
+```
+src/
+├── app/                 # Páginas da aplicação (App Router)
+├── components/          # Componentes reutilizáveis
+│   ├── home/           # Componentes da página inicial
+│   ├── refeicoes/      # Componentes de refeições
+│   ├── profile/        # Componentes de perfil
+│   └── ui/             # Componentes de interface
+└── lib/                # Utilitários e configurações
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Funcionalidades Principais
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Sistema de Refeições
+- Agendamento de almoço e jantar
+- Seleção de local (Colégio PIO ou para levar)
+- Adição de convidados
+- Controle de prazos de agendamento
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Perfil do Usuário
+- Visualização e edição de informações pessoais
+- Upload de foto de perfil
+- Alteração de senha
 
-## Learn More
+### Notificações
+- Sistema de notificações em tempo real
+- Alertas sobre prazos de agendamento
+- Histórico de notificações
 
-To learn more about Next.js, take a look at the following resources:
+## Estrutura de Componentes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+O projeto utiliza uma arquitetura modular com componentes reutilizáveis:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Header** - Cabeçalho com navegação e notificações
+- **Footer** - Rodapé com menu de navegação
+- **MealCard** - Card para agendamento de refeições
+- **ImageSelector** - Seletor de imagem de perfil
+- **NotificationMenu** - Menu de notificações
 
-## Deploy on Vercel
+## Variáveis CSS Globais
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+O projeto utiliza um sistema de design consistente com variáveis CSS globais para cores, espaçamentos e bordas, garantindo uniformidade visual em toda a aplicação.
