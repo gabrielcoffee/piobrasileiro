@@ -1,0 +1,210 @@
+.container {
+  margin-bottom: 1.5rem;
+}
+
+.dateHeader {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+}
+
+.dateText {
+  background-color: var(--color-slate-200);
+  color: var(--color-text);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-lg);
+  font-size: 0.875rem;
+  font-weight: 500;
+  background-color: var(--color-gray-100);
+}
+
+.mealCard {
+    background-color: var(--color-white);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.10);
+    overflow: hidden;
+    transition: background-color 0.2s ease;
+}
+
+.mealCardEnabled {
+    background-color: var(--color-green-bg);
+}
+
+.cardHeader {
+  margin-bottom: 1.5rem;
+}
+
+.titleContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.saladIcon {
+  color: var(--color-text);
+}
+
+.cardTitle {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.mealSection {
+  margin-bottom: 1rem;
+}
+
+.mealSection:last-child {
+  margin-bottom: 0;
+}
+
+.mealHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.mealTitle {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.toggleContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toggle {
+  position: relative;
+  width: 48px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  padding: 2px;
+}
+
+
+.toggleOff {
+  background-color: var(--color-gray-200);
+}
+
+.toggleOn {
+  background-color: var(--color-primary);
+}
+
+.toggleCircle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: var(--color-white);
+  transition: transform 0.2s ease;
+}
+
+.toggleOn .toggleCircle {
+  transform: translateX(24px);
+}
+
+.toggleOff .toggleCircle {
+  transform: translateX(0);
+}
+
+.toggleText {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text);
+  min-width: 30px;
+}
+
+.optionsContainer {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.radioOption {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  transition: opacity 0.2s ease;
+}
+
+.radioOption.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.radioInput {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.radioCircle {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid var(--color-text-muted);
+  position: relative;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.radioInput:checked + .radioCircle {
+  border-color: var(--color-primary);
+  background-color: var(--color-white);
+}
+
+.radioInput:checked + .radioCircle::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+}
+
+.radioOption.disabled .radioLabel .radioInput:checked + .radioCircle::after{
+  color: var(--color-text-muted);
+  background-color: var(--color-text-muted);
+}
+
+.radioLabel {
+  font-size: 0.875rem;
+  color: var(--color-text);
+  font-weight: 400;
+  transition: color 0.2s ease;
+}
+
+.divider {
+  height: 1px;
+  background-color: var(--color-border);
+  margin: 1.5rem 0;
+}
+
+.addGuestButton {
+    margin-top: 1rem;
+    background-color: var(--color-white) !important;
+    color: var(--color-text) !important;
+    border: 1px solid var(--color-border) !important;
+    font-size: 1rem !important;
+    font-weight: 500 !important;
+    padding: 0.5rem 1rem !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+}

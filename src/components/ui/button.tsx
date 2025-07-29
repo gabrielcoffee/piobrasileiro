@@ -43,40 +43,37 @@ function Button({
         if (!available) return styles.not_available;
     }
 
-    return (
-        href ? (
+    const buttonClassName = `
+        ${styles.button} 
+        ${getVariantStyle(variant)} 
+        ${getAlignStyle(align)} 
+        ${getAvailableStyle(available)} 
+        ${className || ''}
+    `;
+
+    if (href) {
+        return (
             <Link
-            href={href}
-            className={`
-                ${styles.button} 
-                ${getVariantStyle(variant)} 
-                ${getAlignStyle(align)} 
-                ${getAvailableStyle(available)} 
-                ${className || ''}
-            `}
-            {...(props as React.ComponentProps<"a">)}
+                href={href}
+                className={buttonClassName}
             >
                 {iconLeft && <div className={styles.icon}>{iconLeft}</div>}
-                    {children}
+                {children}
                 {iconRight && <div className={styles.icon}>{iconRight}</div>}
             </Link>
-        ) : (
+        );
+    }
+
+    return (
         <button
-        className={`
-            ${styles.button} 
-            ${getVariantStyle(variant)} 
-            ${getAlignStyle(align)} 
-            ${getAvailableStyle(available)} 
-            ${className || ''}
-        `}
-        {...props}
+            className={buttonClassName}
+            {...props}
         >
             {iconLeft && <div className={styles.icon}>{iconLeft}</div>}
-                {children}
+            {children}
             {iconRight && <div className={styles.icon}>{iconRight}</div>}
         </button>
-        )
-    )
+    );
 }
 
 export { Button }
