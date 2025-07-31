@@ -1,69 +1,91 @@
 # PIO Brasileiro
 
-Sistema de gerenciamento de refeições para o Colégio PIO, desenvolvido para facilitar o agendamento e controle de refeições dos alunos e funcionários.
+Meal management system for PIO College, developed to facilitate meal scheduling and control for students and staff.
 
-## Sobre o Projeto
+## About the Project
 
-O PIO Brasileiro é uma aplicação web moderna que permite aos usuários:
-- Agendar refeições (almoço e jantar) para diferentes dias da semana
-- Gerenciar perfis de usuário
-- Visualizar notificações sobre prazos de agendamento
-- Selecionar opções de refeição (no colégio ou para levar)
-- Adicionar convidados às refeições
+PIO Brasileiro is a modern web application that allows users to:
+- Schedule meals (lunch and dinner) for different days of the week
+- Manage user profiles
+- View notifications about scheduling deadlines
+- Select meal options (at college or to take away)
+- Add guests to meals
 
-## Tecnologias Utilizadas
+## Technologies Used
 
 ### Frontend
-- **Next.js 14** - Framework React com App Router
-- **TypeScript** - Tipagem estática para maior segurança do código
-- **React** - Biblioteca para construção de interfaces
-- **CSS Modules** - Estilização modular e escopada
-- **Lucide React** - Biblioteca de ícones
+- **Next.js 14** - React framework with App Router
+- **TypeScript** - Static typing for greater code safety
+- **React** - Library for building interfaces
+- **CSS Modules** - Modular and scoped styling
+- **Lucide React** - Icon library
 
-### Desenvolvimento
-- **ESLint** - Linting e formatação de código
-- **PostCSS** - Processamento de CSS
+### Development
+- **ESLint** - Code linting and formatting
+- **PostCSS** - CSS processing
 
-### Estrutura do Projeto
+### Project Structure
 ```
 src/
-├── app/                 # Páginas da aplicação (App Router)
-├── components/          # Componentes reutilizáveis
-│   ├── home/           # Componentes da página inicial
-│   ├── refeicoes/      # Componentes de refeições
-│   ├── profile/        # Componentes de perfil
-│   └── ui/             # Componentes de interface
-└── lib/                # Utilitários e configurações
+├── app/                 # Application pages (App Router)
+├── components/          # Reusable components
+│   ├── home/           # Home page components
+│   ├── refeicoes/      # Meal components
+│   ├── profile/        # Profile components
+│   └── ui/             # Interface components
+└── lib/                # Utilities and configurations
 ```
 
-## Funcionalidades Principais
+## Main Features
 
-### Sistema de Refeições
-- Agendamento de almoço e jantar
-- Seleção de local (Colégio PIO ou para levar)
-- Adição de convidados
-- Controle de prazos de agendamento
+### Meal System
+- Lunch and dinner scheduling
+- Location selection (PIO College or to take away)
+- Guest addition
+- Scheduling deadline control
 
-### Perfil do Usuário
-- Visualização e edição de informações pessoais
-- Upload de foto de perfil
-- Alteração de senha
+### User Profile
+- View and edit personal information
+- Profile picture upload
+- Password change
 
-### Notificações
-- Sistema de notificações em tempo real
-- Alertas sobre prazos de agendamento
-- Histórico de notificações
+### Notifications
+- Real-time notification system
+- Scheduling deadline alerts
+- Notification history
 
-## Estrutura de Componentes
+## How to Execute
 
-O projeto utiliza uma arquitetura modular com componentes reutilizáveis:
+1. Clone the repository
+2. Install dependencies:
+```bash
+npm install
+```
 
-- **Header** - Cabeçalho com navegação e notificações
-- **Footer** - Rodapé com menu de navegação
-- **MealCard** - Card para agendamento de refeições
-- **ImageSelector** - Seletor de imagem de perfil
-- **NotificationMenu** - Menu de notificações
+3. Run the development server:
+```bash
+npm run dev
+```
 
-## Variáveis CSS Globais
+4. Open [http://localhost:3000](http://localhost:3000) in your browser
 
-O projeto utiliza um sistema de design consistente com variáveis CSS globais para cores, espaçamentos e bordas, garantindo uniformidade visual em toda a aplicação.
+## Available Scripts
+
+- `npm run dev` - Runs the development server
+- `npm run build` - Generates production build
+- `npm run start` - Runs the application in production
+- `npm run lint` - Runs the linter
+
+## Component Structure
+
+The project uses a modular architecture with reusable components:
+
+- **Header** - Header with navigation and notifications
+- **Footer** - Footer with navigation menu
+- **MealCard** - Card for meal scheduling
+- **ImageSelector** - Profile image selector
+- **NotificationMenu** - Notifications menu
+
+## Global CSS Variables
+
+The project uses a consistent design system with global CSS variables for colors, spacing, and borders, ensuring visual uniformity throughout the application.
