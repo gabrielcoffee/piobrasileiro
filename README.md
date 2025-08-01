@@ -2,6 +2,14 @@
 
 Meal management system for PIO College, developed to facilitate meal scheduling and control for students and staff.
 
+## Some screenshots of the UI
+<img width="200" height="725" alt="Screenshot 2025-08-01 at 8 48 50 AM" src="https://github.com/user-attachments/assets/dce47233-86d4-4733-842c-4b4a54d8cb23" />
+<img width="200" height="724" alt="Screenshot 2025-08-01 at 8 49 11 AM" src="https://github.com/user-attachments/assets/c29c8260-e142-4cea-908b-72ca0ac8e909" />
+<img width="200" height="721" alt="Screenshot 2025-08-01 at 8 48 57 AM" src="https://github.com/user-attachments/assets/0483aa70-0051-4abe-a2ea-b214ce69c947" />
+<img width="200" height="721" alt="Screenshot 2025-08-01 at 8 49 05 AM" src="https://github.com/user-attachments/assets/1db7dd53-51b2-496a-9ec9-11d122d12edf" />
+
+
+
 ## About the Project
 
 PIO Brasileiro is a modern web application that allows users to:
