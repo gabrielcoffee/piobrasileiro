@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { LucidePlug, LucidePlus, Salad } from 'lucide-react';
 import styles from './styles/MealCard.module.css';
 import { Button } from '../ui/Button';
+import GuestModal from './GuestModal';
 
 interface MealCardProps {
     date?: string;
@@ -12,8 +13,8 @@ interface MealCardProps {
 }
 
 export default function MealCard({ 
-    date = "07/04", 
-    dayName = "SEGUNDA-FEIRA, 07/04/2025",
+    date = "07/04",
+    dayName = "Segunda-feira, 07/04/2025",
     lunch = false,
     dinner = false,
     option = 'school',
@@ -21,7 +22,7 @@ export default function MealCard({
     const [lunchConfirmed, setLunchConfirmed] = useState(lunch);
     const [dinnerConfirmed, setDinnerConfirmed] = useState(dinner);
     const [lunchOption, setLunchOption] = useState(option);
-
+    const [isGuestModalOpen, setIsGuestModalOpen] = useState(false);
     const isAnyMealConfirmed = lunchConfirmed || dinnerConfirmed;
 
     return (
@@ -87,7 +88,7 @@ export default function MealCard({
                         </label>
                     </div>
                     {lunchConfirmed && lunchOption === 'school' && (
-                        <Button className={styles.addGuestButton} variant="full">Adicionar convidado</Button>
+                        <Button onClick={() => setIsGuestModalOpen(true)} className={styles.addGuestButton} variant="full">Adicionar convidado</Button>
                     )}
                 </div>
 
@@ -126,6 +127,10 @@ export default function MealCard({
                     </div>
                 </div>
             </div>
+
+            {isGuestModalOpen && (
+                <GuestModal date={dayName} isOpen={isGuestModalOpen} onClose={() => setIsGuestModalOpen(false)} />
+            )}
         </div>
     );
 }

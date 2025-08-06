@@ -9,6 +9,8 @@ interface InputTextProps extends React.ComponentProps<"input"> {
 
 export function InputText({ value, label, error, className, ...props }: InputTextProps) {
 
+    const hasError = error && error.length > 0;
+
     const [inputValue, setInputValue] = useState(value || '');
     
     return (
@@ -20,8 +22,7 @@ export function InputText({ value, label, error, className, ...props }: InputTex
         )}
         <input
             className={`${styles.input} ${className || ''}`}
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
+            style={{ borderColor: hasError ? 'var(--color-error)' : 'var(--color-border)'}}
             {...props}
         />
         {error && <span className={styles.errorText}>{error}</span>}
