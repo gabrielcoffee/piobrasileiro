@@ -1,65 +1,42 @@
-'use client'
+"use client"
+import Login from "@/components/login/Login";
+import Splash from "@/components/login/Splash"
+import ForgotPassword from "@/components/login/ForgotPassword"
+import { Button } from "@/components/ui/Button"
+import { ArrowRightIcon } from "lucide-react"
+import { useState } from "react"
+import styles from "./page.module.css"
 
-import { Button } from "@/components/ui/Button";
-import { Bed, LucideSalad } from "lucide-react";
-import { Header } from "@/components/general/Header";
-import { DateSection } from "@/components/home/DateSection";
-import { PageTitle } from "@/components/home/PageTitle";
-import { WeekInfo } from "@/components/home/WeekInfoCard";
-import { Footer } from "@/components/general/Footer";
-import { Divider } from "@/components/ui/Divider";
-import styles from "./page.module.css";
-import Link from "next/link";
+type ViewType = 'splash' | 'login' | 'forgotPassword';
 
-export default function HomePage() {
+export default function LoginPage() {
+
+    const [view, setView] = useState<ViewType>('splash');
+
+    const handleViewChange = (newView: ViewType) => {
+        setView(newView);
+    }
+
     return (
         <div className={styles.container}>
-            <Header/>
+            {view === 'splash' && (
+                <Splash onEnterClick={() => handleViewChange('login')}/>
+            )}
 
-            <DateSection/>
-
-            <div className={styles.section}>
-                <PageTitle
-                    icon={<LucideSalad/>}
-                    title="Refeições"
-                    text={
-                        <span>
-                            Atualize sua presença nas refeições e contribua para uma cozinha mais organizada!
-                        </span>
-                    }
+            {view === 'login' && (
+                <Login 
+                    onForgotPasswordClick={() => handleViewChange('forgotPassword')}
+                    onBackClick={() => handleViewChange('splash')}
                 />
-
-                <WeekInfo
-                    curWeek={14}
-                    from={new Date('2025-04-07')}
-                    to={new Date('2025-04-13')}
-                    isBooked={false}
+            )}
+            
+            {view === 'forgotPassword' && (
+                <ForgotPassword 
+                    onEnterClick={() => handleViewChange('login')}
+                    onBackClick={() => handleViewChange('login')}
                 />
-
-                <Button href="/refeicoes" variant="full" iconLeft={<LucideSalad/>}>
-                    Marcar refeições
-                </Button>
-            </div>
-
-            <Divider/>
-
-            <div className={styles.section}>
-                <PageTitle
-                    icon={<Bed/>}
-                    title="Hospedagem"
-                    text={
-                        <span>
-                            Você pode fazer solicitações de hospedagem para seus convidados. Posteriormente, confirmaremos a disponibilidade.
-                        </span>
-                    }
-                />
-
-                <Button href="/hospedagem" variant="full" iconLeft={<Bed/>}>
-                    Solicitar hospedagem
-                </Button>
-            </div>
-
-            <Footer/>
+            )}            
         </div>
     )
 }
+
