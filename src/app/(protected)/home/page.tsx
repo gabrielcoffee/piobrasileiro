@@ -10,42 +10,18 @@ import styles from "./page.module.css";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { Loading } from "@/components/ui/Loading";
-import { getApiData } from "@/lib/utils";
+import { queryApi, getCurrentWeekInfo } from "@/lib/utils";
 
 export default function HomePage() {
     const { isLoading, user } = useAuth();
     const [isBooked, setIsBooked] = useState(false);
-    const [currentDate, setCurrentDate] = useState(new Date());
-    
-    const getCurrentWeekInfo = () => {
-
-        // Getting Week number
-        const now = new Date();
-        const startOfYear = new Date(now.getFullYear(), 0, );
-        const days = Math.floor((now.getTime() - startOfYear.getTime()) / (24 * 60 * 60 * 1000));
-        const weekNumber = Math.ceil((days + startOfYear.getDay() + 1) / 7);
-
-        const dayOfWeek = now.getDay(); // 0 até 6
-        const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
-        
-        // Getting sunday and monday date
-        const monday = new Date(now);
-        monday.setDate(now.getDate() - daysToMonday);
-        const sunday = new Date(monday);
-        sunday.setDate(monday.getDate() + 6);
-        
-        return {
-            weekNumber,
-            monday,
-            sunday
-        }
-    }
 
     const fetchWeekMeals = async () => {
-        const result = await getApiData('/user/weekmeals');
+        const result = await queryApi('GET', '/user/weekmeals');
 
         if (result.success) {
             if (result.data.meals.length > 0) {
+                console.log(result.data.meals);
                 setIsBooked(true);
             } else {
                 setIsBooked(false);

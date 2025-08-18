@@ -1,32 +1,65 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { LucidePlug, LucidePlus, Salad } from 'lucide-react';
 import styles from './styles/MealCard.module.css';
 import { Button } from '../ui/Button';
 import GuestModal from './GuestModal';
 
 interface MealCardProps {
+    id?: string;
     date?: string;
     dayName?: string;
     lunch?: boolean;
     dinner?: boolean;
-    option?: 'school' | 'takeaway';
+    takeOut?: boolean;
+    onUpdate?: (updates: { lunch?: boolean; dinner?: boolean; takeOut?: boolean }) => void;
 }
 
 export default function MealCard({ 
+    id,
     date = "07/04",
     dayName = "Segunda-feira, 07/04/2025",
     lunch = false,
     dinner = false,
-    option = 'school',
+    takeOut = false,
+    onUpdate
 }: MealCardProps) {
     const [lunchConfirmed, setLunchConfirmed] = useState(lunch);
     const [dinnerConfirmed, setDinnerConfirmed] = useState(dinner);
-    const [lunchOption, setLunchOption] = useState(option);
+    const [takeOutOption, setTakeOutOption] = useState(takeOut);
     const [isGuestModalOpen, setIsGuestModalOpen] = useState(false);
     const isAnyMealConfirmed = lunchConfirmed || dinnerConfirmed;
 
+    // Sincroniza o estado local com as props quando elas mudam
+    useEffect(() => {
+        setLunchConfirmed(lunch);
+    }, [lunch]);
+
+    useEffect(() => {
+        setDinnerConfirmed(dinner);
+    }, [dinner]);
+
+    useEffect(() => {
+        setTakeOutOption(takeOut);
+    }, [takeOut]);
+
+    // Atualiza estado local e notifica componente pai
+    const updateLunch = (newValue: boolean) => {
+        setLunchConfirmed(newValue);
+        onUpdate?.({ lunch: newValue, takeOut: takeOutOption });
+    };
+
+    const updateDinner = (newValue: boolean) => {
+        setDinnerConfirmed(newValue);
+        onUpdate?.({ dinner: newValue });
+    };
+
+    const updateTakeOut = (newValue: boolean) => {
+        setTakeOutOption(newValue);
+        onUpdate?.({ takeOut: newValue });
+    };
+
     return (
-        <div className={styles.container}>
+        <div className={styles.container} id={id}>
             {/* Date Header */}
             <div className={styles.dateHeader}>
                 <span className={styles.dateText}>{dayName}</span>
@@ -51,7 +84,7 @@ export default function MealCard({
                             </span>
                             <button
                                 className={`${styles.toggle} ${lunchConfirmed ? styles.toggleOn : styles.toggleOff}`}
-                                onClick={() => setLunchConfirmed(!lunchConfirmed)}
+                                onClick={() => updateLunch(!lunchConfirmed)}
                             >
                                 <div className={styles.toggleCircle} />
                             </button>
@@ -62,10 +95,10 @@ export default function MealCard({
                         <label className={`${styles.radioOption} ${!lunchConfirmed ? styles.disabled : ''}`}>
                             <input
                                 type="radio"
-                                name="lunch"
+                                name={`lunch-${id}`}
                                 value="school"
-                                checked={lunchOption === 'school'}
-                                onChange={() => setLunchOption('school')}
+                                checked={!takeOutOption}
+                                onChange={() => updateTakeOut(false)}
                                 disabled={!lunchConfirmed}
                                 className={styles.radioInput}
                             />
@@ -76,10 +109,10 @@ export default function MealCard({
                         <label className={`${styles.radioOption} ${!lunchConfirmed ? styles.disabled : ''}`}>
                             <input
                                 type="radio"
-                                name="lunch"
+                                name={`lunch-${id}`}
                                 value="takeaway"
-                                checked={lunchOption === 'takeaway'}
-                                onChange={() => setLunchOption('takeaway')}
+                                checked={takeOutOption}
+                                onChange={() => updateTakeOut(true)}
                                 disabled={!lunchConfirmed}
                                 className={styles.radioInput}
                             />
@@ -87,7 +120,7 @@ export default function MealCard({
                             <span className={styles.radioLabel}>Para levar</span>
                         </label>
                     </div>
-                    {lunchConfirmed && lunchOption === 'school' && (
+                    {lunchConfirmed && !takeOutOption && (
                         <Button onClick={() => setIsGuestModalOpen(true)} className={styles.addGuestButton} variant="full">Adicionar convidado</Button>
                     )}
                 </div>
@@ -104,7 +137,7 @@ export default function MealCard({
                             </span>
                             <button
                                 className={`${styles.toggle} ${dinnerConfirmed ? styles.toggleOn : styles.toggleOff}`}
-                                onClick={() => setDinnerConfirmed(!dinnerConfirmed)}
+                                onClick={() => updateDinner(!dinnerConfirmed)}
                             >
                                 <div className={styles.toggleCircle} />
                             </button>
@@ -115,9 +148,9 @@ export default function MealCard({
                         <label className={`${styles.radioOption} ${!dinnerConfirmed ? styles.disabled : ''}`}>
                             <input
                                 type="radio"
-                                name="dinner"
+                                name={`dinner-${id}`}
                                 value="school"
-                                checked={true}
+                                defaultChecked={true}
                                 disabled={!dinnerConfirmed}
                                 className={styles.radioInput}
                             />

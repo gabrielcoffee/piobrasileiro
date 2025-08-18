@@ -1,24 +1,70 @@
 import { CheckCheck, CircleX, X } from "lucide-react";
 import styles from "./styles/DaySelector.module.css";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export default function DaySelector() {
+interface MealDay {
+    date: string;
+    displayDate: string;
+    dayName: string;
+    lunch: boolean;
+    dinner: boolean;
+    takeOut: boolean;
+    dayIndex: number;
+    isPast: boolean;
+}
+
+interface DaySelectorProps {
+    mealsList: MealDay[];
+    onDaySelect: (dayIndex: number) => void;
+    onMarkAllMeals: (markAsTrue: boolean) => void;
+}
+
+export default function DaySelector({ mealsList, onDaySelect, onMarkAllMeals }: DaySelectorProps) {
 
     const [haveSelected, setHaveSelected] = useState(false);
 
+    // Sincroniza o estado do botão com as seleções atuais das refeições
+    useEffect(() => {
+        if (mealsList.length > 0) {
+            const allMealsSelected = mealsList.every(meal => meal.lunch && meal.dinner);
+            setHaveSelected(allMealsSelected);
+        }
+    }, [mealsList]);
+
     /* Dias da semana estarão com fundo cinza se já tiverem passado */ 
     const today = new Date();
-    const dayOfWeek = today.getDay();
+    const currentHour = today.getHours();
+    const currentMinute = today.getMinutes();
+    const isAfterCutoff = currentHour > 19 || (currentHour === 19 && currentMinute >= 0);
 
+    // Dias da semana em ordem (segunda a domingo)
     const daysOfWeek = [
-        { num: 0, name: "SEG", passed: dayOfWeek >= 0 },
-        { num: 1, name: "TER", passed: dayOfWeek >= 1 },
-        { num: 2, name: "QUA", passed: dayOfWeek >= 2 },
-        { num: 3, name: "QUI", passed: dayOfWeek >= 3 },
-        { num: 4, name: "SEX", passed: dayOfWeek >= 4 },
-        { num: 5, name: "SAB", passed: dayOfWeek >= 5 },
-        { num: 6, name: "DOM", passed: dayOfWeek >= 6 },
+        { num: 0, name: "SEG", dayOfWeek: 1 },
+        { num: 1, name: "TER", dayOfWeek: 2 },
+        { num: 2, name: "QUA", dayOfWeek: 3 },
+        { num: 3, name: "QUI", dayOfWeek: 4 },
+        { num: 4, name: "SEX", dayOfWeek: 5 },
+        { num: 5, name: "SAB", dayOfWeek: 6 },
+        { num: 6, name: "DOM", dayOfWeek: 0 },
     ]
+
+    const handleDayClick = (dayIndex: number) => {
+        // Encontra o dia correspondente na mealsList
+        const selectedDay = mealsList.find(meal => meal.dayIndex === dayIndex);
+        if (selectedDay && !selectedDay.isPast) {
+            onDaySelect(dayIndex);
+        }
+    };
+
+    const handleMarkAllClick = () => {
+        console.log('Button clicked! Current haveSelected:', haveSelected);
+        const newState = !haveSelected;
+        console.log('Setting new state to:', newState);
+        setHaveSelected(newState);
+        // Call the parent function to mark all meals
+        console.log('Calling onMarkAllMeals with:', newState);
+        onMarkAllMeals(newState);
+    };
 
     return (
         <div className={styles.container}>
@@ -26,7 +72,7 @@ export default function DaySelector() {
                 <span className={styles.daySelectorText}>Por favor, selecione suas refeições até <strong>hoje às 19h00.</strong></span>
                 <button 
                 className={`${styles.checkButton} ${haveSelected ? styles.selected : ""}`} 
-                onClick={() => setHaveSelected(!haveSelected)}
+                onClick={handleMarkAllClick}
                 >
 
                     {haveSelected ? (   
@@ -43,9 +89,17 @@ export default function DaySelector() {
                 </button>
             </div>
             <div className={styles.daysContainer}>
-                {daysOfWeek.map((day) => {
+                {daysOfWeek.map((day, index) => {
+                    const mealDay = mealsList.find(meal => meal.dayIndex === index);
+                    const isPast = mealDay ? mealDay.isPast : false;
+                    
                     return (
-                        <button key={day.name} className={`${styles.dayButton} ${day.passed ? styles.passed : ""}`}>
+                        <button 
+                            key={day.name} 
+                            className={`${styles.dayButton} ${isPast ? styles.passed : ""}`}
+                            onClick={() => handleDayClick(index)}
+                            disabled={isPast}
+                        >
                             <span>{day.name}</span>
                         </button>
                     )
