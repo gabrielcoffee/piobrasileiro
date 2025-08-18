@@ -3,6 +3,7 @@ import { Home, LucideSalad, Bed, X, UserRound, LogOut } from 'lucide-react';
 import styles from './styles/SideMenu.module.css';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface SideMenuProps {
   isOpen: boolean;
@@ -12,7 +13,7 @@ interface SideMenuProps {
 export function SideMenu({ isOpen, onClose }: SideMenuProps) {
 
     const pathname = usePathname();
-
+    const { logout } = useAuth();
     const menuItems = [
         { id: 'home', label: 'Home', icon: Home, href: '/home' },
         { id: 'refeicoes', label: 'Refeições', icon: LucideSalad, href: '/refeicoes' },
@@ -52,7 +53,11 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
                         ${item.id === 'logout' ? styles.logoutButton : ''}
                         ${item.href === pathname ? styles.active : ''}
                     `}
-                    onClick={onClose}
+                    onClick={
+                        item.id === 'logout' ? () => {
+                            logout();
+                        } : onClose
+                    }
                 >
                     <IconComponent size={24}/>
                     <span className={styles.menuLabel}>{item.label}</span>

@@ -58,4 +58,34 @@
 .warningSubtext {
   font-size: 0.75rem;
   color: var(--color-destructive);
+}
+
+.success {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: .75rem;
+  border-radius: var(--radius-sm);
+}
+
+.successIcon {
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.successText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.successTitle {
+  font-size: 0.75rem;
+  color: var(--color-primary);
+  font-weight: 700;
+}
+
+.successSubtext {
+  font-size: 0.75rem;
+  color: var(--color-primary);
 } 

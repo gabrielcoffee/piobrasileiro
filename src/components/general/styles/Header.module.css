@@ -1,11 +1,14 @@
 .header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem;
-  background-color: var(--color-slate-100);
-  position: relative;
-  z-index: 20;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--color-slate-100);
+    z-index: 20;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
 }
 
 .menuButton {

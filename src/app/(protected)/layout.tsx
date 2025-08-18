@@ -28,6 +28,7 @@ export default function ProtectedLayout({ children }: { children: ReactNode}) {
     return (
         <>
             <Header />
+            <div style={{ marginTop: '80px' }}></div>
                 {children}
             <Footer />
         </>

@@ -2,7 +2,7 @@
 import Login from "@/components/login/Login";
 import Splash from "@/components/login/Splash"
 import ForgotPassword from "@/components/login/ForgotPassword"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import styles from "./page.module.css"
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
@@ -12,7 +12,7 @@ type ViewType = 'splash' | 'login' | 'forgotPassword';
 
 export default function LoginPage() {
 
-    const { isAuthenticated, isLoading } = useAuth();
+    const { isAuthenticated, isLoading, user } = useAuth();
     const router = useRouter();
 
     const [view, setView] = useState<ViewType>('splash');
@@ -21,12 +21,14 @@ export default function LoginPage() {
         setView(newView);
     }
 
-    if (isLoading) {
-        return <Loading />;
-    }
+    useEffect(() => {
+        if (!isLoading && isAuthenticated) {
+            router.push('/home');
+        }
+    }, [isAuthenticated, isLoading, router]);
 
-    if (!isLoading && isAuthenticated) {
-        router.push('/home');
+    if (isLoading || isAuthenticated) {
+        return <Loading />;
     }
 
     return (
