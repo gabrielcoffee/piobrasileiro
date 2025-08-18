@@ -1,6 +1,5 @@
 "use client"
-import { Header } from "@/components/general/Header";
-import { Footer } from "@/components/general/Footer";
+
 import { PageTitle } from "@/components/home/PageTitle";
 import { UserRound } from "lucide-react";
 import { InputText } from "@/components/ui/InputText";
@@ -23,7 +22,6 @@ export default function PerfilPage() {
 
     return (
         <div className={styles.container}>
-            <Header/>
                 <div className={styles.section}>
                     <PageTitle
                         icon={<UserRound size={24} />}
@@ -57,7 +55,6 @@ export default function PerfilPage() {
                 <Button className={styles.passwordButton} onClick={handlePasswordButton} variant="text">
                     Alterar senha
                 </Button>
-            <Footer/>
         </div>
     )
 }

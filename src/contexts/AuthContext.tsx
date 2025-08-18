@@ -1,11 +1,12 @@
 'use client';
 
-import { createContext, ReactNode, useEffect, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 // Defining the user type
 interface User {
-    avatar_url?: string;
-    nome_completo: string;
+    role: string;
+    avatar?: string;
+    fullname: string;
     email: string;
 }
 
@@ -24,7 +25,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 // Provider Component that wraps the app with the context
-export function AuthProvider(children: ReactNode) {
+export function AuthProvider({ children }: { children: ReactNode }) {
     const [user, setUser] = useState<User | null>(null);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -55,7 +56,6 @@ export function AuthProvider(children: ReactNode) {
         } catch (error) {
             console.log('Auth check failed', error);
         } finally {
-            // Only remove the loading state after the auth check ends
             setIsLoading(false);
         }
     }
@@ -63,25 +63,20 @@ export function AuthProvider(children: ReactNode) {
     const fetchUserData = async (): Promise<User | null> => {
         try {
             const token = localStorage.getItem('token');
-
-            const response = await fetch('http://localhost:3003/auth/perfil', {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/perfil`, {
                 headers: {
                     'authorization': `Bearer ${token}`
                 }
             });
-
             if (response.ok) {
                 const json = await response.json();
                 return json.data;
             }
-
             return null;
-            
+
         } catch (error) {
             console.log('Failed to fetch user data', error);
             return null;
-        } finally {
-            setIsLoading(false);
         }
     }
 
@@ -90,7 +85,7 @@ export function AuthProvider(children: ReactNode) {
         try {
             setIsLoading(true);
 
-            const response = await fetch('http://localhost:3003/auth/login', {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
                 method: 'POST',
                 headers: {
                     'content-type': 'application/json'
@@ -115,9 +110,9 @@ export function AuthProvider(children: ReactNode) {
 
         } catch (error) {
             console.log(error);
+            return false
         } finally {
             setIsLoading(false);
-            return false
         }
 
     }
@@ -134,7 +129,7 @@ export function AuthProvider(children: ReactNode) {
     // Context data that is send by the provider
     const value: AuthContextType = {
         user,
-        isAuthenticated: !!user,
+        isAuthenticated,
         isLoading,
         login,
         logout,
@@ -142,7 +137,17 @@ export function AuthProvider(children: ReactNode) {
 
     return (
         <AuthContext.Provider value={value}>
-            { children /* Children might be wrong in the props */ }
+            { children }
         </AuthContext.Provider>
     )
+}
+
+export function useAuth() {
+    const context = useContext(AuthContext);
+
+    if (context === undefined) {
+        throw new Error('useAuth must be used within an AuthProvider');
+    }
+
+    return context;
 }

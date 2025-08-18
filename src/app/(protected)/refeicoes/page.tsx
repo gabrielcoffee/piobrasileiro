@@ -1,7 +1,5 @@
 'use client'
 
-import { Header } from "@/components/general/Header";
-import { Footer } from "@/components/general/Footer";
 import { Divider } from "@/components/ui/Divider";
 import styles from "./page.module.css";
 import { MealDaysSection } from "@/components/refeicoes/MealDaysSection";
@@ -18,7 +16,6 @@ const mealsPlaceholder = [
 export default function RefeicoesPage() {
     return (
         <div className={styles.container}>
-            <Header/>
 
             <MealDaysSection/>
 
@@ -27,8 +24,6 @@ export default function RefeicoesPage() {
             <MealCard/>
 
             <Divider/>
-
-            <Footer/>
         </div>
     )
 }

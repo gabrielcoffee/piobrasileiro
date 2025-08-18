@@ -2,19 +2,15 @@
 
 import { Button } from "@/components/ui/Button";
 import { Bed, LucideSalad } from "lucide-react";
-import { Header } from "@/components/general/Header";
 import { DateSection } from "@/components/home/DateSection";
 import { PageTitle } from "@/components/home/PageTitle";
 import { WeekInfo } from "@/components/home/WeekInfoCard";
-import { Footer } from "@/components/general/Footer";
 import { Divider } from "@/components/ui/Divider";
 import styles from "./page.module.css";
-import Link from "next/link";
 
 export default function HomePage() {
     return (
         <div className={styles.container}>
-            <Header/>
 
             <DateSection/>
 
@@ -58,8 +54,6 @@ export default function HomePage() {
                     Solicitar hospedagem
                 </Button>
             </div>
-
-            <Footer/>
         </div>
     )
 }

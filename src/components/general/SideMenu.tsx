@@ -14,7 +14,7 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
     const pathname = usePathname();
 
     const menuItems = [
-        { id: 'home', label: 'Home', icon: Home, href: '/' },
+        { id: 'home', label: 'Home', icon: Home, href: '/home' },
         { id: 'refeicoes', label: 'Refeições', icon: LucideSalad, href: '/refeicoes' },
         { id: 'hospedagem', label: 'Hospedagem', icon: Bed, href: '/hospedagem' },
         { id: 'perfil', label: 'Perfil', icon: UserRound, href: '/perfil' },

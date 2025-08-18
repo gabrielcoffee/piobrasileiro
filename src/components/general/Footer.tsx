@@ -10,7 +10,7 @@ export function Footer() {
 
     
     const tabs = [
-        { id: 'home', href: '/', label: 'Home', icon: Home },
+        { id: 'home', href: '/home', label: 'Home', icon: Home },
         { id: 'refeicoes', href: '/refeicoes', label: 'Refeições', icon: LucideSalad },
         { id: 'hospedagem', href: '/hospedagem', label: 'Hospedagem', icon: Bed },
         { id: 'perfil', href: '/perfil', label: 'Perfil', icon: UserRound },

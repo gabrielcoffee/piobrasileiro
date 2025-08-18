@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 /* Font principal utilizada no projeto */
 const manrope = Manrope({
@@ -10,7 +11,7 @@ const manrope = Manrope({
 
 /* Metadados do projeto */
 export const metadata: Metadata = {
-  title: "Pio Brasileiro",
+  title: "PONTIFÍCIO COLÉGIO PIO BRASILEIRO",
   description: "Pio Brasileiro web application",
 };
 
@@ -23,7 +24,9 @@ export default function RootLayout({
   return (
     <html lang="en" className="light">
       <body className={`${manrope.variable}`}>
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

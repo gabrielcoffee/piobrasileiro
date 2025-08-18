@@ -1,12 +1,15 @@
 'use client'
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { InputText } from "@/components/ui/InputText";
 import { InputPassword } from "@/components/ui/InputPassword";
 import { Checkbox } from "@/components/ui/Checkbox";
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 import styles from "./styles/Login.module.css";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
+import { Loading } from "../ui/Loading";
 
 interface LoginProps {
     onForgotPasswordClick: () => void;
@@ -14,16 +17,39 @@ interface LoginProps {
 }
 
 export default function Login({onForgotPasswordClick, onBackClick}: LoginProps) {
+
+    // Authentication and database request
+    const { isAuthenticated, isLoading, login } = useAuth();
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!isLoading && isAuthenticated) {
+            router.push('/home'); // Redirect to home if logged in
+        }
+    }, [isLoading, isAuthenticated, router]);
+
+    if (isLoading) {
+        return <Loading />;
+    }
+
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        const success = await login(email, password);
+        if (success) {
+            router.push('/home');
+        } else {
+            setEmailWrong(true);
+            setPasswordWrong(true);
+        }
+    };
+
+    // Variables for the login page
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rememberMe, setRememberMe] = useState(false);
 
     const [emailWrong, setEmailWrong] = useState(false);
     const [passwordWrong, setPasswordWrong] = useState(false);
-
-    const handleLogin = () => {
-
-    }
     
     return (
         <div className={styles.container}>
