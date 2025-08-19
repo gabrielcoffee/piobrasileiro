@@ -23,11 +23,16 @@ export default function DaySelector({ mealsList, onDaySelect, onMarkAllMeals }: 
 
     const [haveSelected, setHaveSelected] = useState(false);
 
-    // Sincroniza o estado do botão com as seleções atuais das refeições
+    // Sincroniza o estado do botão com as seleções atuais das refeições (apenas dias futuros)
     useEffect(() => {
         if (mealsList.length > 0) {
-            const allMealsSelected = mealsList.every(meal => meal.lunch && meal.dinner);
-            setHaveSelected(allMealsSelected);
+            const futureMeals = mealsList.filter(meal => !meal.isPast);
+            if (futureMeals.length > 0) {
+                const allFutureMealsSelected = futureMeals.every(meal => meal.lunch && meal.dinner);
+                setHaveSelected(allFutureMealsSelected);
+            } else {
+                setHaveSelected(false);
+            }
         }
     }, [mealsList]);
 
@@ -57,12 +62,8 @@ export default function DaySelector({ mealsList, onDaySelect, onMarkAllMeals }: 
     };
 
     const handleMarkAllClick = () => {
-        console.log('Button clicked! Current haveSelected:', haveSelected);
         const newState = !haveSelected;
-        console.log('Setting new state to:', newState);
         setHaveSelected(newState);
-        // Call the parent function to mark all meals
-        console.log('Calling onMarkAllMeals with:', newState);
         onMarkAllMeals(newState);
     };
 

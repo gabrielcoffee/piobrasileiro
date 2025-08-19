@@ -12,6 +12,7 @@ interface MealCardProps {
     dinner?: boolean;
     takeOut?: boolean;
     onUpdate?: (updates: { lunch?: boolean; dinner?: boolean; takeOut?: boolean }) => void;
+    style?: React.CSSProperties;
 }
 
 export default function MealCard({ 
@@ -21,7 +22,8 @@ export default function MealCard({
     lunch = false,
     dinner = false,
     takeOut = false,
-    onUpdate
+    onUpdate,
+    style
 }: MealCardProps) {
     const [lunchConfirmed, setLunchConfirmed] = useState(lunch);
     const [dinnerConfirmed, setDinnerConfirmed] = useState(dinner);
@@ -59,7 +61,7 @@ export default function MealCard({
     };
 
     return (
-        <div className={styles.container} id={id}>
+        <div className={styles.container} id={id} style={style}>
             {/* Date Header */}
             <div className={styles.dateHeader}>
                 <span className={styles.dateText}>{dayName}</span>

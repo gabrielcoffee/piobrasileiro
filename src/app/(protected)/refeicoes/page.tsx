@@ -5,9 +5,8 @@ import styles from "./page.module.css";
 import { MealDaysSection } from "@/components/refeicoes/MealDaysSection";
 import DaySelector from "@/components/refeicoes/DaySelector";
 import MealCard from "@/components/refeicoes/MealCard";
-import { useAuth } from "@/contexts/AuthContext";
-import { queryApi, getCurrentWeekInfo } from "@/lib/utils";
-import { useEffect, useState, useCallback } from "react";
+import { queryApi, getCurrentWeekInfo, normalizeDateString } from "@/lib/utils";
+import { useEffect, useState, useCallback, useRef } from "react";
 
 interface MealDay {
     date: string;           // "2025-08-18" (formato do banco)
@@ -23,9 +22,20 @@ interface MealDay {
 export default function RefeicoesPage() {
 
     const [meals, setMeals] = useState<any[] | null>(null);
+
     const [mealsList, setMealsList] = useState<MealDay[]>([]);
-    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-    const [lastEditTime, setLastEditTime] = useState(0);
+    const [hasChanges, setHasChanges] = useState(false);
+
+    const hasChangesRef = useRef(hasChanges);
+    const mealsListRef = useRef(mealsList);
+    // Sync refs with state
+    useEffect(() => {
+        hasChangesRef.current = hasChanges;
+    }, [hasChanges]);
+
+    useEffect(() => {
+        mealsListRef.current = mealsList;
+    }, [mealsList]);
 
     const fetchWeekMeals = async () => {
         const result = await queryApi('GET', '/user/weekmeals');
@@ -55,92 +65,63 @@ export default function RefeicoesPage() {
 
         // Para cada dia da semana (segunda a domingo)
         weekInfo.weekDates.forEach((date, index) => {
-            const dateStr = date.toISOString().split('T')[0]; // "2025-08-18"
+            const dateStr = date.toISOString().split('T')[0];
             const displayDate = date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }); // "18/08"
-            let dayName = date.toLocaleDateString('pt-BR', { 
+            const dayName = date.toLocaleDateString('pt-BR', { 
                 weekday: 'long', 
                 day: 'numeric', 
                 month: 'numeric', 
                 year: 'numeric' 
-            }).toUpperCase(); // "SEGUNDA-FEIRA, 18/08/2025"
+            }).toUpperCase();
 
             // Verifica se o dia já passou das 19h00
             const isToday = date.toDateString() === today.toDateString();
             const isPast = isToday ? isAfterCutoff : date < today;
 
-            // Se não passou das 19h00, adiciona à lista
-            if (!isPast) {
-                // Procura por dados existentes no banco
-                const existingMeal = meals?.find((meal: any) => {
-                    // Normaliza a data do banco para comparar corretamente
-                    let mealDate = meal.data;
-                    
-                    // Se a data do banco vier como string ISO, converte para YYYY-MM-DD
-                    if (mealDate.includes('T')) {
-                        mealDate = new Date(mealDate).toISOString().split('T')[0];
-                    }
-                    
-                    // Se a data do banco vier como Date object, converte para YYYY-MM-DD
-                    if (mealDate instanceof Date) {
-                        mealDate = mealDate.toISOString().split('T')[0];
-                    }
-                    
-                    const matches = mealDate === dateStr;
+            // Procura por refeicoes que possuem a mesma data no banco (meals)
+            const existingMeal = meals?.find((meal: any) => {
+                const normalizedMealDate = normalizeDateString(meal.data);
+                return normalizedMealDate === dateStr;
+            });
 
-                    return matches;
+            if (existingMeal) {
+                // Usa dados do banco
+                mealList.push({
+                    date: dateStr,
+                    displayDate,
+                    dayName,
+                    lunch: existingMeal.almoco_colegio,
+                    dinner: existingMeal.janta_colegio,
+                    takeOut: existingMeal.almoco_levar,
+                    dayIndex,
+                    isPast
                 });
-
-                if (existingMeal) {
-                    // Usa dados do banco
-                    mealList.push({
-                        date: dateStr,
-                        displayDate,
-                        dayName,
-                        lunch: existingMeal.almoco_colegio,
-                        dinner: existingMeal.janta_colegio,
-                        takeOut: existingMeal.almoco_levar,
-                        dayIndex,
-                        isPast: false
-                    });
-                } else {
-                    // Cria placeholder para dia futuro sem dados
-                    mealList.push({
-                        date: dateStr,
-                        displayDate,
-                        dayName,
-                        lunch: false,
-                        dinner: false,
-                        takeOut: false,
-                        dayIndex,
-                        isPast: false
-                    });
-                }
-                dayIndex++;
+            } else {
+                // Cria placeholder para dia sem dados
+                mealList.push({
+                    date: dateStr,
+                    displayDate,
+                    dayName,
+                    lunch: false,
+                    dinner: false,
+                    takeOut: false,
+                    dayIndex,
+                    isPast
+                });
             }
+            dayIndex++;
         });
 
 
         setMealsList(mealList);
     }, [meals]);
 
-    // Auto-save com debounce de 5 segundos
-    useEffect(() => {
-        if (hasUnsavedChanges && lastEditTime > 0) {
-            const timer = setTimeout(() => {
-                saveMeals();
-            }, 5000);
-
-            return () => clearTimeout(timer);
-        }
-    }, [hasUnsavedChanges, lastEditTime]);
-
-    // Salva refeições no banco
-    const saveMeals = async () => {
-        if (!mealsList.length) return;
+    // Core save function (extracted for reuse; handles the API call without setting state)
+    const doSave = async (meals: MealDay[]) => {
+        if (!meals.length) return;
 
         try {
-            // Prepara dados para envio (apenas campos necessários)
-            const mealsToSave = mealsList.map(meal => ({
+            const mealsToSave = meals.map(meal => ({
                 data: meal.date,
                 almoco_colegio: meal.lunch || false,
                 almoco_levar: meal.takeOut || false,
@@ -150,8 +131,6 @@ export default function RefeicoesPage() {
             const result = await queryApi('POST', '/user/weekmeals', { meals: mealsToSave });
 
             if (result.success) {
-                setHasUnsavedChanges(false);
-                setLastEditTime(0);
                 console.log('Refeições salvas com sucesso');
             } else {
                 console.error('Erro ao salvar refeições:', result.error);
@@ -161,66 +140,68 @@ export default function RefeicoesPage() {
         }
     };
 
+    // Updated saveMeals for auto-save (calls doSave and resets hasChanges)
+    const saveMeals = useCallback(async () => {
+        await doSave(mealsList);
+        setHasChanges(false);
+    }, [mealsList]);
+
     // Atualiza uma refeição específica
     const updateMeal = (dayIndex: number, updates: Partial<MealDay>) => {
-        setMealsList(prevMeals => {
-            return prevMeals.map(meal => {
-                const isTargetDay = meal.dayIndex === dayIndex;
-    
-                if (isTargetDay) {
-                    return {
-                        ...meal,
-                        ...updates,
-                    };
-                }
-    
-                return meal;
-            });
-        });
-    
-        setHasUnsavedChanges(true);
-        setLastEditTime(Date.now());
-    };
-
-    // Marca ou desmarca todas as refeições (almoço e jantar)
-    const markAllMeals = (markAsTrue: boolean) => {
-        console.log('markAllMeals called with:', markAsTrue);
-        console.log('Current mealsList:', mealsList);
+        // Find the meal by dayIndex
+        const mealIndex = mealsList.findIndex(
+            meal => meal.dayIndex === dayIndex
+        );
         
-        setMealsList(prevMeals => {
-            const newMeals = prevMeals.map(meal => ({
-                ...meal,
-                lunch: markAsTrue,
-                dinner: markAsTrue,
-                // Não altera o takeOut
-            }));
-            console.log('New mealsList:', newMeals);
-            return newMeals;
-        });
-    
-        setHasUnsavedChanges(true);
-        setLastEditTime(Date.now());
+        if (mealIndex === -1) return; // Meal not found
+        
+        // Create a copy of the meals list
+        const newMealsList = [...mealsList];
+        
+        // Update the specific meal
+        newMealsList[mealIndex] = {
+            ...newMealsList[mealIndex],
+            ...updates
+        };
+        
+        setMealsList(newMealsList);
+        setHasChanges(true);
     };
 
+    // Marca ou desmarca todas as refeições (almoço e jantar) apenas para dias futuros
+    const markAllMeals = (markAsTrue: boolean) => {
+        
+        // Create a copy of the meals list
+        const newMealsList = [...mealsList];
+        
+        // Update only future meals
+        newMealsList.forEach((meal, index) => {
+            if (!meal.isPast) {
+                newMealsList[index] = {
+                    ...meal,
+                    lunch: markAsTrue,
+                    dinner: markAsTrue,
+                    // Não altera o takeOut
+                };
+            }
+        });
 
-    // USE EFFECTS
+        setMealsList(newMealsList);
+        setHasChanges(true);
+    };
 
-    // Salva quando usuário sai da página
+    // USE EFFECTS UPDATES
+
+    // Auto-save com debounce de 5 segundos
     useEffect(() => {
-        const handleBeforeUnload = () => {
-            if (hasUnsavedChanges) {
+        if (hasChanges) {
+            const timer = setTimeout(() => {
                 saveMeals();
-            }
-        };
+            }, 2000);
 
-        window.addEventListener('beforeunload', handleBeforeUnload);
-        return () => {
-            window.removeEventListener('beforeunload', handleBeforeUnload);
-            if (hasUnsavedChanges) {
-                saveMeals();
-            }
-        };
-    }, [hasUnsavedChanges]);
+            return () => clearTimeout(timer);
+        }
+    }, [hasChanges, mealsList]);
 
     useEffect(() => {
         fetchWeekMeals();
@@ -258,6 +239,7 @@ export default function RefeicoesPage() {
                     dinner={meal.dinner}
                     takeOut={meal.takeOut}
                     onUpdate={(updates) => updateMeal(meal.dayIndex, updates)}
+                    style={{ display: meal.isPast ? 'none' : 'block' }}
                 />
             ))}
 

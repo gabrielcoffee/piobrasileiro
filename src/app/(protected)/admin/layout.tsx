@@ -32,6 +32,7 @@ export default function ProtectedAdminLayout({ children }: { children: ReactNode
     return (
         <>
             <Header />
+                <div style={{ marginTop: '80px' }}></div>
                 {children}
             <Footer />
         </>

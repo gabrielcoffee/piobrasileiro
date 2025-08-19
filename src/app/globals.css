@@ -27,7 +27,7 @@
   --radius-xl: 1rem;
   
   /* Font */
-  --font-manrope: 'var(--font-manrope)', sans-serif;
+  --font-manrope: var(--font-manrope), sans-serif;
 }
 
 /* Global Reset and Base Styles */

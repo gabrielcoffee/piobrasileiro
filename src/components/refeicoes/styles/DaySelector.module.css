@@ -56,4 +56,21 @@ place all the class names first
     background-color: var(--color-white);
     border-radius: 5px;
     border: 1px solid var(--color-border);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.dayButton:hover:not(:disabled) {
+    background-color: var(--color-light-gray);
+}
+
+.dayButton.passed {
+    background-color: #f5f5f5;
+    color: #999;
+    border-color: #ddd;
+    cursor: not-allowed;
+}
+
+.dayButton.passed:hover {
+    background-color: #f5f5f5;
 }
