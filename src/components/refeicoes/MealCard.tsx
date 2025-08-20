@@ -3,6 +3,7 @@ import { LucidePlug, LucidePlus, Salad } from 'lucide-react';
 import styles from './styles/MealCard.module.css';
 import { Button } from '../ui/Button';
 import GuestModal from './GuestModal';
+import ConvidadosList from './ConvidadosList';
 
 interface MealCardProps {
     id?: string;
@@ -11,7 +12,10 @@ interface MealCardProps {
     lunch?: boolean;
     dinner?: boolean;
     takeOut?: boolean;
+    guestMeals?: any[];
     onUpdate?: (updates: { lunch?: boolean; dinner?: boolean; takeOut?: boolean }) => void;
+    onRemoveGuest?: (guestMealId: string) => void;
+    onGuestAdded?: () => void;
     style?: React.CSSProperties;
 }
 
@@ -22,7 +26,10 @@ export default function MealCard({
     lunch = false,
     dinner = false,
     takeOut = false,
+    guestMeals = [],
     onUpdate,
+    onRemoveGuest,
+    onGuestAdded,
     style
 }: MealCardProps) {
     const [lunchConfirmed, setLunchConfirmed] = useState(lunch);
@@ -30,6 +37,12 @@ export default function MealCard({
     const [takeOutOption, setTakeOutOption] = useState(takeOut);
     const [isGuestModalOpen, setIsGuestModalOpen] = useState(false);
     const isAnyMealConfirmed = lunchConfirmed || dinnerConfirmed;
+
+    const handleRemoveConvidado = (guestMealId: string) => {
+        if (onRemoveGuest) {
+            onRemoveGuest(guestMealId);
+        }
+    };
 
     // Sincroniza o estado local com as props quando elas mudam
     useEffect(() => {
@@ -122,6 +135,12 @@ export default function MealCard({
                             <span className={styles.radioLabel}>Para levar</span>
                         </label>
                     </div>
+
+                    {/* Convidados List - só mostra se há convidados */}
+                    {guestMeals.length > 0 && (
+                        <ConvidadosList guestMeals={guestMeals} onRemove={handleRemoveConvidado} />
+                    )}
+
                     {lunchConfirmed && !takeOutOption && (
                         <Button onClick={() => setIsGuestModalOpen(true)} className={styles.addGuestButton} variant="full">Adicionar convidado</Button>
                     )}
@@ -164,7 +183,12 @@ export default function MealCard({
             </div>
 
             {isGuestModalOpen && (
-                <GuestModal date={dayName} isOpen={isGuestModalOpen} onClose={() => setIsGuestModalOpen(false)} />
+                <GuestModal 
+                    date={dayName} 
+                    isOpen={isGuestModalOpen} 
+                    onClose={() => setIsGuestModalOpen(false)}
+                    onGuestAdded={onGuestAdded}
+                />
             )}
         </div>
     );

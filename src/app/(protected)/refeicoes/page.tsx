@@ -22,6 +22,8 @@ interface MealDay {
 export default function RefeicoesPage() {
 
     const [meals, setMeals] = useState<any[] | null>(null);
+    const [guestMeals, setGuestMeals] = useState<any[] | null>(null);
+    const [guestMealList, setGuestMealList] = useState<any[][]>([]);
 
     const [mealsList, setMealsList] = useState<MealDay[]>([]);
     const [hasChanges, setHasChanges] = useState(false);
@@ -41,13 +43,30 @@ export default function RefeicoesPage() {
         const result = await queryApi('GET', '/user/weekmeals');
 
         if (result.success) {
-            if (result.data.meals && result.data.meals.length > 0) {
-                setMeals(result.data.meals);
+            // User meals - set to empty array if no meals exist
+            if (result.data.userMeals && result.data.userMeals.length > 0) {
+                setMeals(result.data.userMeals);
             } else {
-                setMeals(null);
+                setMeals([]); // Set empty array to trigger createMealList
             }
         } else {
-            setMeals(null);
+            console.error('Erro ao buscar refeições:', result.error);
+            setMeals([]); // Set empty array even on error to show placeholders
+        }
+    }
+
+    const fetchGuestMeals = async () => {
+        const result = await queryApi('GET', '/user/guestmeals');
+
+        if (result.success) {
+            if (result.data.guestMeals && result.data.guestMeals.length > 0) {
+                setGuestMeals(result.data.guestMeals);
+                console.log(result.data.guestMeals);
+            } else {
+                setGuestMeals([]);
+            }
+        } else {
+            console.error('Erro ao buscar convidados:', result.error);
         }
     }
 
@@ -116,10 +135,35 @@ export default function RefeicoesPage() {
         setMealsList(mealList);
     }, [meals]);
 
+    const createGuestMealList = useCallback(() => {
+        const weekInfo = getCurrentWeekInfo();
+        
+        // Inicializa array com 7 arrays vazios (um para cada dia da semana)
+        const guestMealsByDay: any[][] = [[], [], [], [], [], [], []];
+
+        guestMeals?.forEach((guestMeal: any) => {
+            // Normaliza a data do guestMeal
+            const normalizedGuestDate = normalizeDateString(guestMeal.data);
+            
+            // Encontra qual dia da semana corresponde a esta data
+            weekInfo.weekDates.forEach((date, dayIndex) => {
+                const dateStr = date.toISOString().split('T')[0];
+                
+                if (normalizedGuestDate === dateStr) {
+                    // Adiciona a meal completa ao dia correspondente
+                    guestMealsByDay[dayIndex].push(guestMeal);
+                }
+            });
+        });
+
+        setGuestMealList(guestMealsByDay);
+    }, [guestMeals]);
+
     // Core save function (extracted for reuse; handles the API call without setting state)
     const doSave = async (meals: MealDay[]) => {
         if (!meals.length) return;
 
+        // Save the user meals
         try {
             const mealsToSave = meals.map(meal => ({
                 data: meal.date,
@@ -190,6 +234,25 @@ export default function RefeicoesPage() {
         setHasChanges(true);
     };
 
+    // Função para deletar convidado
+    const removeGuestMeal = async (guestMealId: string) => {
+        try {
+            const result = await queryApi('DELETE', `/user/guestmeals/${guestMealId}`);
+            
+            if (result.success) {
+                // Remove do estado local
+                setGuestMeals(prevGuestMeals => 
+                    prevGuestMeals ? prevGuestMeals.filter((meal: any) => meal.id !== guestMealId) : null
+                );
+                console.log('Convidado removido com sucesso');
+            } else {
+                console.error('Erro ao remover convidado:', result.error);
+            }
+        } catch (error) {
+            console.error('Erro ao remover convidado:', error);
+        }
+    };
+
     // USE EFFECTS UPDATES
 
     // Auto-save com debounce de 5 segundos
@@ -205,6 +268,7 @@ export default function RefeicoesPage() {
 
     useEffect(() => {
         fetchWeekMeals();
+        fetchGuestMeals();
     }, []);
 
     useEffect(() => {
@@ -212,6 +276,12 @@ export default function RefeicoesPage() {
             createMealList();
         }
     }, [meals, createMealList]);
+
+    useEffect(() => {
+        if (guestMeals !== null) {
+            createGuestMealList();
+        }
+    }, [guestMeals, createGuestMealList]);
 
     return (
         <div className={styles.container}>
@@ -238,7 +308,10 @@ export default function RefeicoesPage() {
                     lunch={meal.lunch}
                     dinner={meal.dinner}
                     takeOut={meal.takeOut}
+                    guestMeals={guestMealList[meal.dayIndex] || []}
                     onUpdate={(updates) => updateMeal(meal.dayIndex, updates)}
+                    onRemoveGuest={removeGuestMeal}
+                    onGuestAdded={fetchGuestMeals}
                     style={{ display: meal.isPast ? 'none' : 'block' }}
                 />
             ))}

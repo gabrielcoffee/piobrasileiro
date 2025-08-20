@@ -5,14 +5,16 @@ import { UserCheck, X } from "lucide-react";
 import { Button } from "../ui/Button";
 import styles from "./styles/GuestModal.module.css";
 import GuestConfirm from "./GuestConfirm";
+import { queryApi } from "@/lib/utils";
 
 interface GuestModalProps {
     date: string;
     isOpen: boolean;
     onClose: () => void;
+    onGuestAdded?: () => void;
 }
 
-export default function GuestModal({ date, isOpen, onClose }: GuestModalProps) {
+export default function GuestModal({ date, isOpen, onClose, onGuestAdded }: GuestModalProps) {
     const [name, setName] = useState('');
     const [role, setRole] = useState('');
     const [origin, setOrigin] = useState('');
@@ -48,8 +50,37 @@ export default function GuestModal({ date, isOpen, onClose }: GuestModalProps) {
         }
 
         if (name.length > 0 && role.length > 0 && origin.length > 0) {
-            console.log('add guest');
+            saveNewGuestAndMeal();
             setGuestAdded(true);
+        }
+    }
+
+    function convertDateFormat(dayName: string) {
+        const datePart = dayName.split(', ')[1];
+        const [day, month, year] = datePart.split('/');
+        // Return in YYYY-MM-DD format
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
+
+    const saveNewGuestAndMeal = async () => {
+
+        // Convert to YYYY-MM-DD
+        const isoDate = convertDateFormat(date);
+
+        // Save the guest meal
+        const result = await queryApi('POST', '/user/guestmeals', {
+            nome: name, 
+            funcao: role,
+            origem: origin,
+            data: isoDate,
+        });
+
+        if (result.success) {
+            if (onGuestAdded) {
+                onGuestAdded();
+            }
+        } else {
+            console.log('Error adding guest');
         }
     }
 

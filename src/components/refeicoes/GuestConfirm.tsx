@@ -17,7 +17,7 @@ export default function GuestConfirm({ setIsOpen, onClose, date }: GuestConfirmP
                     <h2 className={styles.title}>Convidado Incluso</h2>
 
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" fill="none">
-                    <path d="M16 24.9703L24.486 33.4563L41.454 16.4863M6 24.9703L14.486 33.4563M31.456 16.4863L25 23.0003" stroke="#2A8826" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M16 24.9703L24.486 33.4563L41.454 16.4863M6 24.9703L14.486 33.4563M31.456 16.4863L25 23.0003" stroke="#2A8826" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
 
                     {/* Subtext */}

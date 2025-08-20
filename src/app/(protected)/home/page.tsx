@@ -13,15 +13,14 @@ import { Loading } from "@/components/ui/Loading";
 import { queryApi, getCurrentWeekInfo } from "@/lib/utils";
 
 export default function HomePage() {
-    const { isLoading, user } = useAuth();
+    const { isLoading } = useAuth();
     const [isBooked, setIsBooked] = useState(false);
 
     const fetchWeekMeals = async () => {
         const result = await queryApi('GET', '/user/weekmeals');
 
         if (result.success) {
-            if (result.data.meals.length > 0) {
-                console.log(result.data.meals);
+            if (result.data.userMeals.length > 0) {
                 setIsBooked(true);
             } else {
                 setIsBooked(false);
