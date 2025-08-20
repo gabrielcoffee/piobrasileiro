@@ -24,7 +24,6 @@ export default function GuestModal({ date, isOpen, onClose, onGuestAdded }: Gues
     const [originError, setOriginError] = useState(false);
 
     const [guestAdded, setGuestAdded] = useState(false);
-    const [modalOpen, setModalOpen] = useState(isOpen);
 
     useEffect(() => {
         if (name.length > 0) {
@@ -37,6 +36,19 @@ export default function GuestModal({ date, isOpen, onClose, onGuestAdded }: Gues
             setOriginError(false);
         }
     }, [name, role, origin]);
+
+    // Reset modal state when it's closed
+    useEffect(() => {
+        if (!isOpen) {
+            setGuestAdded(false);
+            setName('');
+            setRole('');
+            setOrigin('');
+            setNameError(false);
+            setRoleError(false);
+            setOriginError(false);
+        }
+    }, [isOpen]);
 
     const handleAddGuest = () => {
         if (name.length === 0) {
@@ -85,16 +97,15 @@ export default function GuestModal({ date, isOpen, onClose, onGuestAdded }: Gues
     }
 
     const addAnotherGuest = () => {
-        setModalOpen(true);
         setGuestAdded(false);
         setName('');
         setRole('');
         setOrigin('');
     }
 
-    if (!modalOpen) return null;
+    if (!isOpen) return null;
 
-    if (guestAdded) return <GuestConfirm setIsOpen={addAnotherGuest} onClose={() => {setModalOpen(false)}} date={date}/>
+    if (guestAdded) return <GuestConfirm setIsOpen={addAnotherGuest} onClose={onClose} date={date}/>
 
     return (
         <div className={styles.overlay} onClick={onClose}>

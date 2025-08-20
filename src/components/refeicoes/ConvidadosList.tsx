@@ -8,14 +8,14 @@ interface ConvidadosListProps {
 }
 
 export default function ConvidadosList({ guestMeals, onRemove }: ConvidadosListProps) {
-    
+
     return (
         <div className={styles.convidadosList}>
             {guestMeals.map((guestMeal, index) => (
 
                 <div key={guestMeal.id || index} className={styles.convidadoItem}>
                     <UserCheck size={16} className={styles.icon} />
-                    <span>Convidado(a) {guestMeal.convidado_nome}</span>
+                    <span>Convidado(a) <strong>{guestMeal.convidado_nome}</strong></span>
                     <button onClick={() => onRemove(guestMeal.id)} className={styles.removeButton}>
                         <Trash size={16} />
                     </button>

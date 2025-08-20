@@ -40,6 +40,10 @@
     font-weight: 500;
 }
 
+.instruction {
+    font-weight: bold;
+}
+
 .forgotPassword {
     text-align: center;
     background-color: transparent;

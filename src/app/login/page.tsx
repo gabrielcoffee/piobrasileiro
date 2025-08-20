@@ -8,11 +8,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { Loading } from "@/components/ui/Loading";
 
-type ViewType = 'splash' | 'login' | 'forgotPassword';
+type ViewType = 'splash' | 'login' | 'forgotPassword' | 'verifyEmail';
 
 export default function LoginPage() {
 
-    const { isAuthenticated, isLoading, user } = useAuth();
+    const { isAuthenticated, isLoading } = useAuth();
     const router = useRouter();
 
     const [view, setView] = useState<ViewType>('splash');
