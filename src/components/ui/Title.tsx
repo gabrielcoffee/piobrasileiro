@@ -1,4 +1,4 @@
-import styles from "./Title.module.css"
+import styles from "./styles/Title.module.css"
 
 export default function Title({children, className}: {children: React.ReactNode, className?: string}) {
     return (

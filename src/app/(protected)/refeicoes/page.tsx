@@ -260,7 +260,7 @@ export default function RefeicoesPage() {
         if (hasChanges) {
             const timer = setTimeout(() => {
                 saveMeals();
-            }, 2000);
+            }, 1500);
 
             return () => clearTimeout(timer);
         }

@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { AuthProvider, useAuth } from "@/contexts/AuthContext";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 /* Font principal utilizada no projeto */
 const manrope = Manrope({
@@ -16,18 +18,15 @@ export const metadata: Metadata = {
 };
 
 /* Layout principal do projeto */
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <html lang="en" className="light">
-      <body className={`${manrope.variable}`}>
-        <AuthProvider>
-          {children}
-        </AuthProvider>
-      </body>
-    </html>
-  );
+export default function RootLayout({children,}: Readonly<{children: React.ReactNode;}>) {
+
+    return (
+        <html lang="en" className="light">
+        <body className={`${manrope.variable}`}>
+            <AuthProvider>
+            {children}
+            </AuthProvider>
+        </body>
+        </html>
+    );
 }

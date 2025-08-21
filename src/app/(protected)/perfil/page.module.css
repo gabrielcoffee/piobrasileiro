@@ -5,10 +5,18 @@
     min-height: 100vh;
 }
 
-.passwordButton {
-    margin-top: 1rem;
-    justify-content: flex-start;
-    font-weight: 400;
+.passwordTitle {
+    margin-top: 2rem;
+    margin-bottom: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-primary);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.passwordTitle:hover {
+    color: var(--color-primary-hover, #4CAF50);
 }
 
 .inputsContainer {
@@ -17,9 +25,58 @@
     gap: 2rem;
 }
 
-.input {
-    background-color: var(--color-background);
-    border: none;
-    border-bottom: 1px solid var(--color-border);
-    padding-bottom: 1rem;
+
+.passwordSection {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.passwordRequirements {
+    margin-top: 1rem;
+}
+
+.passwordRequirements p {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+}
+
+.passwordRequirements ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.passwordRequirements li {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.25rem;
+    position: relative;
+    padding-left: 1rem;
+}
+
+.passwordRequirements li::before {
+    content: '•';
+    color: var(--color-primary);
+    position: absolute;
+    left: 0;
+}
+
+.passwordError {
+    color: var(--color-error);
+    font-size: 12px;
+    margin-top: 0.5rem;
+}
+
+.passwordRequirementsList {
+    li {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+        align-items: center;
+    }
 }

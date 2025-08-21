@@ -1,0 +1,38 @@
+.container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .profileImageContainer {
+    position: relative;
+  }
+
+  .profileImage {
+    width: 128px;
+    height: 128px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    object-fit: cover;
+  }
+  
+  .editButton {
+    position: absolute;
+    right: -10px;
+    top: -10px;
+    width: 32px;
+    height: 32px;
+    background-color: var(--color-primary); /* Fallback to green if --primary-color not defined */
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    cursor: pointer;
+  }
+  
+  .pencilIcon {
+    width: 16px;
+    height: 16px;
+    color: white;
+  }

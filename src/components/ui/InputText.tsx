@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styles from './styles/InputText.module.css';
 
 interface InputTextProps extends React.ComponentProps<"input"> {
@@ -10,8 +10,6 @@ interface InputTextProps extends React.ComponentProps<"input"> {
 export function InputText({ value, label, error, className, ...props }: InputTextProps) {
 
     const hasError = error && error.length > 0;
-
-    const [inputValue, setInputValue] = useState(value || '');
     
     return (
         <div className={styles.container}>
@@ -22,7 +20,11 @@ export function InputText({ value, label, error, className, ...props }: InputTex
         )}
         <input
             className={`${styles.input} ${className || ''}`}
-            style={{ borderColor: hasError ? 'var(--color-error)' : 'var(--color-border)'}}
+            style={{ 
+                borderColor: hasError ? 'var(--color-error)' : 'var(--color-border)',
+                color: props.disabled ? 'var(--color-text-muted)' : 'var(--color-text)'
+            }}
+            value={value || ''}
             {...props}
         />
         {error && <span className={styles.errorText}>{error}</span>}

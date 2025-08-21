@@ -19,12 +19,16 @@ interface LoginProps {
 export default function Login({onForgotPasswordClick, onBackClick}: LoginProps) {
 
     // Authentication and database request
-    const { isAuthenticated, isLoading, login } = useAuth();
+    const { isAuthenticated, isLoading, login, user } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
         if (!isLoading && isAuthenticated) {
-            router.push('/home'); // Redirect to home if logged in
+            if (user?.role === 'admin') {
+                router.push('/admin/home');
+            } else {
+                router.push('/home');
+            }
         }
     }, [isLoading, isAuthenticated, router]);
 

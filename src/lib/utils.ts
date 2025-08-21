@@ -57,7 +57,7 @@ export async function queryApi(method: string, route: string, body?: any) {
             error: 'Network error', 
             data: null 
         };
-    }
+    } 
 }
 
 export function getCurrentWeekInfo() {
