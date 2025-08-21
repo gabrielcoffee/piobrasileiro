@@ -1,7 +1,7 @@
 "use client"
 
 import { PageTitle } from "@/components/home/PageTitle";
-import { UserRound, Check, X, CheckCheck } from "lucide-react";
+import { UserRound, Check, X, CheckCheck, LogOut } from "lucide-react";
 import { InputText } from "@/components/ui/InputText";
 import { InputPassword } from "@/components/ui/InputPassword";
 import { Button } from "@/components/ui/Button";
@@ -11,12 +11,18 @@ import styles from "./page.module.css";
 import { queryApi } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import ProfileImage from "@/components/profile/ProfileImage";
+import { useAuth } from "@/contexts/AuthContext";
 
 
 export default function PerfilPage() {
+
+    const { logout } = useAuth();
+
     const [avatar, setAvatar] = useState<string | null>(null);
     const [fullname, setFullname] = useState<string | undefined>(undefined);
+    const [originalName, setOriginalName] = useState<string | undefined>(undefined);
     const [email, setEmail] = useState<string | undefined>(undefined);
+    const [showNameButton, setShowNameButton] = useState<boolean>(false);
     const [currentPassword, setCurrentPassword] = useState<string>('');
     const [newPassword, setNewPassword] = useState<string>('');
     const [passwordChanged, setPasswordChanged] = useState<boolean>(false);
@@ -32,6 +38,12 @@ export default function PerfilPage() {
     useEffect(() => {
         fetchUserProfileData();
     }, []);
+
+    useEffect(() => {
+        if (fullname !== undefined && originalName !== undefined) {
+            setShowNameButton(fullname !== originalName);
+        }
+    }, [fullname, originalName]);
 
     useEffect(() => {
         if (newPassword.length < 8) {
@@ -80,12 +92,15 @@ export default function PerfilPage() {
     const fetchUserProfileData = async () => {
         const result = await queryApi('GET', '/user/perfil');
 
-        const bufferData = result.data.avatar.data;
-        const base64String = Buffer.from(bufferData).toString('base64');
-
         if (result.success) {
-            setAvatar(base64String);
+            if (result.data.avatar) {
+                const bufferData = result.data.avatar.data;
+                const base64String = Buffer.from(bufferData).toString('base64');
+                setAvatar(base64String);
+            }
+            
             setFullname(result.data.fullname);
+            setOriginalName(result.data.fullname);
             setEmail(result.data.email);
         } else {
             console.error('Erro ao buscar dados do perfil:', result.error);
@@ -120,6 +135,26 @@ export default function PerfilPage() {
     };
 
     const isPasswordFormValid = currentPassword.length > 0 && newPassword.length > 0;
+
+    const handleNameChange = async () => {
+        if (!fullname || fullname === originalName) return;
+        
+        try {
+            const result = await queryApi('PUT', '/user/perfil/nome', {
+                nome_completo: fullname
+            });
+
+            if (result.success) {
+                console.log('Nome alterado com sucesso');
+                setOriginalName(fullname);
+                setShowNameButton(false);
+            } else {
+                console.error('Erro ao alterar nome:', result.error);
+            }
+        } catch (error) {
+            console.error('Erro ao alterar nome:', error);
+        }
+    };
 
     async function checkFileSize(imageFile: File): Promise<boolean> {
         const maxSizeInBytes = 10 * 1024 * 1024; // 10MB in bytes
@@ -234,6 +269,17 @@ export default function PerfilPage() {
                         onChange={(e) => setFullname(e.target.value)}
                     />
 
+                    {showNameButton && (
+                        <Button 
+                            onClick={handleNameChange}
+                            available={true}
+                            variant="full"
+                        >
+                            <Check size={20} />
+                            Salvar alteração
+                        </Button>
+                    )}
+
                     <InputText
                         label="E-mail:"
                         disabled={true}
@@ -281,6 +327,15 @@ export default function PerfilPage() {
                     >
                         <Check size={20} />
                         Salvar alteração
+                    </Button>
+
+                    <Button
+                        onClick={logout}
+                        variant="text"
+                        iconLeft={<LogOut size={20} color="var(--color-error)" />}
+                        className={styles.logoutButton}
+                    >
+                        Sair da conta
                     </Button>
                 </div>
 

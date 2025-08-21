@@ -80,3 +80,9 @@
         align-items: center;
     }
 }
+
+.logoutButton {
+    color: var(--color-error);
+    margin-top: 2.5rem;
+    width: 50%;
+}
