@@ -11,18 +11,20 @@ PIO Brasileiro is a modern web application that allows users to:
 - Select meal options (at college or to take away)
 - Add guests to meals
 
-## Technologies Used
+## A few Screenshots
 
-### Frontend
+<img width="200" height="846" alt="Screenshot 2025-08-22 at 12 28 20 AM" src="https://github.com/user-attachments/assets/7c818cd1-97ab-4902-b766-f0fa195671f3" />
+<img width="200" height="842" alt="Screenshot 2025-08-22 at 12 28 29 AM" src="https://github.com/user-attachments/assets/866ae7bb-e153-43b6-86b9-183b49eb8df5" />
+<img width="200" height="838" alt="Screenshot 2025-08-22 at 12 28 47 AM" src="https://github.com/user-attachments/assets/a5ec3753-189a-4155-b4e3-dd801e0025e6" />
+<img width="200" height="841" alt="Screenshot 2025-08-22 at 12 31 34 AM" src="https://github.com/user-attachments/assets/fa015876-024f-470f-afad-40a199fb1002" />
+
+## Technologies Used on Front End
 - **Next.js 14** - React framework with App Router
 - **TypeScript** - Static typing for greater code safety
 - **React** - Library for building interfaces
 - **CSS Modules** - Modular and scoped styling
 - **Lucide React** - Icon library
 
-### Development
-- **ESLint** - Code linting and formatting
-- **PostCSS** - CSS processing
 
 ### Project Structure
 ```
