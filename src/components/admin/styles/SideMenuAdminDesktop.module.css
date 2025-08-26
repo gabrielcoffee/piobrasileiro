@@ -1,0 +1,81 @@
+.sideMenuDesktop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 280px;
+    background-color: var(--color-slate-100);
+    z-index: 40;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-top: 80px;
+}
+
+.navigation {
+    padding: 1rem 0;
+}
+
+
+.menuItem {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    margin: 0 1.5rem;
+    color: var(--color-text);
+    text-decoration: none;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    border-bottom: 1px solid var(--color-border);
+    width: 100%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.25rem;
+    font-weight: 500;
+    text-align: left;
+}
+
+
+.menuItem:hover {
+    background-color: var(--color-slate-100);
+    color: var(--color-primary);
+}
+
+.menuLabel {
+    font-size: 1.25rem;
+    font-weight: 500;
+} 
+
+
+.submenuItem {
+    display: block;
+    padding: 0.5rem;
+    margin-left: 2rem;
+    color: var(--color-text);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    font-size: 1.1rem;
+    font-weight: 400;
+}
+
+.submenuItem:hover {
+    color: var(--color-primary);
+}
+
+.submenuLabel {
+    font-size: 1.1rem;
+    font-weight: 400;
+}
+
+.logoutButton {
+    position: absolute;
+    bottom: 0;
+    width: 230px;
+    border-top: 1px solid var(--color-border);
+    padding: 1.5rem;
+}
+
+.active {
+    color: var(--color-primary);
+    font-weight: 800 !important;
+}

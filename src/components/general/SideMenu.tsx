@@ -22,6 +22,7 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
         { id: 'logout', label: 'Sair', icon: LogOut, href: '/logout' },
     ];
 
+
     return (
         <>
         {/* Overlay */}

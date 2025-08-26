@@ -18,14 +18,23 @@ interface LoginProps {
 
 export default function Login({onForgotPasswordClick, onBackClick}: LoginProps) {
 
+    // Variables for the login page
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [rememberMe, setRememberMe] = useState(false);
+
+    const [emailWrong, setEmailWrong] = useState(false);
+    const [passwordWrong, setPasswordWrong] = useState(false);
+
     // Authentication and database request
     const { isAuthenticated, isLoading, login, user } = useAuth();
     const router = useRouter();
 
     useEffect(() => {
         if (!isLoading && isAuthenticated) {
+            console.log(user);
             if (user?.role === 'admin') {
-                router.push('/admin/home');
+                router.push('/admin/home')
             } else {
                 router.push('/home');
             }
@@ -46,14 +55,6 @@ export default function Login({onForgotPasswordClick, onBackClick}: LoginProps) 
             setPasswordWrong(true);
         }
     };
-
-    // Variables for the login page
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [rememberMe, setRememberMe] = useState(false);
-
-    const [emailWrong, setEmailWrong] = useState(false);
-    const [passwordWrong, setPasswordWrong] = useState(false);
     
     return (
         <div className={styles.container}>

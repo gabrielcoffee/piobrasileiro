@@ -13,7 +13,7 @@ export default function ProtectedAdminLayout({ children }: { children: ReactNode
 
     useEffect(() => {
         if (!isLoading && !isAuthenticated && user?.role !== 'admin') {
-            router.push('/admin/login');
+            router.push('/login');
         }
     }, [isAuthenticated, isLoading, router, user]);
 

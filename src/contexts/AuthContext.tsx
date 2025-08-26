@@ -96,7 +96,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             if (response.ok) {
                 const json = await response.json();
                 const token = json.token;
-                const userData = json.data.user;
+                const userData = json.data;
 
                 // Save token, user data and auth status
                 localStorage.setItem('token', token);
@@ -123,7 +123,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setUser(null);
         setIsAuthenticated(false);
         setIsLoading(false);
-        window.location.href = '/login';
+
+        if (window.location.pathname.includes('/admin')) {
+            window.location.href = '/admin/login';
+        } else {
+            window.location.href = '/login';
+        }
     }
 
     // Context data that is send by the provider

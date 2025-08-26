@@ -13,7 +13,7 @@ export default function HomePage() {
 
     return (
         <div className={styles.container}>
-
+            <h1>Admin Home</h1>
         </div>
     )
 }

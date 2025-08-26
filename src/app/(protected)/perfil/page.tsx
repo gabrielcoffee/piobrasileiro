@@ -262,7 +262,7 @@ export default function PerfilPage() {
                         avatarImage={avatar}
                     />
 
-                                        <InputText 
+                    <InputText 
                         label="Nome Completo:" 
                         value={fullname} 
                         placeholder="Insira seu nome completo"

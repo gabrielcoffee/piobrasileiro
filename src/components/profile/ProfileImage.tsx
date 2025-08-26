@@ -39,6 +39,8 @@ export default function ProfileImage({ avatarImage, uploadAvatar }: ProfileImage
             <img
             src={avatarImage ? `data:image/jpeg;base64,${avatarImage}` : "/user.png"}
             alt="Profile"
+            width={100}
+            height={100}
             className={styles.profileImage}
         />
         <button onClick={handleProfilePictureChange} className={styles.editButton}>
