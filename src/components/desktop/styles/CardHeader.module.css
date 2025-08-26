@@ -1,0 +1,25 @@
+.cardHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.breadcrumb {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    align-items: center;
+    color: var(--color-text-muted);
+}
+
+.lastItem {
+    color: var(--color-text);
+}
+
+.breadcrumbItem {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+}

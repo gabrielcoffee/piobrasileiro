@@ -1,0 +1,149 @@
+.container {
+    width: 100%;
+}
+
+.tableWrapper {
+    width: 100%;
+    border: 2px solid var(--color-border);
+    border-radius: 15px;
+    overflow: hidden;
+    background-color: white;
+}
+
+.table {
+    width: 100%;
+    background-color: white;
+    border-collapse: collapse;
+}
+
+.tableHeader {
+    background-color: white;
+    border-bottom: 2px solid var(--color-border);
+}
+
+.tableRow {
+    border-bottom: 2px solid var(--color-border);
+    background-color: white;
+}
+
+.tableRow.selectedRow {
+    background-color: var(--color-green-bg) !important;
+}
+
+.tableHead {
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-muted);
+    background-color: white;
+    border-bottom: 1px solid var(--text-muted);
+}
+
+.selectorHeader {
+    padding: 12px 16px;
+    text-align: center;
+    font-weight: 600;
+    color: var(--text-muted);
+    background-color: white;
+    border-bottom: 1px solid var(--text-muted);
+    width: 50px;
+}
+
+.selectorCell {
+    padding: 12px 16px;
+    text-align: center;
+    background-color: white;
+    border-right: 1px solid var(--text-muted);
+    width: 50px;
+}
+
+.tableBody {
+    background-color: white;
+}
+
+.tableCell {
+    padding: 12px 16px;
+    text-align: left;
+    color: var(--text-muted);
+    background-color: white;
+}
+
+.checkbox {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: var(--color-primary);
+}
+
+/* Pagination Styles */
+.pagination {
+    margin-top: 16px;
+    display: flex;
+    justify-content: center;
+}
+
+.paginationContent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.paginationItem {
+    display: flex;
+    align-items: center;
+}
+
+.paginationLink {
+    padding: 8px 12px;
+    border: 1px solid var(--text-muted);
+    background-color: white;
+    color: var(--text-muted);
+    text-decoration: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-width: 40px;
+    text-align: center;
+}
+
+.paginationLink:hover:not(:disabled) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.paginationLink.active {
+    background-color: var(--text-muted);
+    color: white;
+    border-color: var(--text-muted);
+}
+
+.paginationPrevious,
+.paginationNext {
+    padding: 8px 12px;
+    border: 1px solid var(--text-muted);
+    background-color: white;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    min-width: 80px;
+}
+
+.paginationPrevious:hover:not(:disabled),
+.paginationNext:hover:not(:disabled) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+.paginationPrevious:disabled,
+.paginationNext:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: #f5f5f5;
+}
+
+.paginationEllipsis {
+    padding: 8px 12px;
+    color: var(--text-muted);
+    min-width: 40px;
+    text-align: center;
+}

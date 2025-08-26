@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, LucideSalad, Bed, UserRound, LogOut, ChevronDown, ChevronUp } from 'lucide-react';
+import { Home, LucideSalad, Bed, UserRound, LogOut, ChevronDown, ChevronUp, SquareArrowLeft, SquareArrowRight } from 'lucide-react';
 import styles from './styles/SideMenuAdminDesktop.module.css';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -10,6 +10,7 @@ export function SideMenuAdminDesktop() {
     const pathname = usePathname();
     const { logout } = useAuth();
     const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
+    const [isCollapsed, setIsCollapsed] = useState(false);
     
     const menuItems = [
         { id: 'home', label: 'Início', icon: Home, href: '/admin/home' },
@@ -32,6 +33,7 @@ export function SideMenuAdminDesktop() {
     ];
 
     const toggleSubmenu = (menuId: string) => {
+        if (isCollapsed) return; // Don't toggle submenu when collapsed
         setExpandedMenus(prev => 
             prev.includes(menuId) 
                 ? prev.filter(id => id !== menuId)
@@ -40,6 +42,20 @@ export function SideMenuAdminDesktop() {
     };
 
     const isSubmenuExpanded = (menuId: string) => expandedMenus.includes(menuId);
+
+    const handleMenuClick = (item: any) => {
+        if (isCollapsed) {
+            // If collapsed, expand the menu
+            setIsCollapsed(false);
+            // If item has submenu, expand it too
+            if (item.submenu) {
+                setExpandedMenus([item.id]);
+            }
+        } else if (item.submenu) {
+            // If expanded and has submenu, toggle submenu
+            toggleSubmenu(item.id);
+        }
+    };
 
     const renderMenuItem = (item: any) => {
         const IconComponent = item.icon;
@@ -52,15 +68,19 @@ export function SideMenuAdminDesktop() {
             return (
                 <div key={item.id} className={styles.menuItemContainer}>
                     <button
-                        className={`${styles.menuItem} ${styles.dropdownButton} ${isActive ? styles.active : ''}`}
-                        onClick={() => toggleSubmenu(item.id)}
+                        className={`${styles.menuItem} ${isActive ? styles.active : ''}`}
+                        onClick={() => handleMenuClick(item)}
                     >
                         <IconComponent size={24}/>
-                        <span className={styles.menuLabel}>{item.label}</span>
-                        {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                        {!isCollapsed && (
+                            <>
+                                <span className={styles.menuLabel}>{item.label}</span>
+                                {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                            </>
+                        )}
                     </button>
                     
-                    {isExpanded && (
+                    {!isCollapsed && isExpanded && (
                         <div className={styles.submenu}>
                             {item.submenu.map((subItem: any) => (
                                 <Link
@@ -88,7 +108,7 @@ export function SideMenuAdminDesktop() {
                     }}
                 >
                     <IconComponent size={24}/>
-                    <span className={styles.menuLabel}>{item.label}</span>
+                    {!isCollapsed && <span className={styles.menuLabel}>{item.label}</span>}
                 </button>
             );
         }
@@ -98,16 +118,24 @@ export function SideMenuAdminDesktop() {
                 key={item.id}
                 href={item.href || '#'}
                 className={`${styles.menuItem} ${isActive ? styles.active : ''}`}
+                onClick={() => handleMenuClick(item)}
             >
                 <IconComponent size={24}/>
-                <span className={styles.menuLabel}>{item.label}</span>
+                {!isCollapsed && <span className={styles.menuLabel}>{item.label}</span>}
             </Link>
         );
     };
 
     return (
-        <div className={styles.sideMenuDesktop}>
+        <div className={`${styles.sideMenuDesktop} ${isCollapsed ? styles.collapsed : ''}`}>
+            
             <nav className={styles.navigation}>
+
+
+                <button className={styles.toggleButton} onClick={() => setIsCollapsed(!isCollapsed)}>
+                    {isCollapsed ? <SquareArrowLeft size={24} /> : <SquareArrowRight size={24} />}
+                </button>
+
                 {menuItems.map(renderMenuItem)}
             </nav>
         </div>

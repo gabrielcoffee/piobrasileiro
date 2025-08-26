@@ -9,12 +9,29 @@
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     margin-top: 80px;
+    transition: width 0.3s ease;
+}
+
+.sideMenuDesktop.collapsed {
+    width: 80px;
+}
+
+.toggleButton {
+    padding: 1rem;
+    padding-left: 2rem;
+    display: flex;
+    justify-content: left;
+    align-items: center; 
+    color: var(--color-text);
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
 }
 
 .navigation {
     padding: 1rem 0;
+    transition: opacity 0.3s ease;
 }
-
 
 .menuItem {
     display: flex;
@@ -33,8 +50,15 @@
     font-size: 1.25rem;
     font-weight: 500;
     text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
+.collapsed .menuItem {
+    justify-content: center;
+    margin: 0 0.5rem;
+    padding: 1rem 0.5rem;
+}
 
 .menuItem:hover {
     background-color: var(--color-slate-100);
@@ -44,8 +68,13 @@
 .menuLabel {
     font-size: 1.25rem;
     font-weight: 500;
+    transition: opacity 0.3s ease;
 } 
 
+.collapsed .menuLabel {
+    opacity: 0;
+    width: 0;
+}
 
 .submenuItem {
     display: block;
@@ -56,6 +85,12 @@
     transition: color 0.2s ease;
     font-size: 1.1rem;
     font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.collapsed .submenuItem {
+    display: none;
 }
 
 .submenuItem:hover {
@@ -73,6 +108,13 @@
     width: 230px;
     border-top: 1px solid var(--color-border);
     padding: 1.5rem;
+    transition: width 0.3s ease;
+}
+
+.collapsed .logoutButton {
+    width: 60px;
+    padding: 1rem 0.5rem;
+    justify-content: center;
 }
 
 .active {

@@ -3,6 +3,8 @@
 import styles from "./page.module.css";
 import { useAuth } from "@/contexts/AuthContext";
 import { Loading } from "@/components/ui/Loading";
+import Card from "@/components/desktop/Card";
+import CardHeader from "@/components/desktop/CardHeader";
 
 export default function HomePage() {
     const { isLoading } = useAuth();
@@ -13,7 +15,9 @@ export default function HomePage() {
 
     return (
         <div className={styles.container}>
-            <h1>Admin Home</h1>
+            <Card>
+                <CardHeader title="Início" breadcrumb={["Início", "Dashboards"]} />
+            </Card>
         </div>
     )
 }

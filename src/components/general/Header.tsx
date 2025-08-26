@@ -92,7 +92,7 @@ export function Header() {
                 </button>
             </header>
 
-            {/* Mobile Side Menu - Only visible when opened on mobile */}
+            {/* Show the  */}
             {!isDesktop && pathname.startsWith('/admin') ? (
                 <SideMenuAdmin isOpen={sideMenuOpen} onClose={closeSideMenu} />
             ) : !isDesktop ? (
