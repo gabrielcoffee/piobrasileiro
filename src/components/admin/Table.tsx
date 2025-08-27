@@ -46,19 +46,13 @@ const Table = forwardRef<TableRef, TableProps>(({
     const endIndex = startIndex + itemsPerPage;
     const currentPageItems = rowItems.slice(startIndex, endIndex);
     
-    // Selection state
-    const [isAllSelected, setIsAllSelected] = useState(false);
-    const [isIndeterminate, setIsIndeterminate] = useState(false);
-
-    useEffect(() => {
-        const currentPageSelectedCount = Array.from(selectedRows)
+    const currentPageSelectedCount = Array.from(selectedRows)
         .filter(index => index >= startIndex && index < endIndex)
         .length;
 
-        setIsAllSelected(currentPageItems.length > 0 && currentPageSelectedCount === currentPageItems.length);
-        setIsIndeterminate(currentPageSelectedCount > 0 && currentPageSelectedCount < currentPageItems.length);
-
-    }, [currentPageItems, selectedRows, startIndex, endIndex]);
+    // Selection state
+    const [isAllSelected, setIsAllSelected] = useState(currentPageItems.length > 0 && currentPageSelectedCount === currentPageItems.length);
+    const [isIndeterminate, setIsIndeterminate] = useState(currentPageSelectedCount > 0 && currentPageSelectedCount < currentPageItems.length);
     
     // Expose methods to parent component
     useImperativeHandle(ref, () => ({
@@ -84,11 +78,13 @@ const Table = forwardRef<TableRef, TableProps>(({
                 newSelected.delete(i);
             }
             setIsAllSelected(false);
+            setIsIndeterminate(false);
         } else {
             for (let i = startIndex; i < endIndex; i++) {
                 newSelected.add(i);
             }
-            setIsAllSelected(false);
+            setIsAllSelected(true);
+            setIsIndeterminate(false);
         }
         
         setSelectedRows(newSelected);

@@ -3,12 +3,24 @@ import styles from './page.module.css';
 import Card from '@/components/desktop/Card';
 import CardHeader from '@/components/desktop/CardHeader';
 import Table from '@/components/admin/Table';
+import SearchSection from '@/components/admin/SearchSection';
+import { Plus, Printer } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
 
 export default function ListaDeRefeicoesPage() {
     return (
         <div className={styles.container}>
             <Card>
                 <CardHeader title="Lista de usuários" breadcrumb={["Início", "Usuários"]} />
+
+                <SearchSection
+                    searchPlaceholder="Pesquise por nome"
+                    dateSection={true}
+                    buttons={[
+                        <Button variant="full-white" iconLeft={<Printer size={20} />}>Gerar Relatório</Button>,
+                        <Button variant="full" iconLeft={<Plus size={20} />}>Novo agendamento</Button>
+                    ]}
+                />
 
                 <Table
                     headerItems={[
@@ -36,17 +48,6 @@ export default function ListaDeRefeicoesPage() {
                     itemsPerPage={8}
                     hasSelector={true}
                 />
-
-                {/*
-                    <SearchSection
-                    serchPlaceholder="Pesquise por nome"
-                    dateSection={true}
-                    buttons={[
-                        <Button variant="outline" iconLeft={<Filter size={20} />}>Filtrar</Button>,
-                        <Button variant="full" iconLeft={<Plus size={20} />}>Novo usuário</Button>
-                    ]}
-                />
-                */}
                 
             </Card>
         </div>

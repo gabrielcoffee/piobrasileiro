@@ -72,7 +72,7 @@ export default function UsuariosPage() {
                 <CardHeader title="Lista de usuários" breadcrumb={["Início", "Usuários"]} />
 
                 <SearchSection
-                    serchPlaceholder="Pesquise por nome"
+                    searchPlaceholder="Pesquise por nome"
                     dateSection={true}
                     buttons={[
                         <Button key="filter" variant="full-white" iconLeft={<Filter size={24} />}>Filtrar</Button>,

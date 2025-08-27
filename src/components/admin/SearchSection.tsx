@@ -6,12 +6,12 @@ import styles from "./styles/SearchSection.module.css";
 import { useState } from "react";
 
 interface SearchSectionProps {
-    serchPlaceholder: string;
+    searchPlaceholder: string;
     dateSection: boolean;
     buttons: React.ReactNode[];
 }
 
-export default function SearchSection({ serchPlaceholder, dateSection, buttons }: SearchSectionProps) {
+export default function SearchSection({ searchPlaceholder, dateSection, buttons }: SearchSectionProps) {
 
     const [search, setSearch] = useState("");
     
@@ -25,7 +25,7 @@ export default function SearchSection({ serchPlaceholder, dateSection, buttons }
                 </div>
                 <input
                     type="text"
-                    placeholder={serchPlaceholder}
+                    placeholder={searchPlaceholder}
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     className={styles.input}
