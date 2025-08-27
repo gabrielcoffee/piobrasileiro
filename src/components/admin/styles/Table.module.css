@@ -8,6 +8,7 @@
     border-radius: 15px;
     overflow: hidden;
     background-color: white;
+    margin-top: 2rem;
 }
 
 .table {
@@ -23,49 +24,44 @@
 
 .tableRow {
     border-bottom: 2px solid var(--color-border);
+    height: 56px; /* how to make sure the table row IS ALWAYS 56PX? */
+    max-height: 56px;
+    min-height: 56px;
     background-color: white;
 }
 
-.tableRow.selectedRow {
+.tableRow:last-child {
+    border-bottom: none;
+}
+
+.selectedRow {
     background-color: var(--color-green-bg) !important;
 }
 
 .tableHead {
     padding: 12px 16px;
     text-align: left;
-    font-weight: 600;
+    font-weight: 700;
     color: var(--text-muted);
     background-color: white;
     border-bottom: 1px solid var(--text-muted);
 }
 
 .selectorHeader {
-    padding: 12px 16px;
-    text-align: center;
-    font-weight: 600;
-    color: var(--text-muted);
-    background-color: white;
-    border-bottom: 1px solid var(--text-muted);
     width: 50px;
 }
 
-.selectorCell {
+.selectorCell { 
     padding: 12px 16px;
-    text-align: center;
-    background-color: white;
+    background-color: transparent;
     border-right: 1px solid var(--text-muted);
-    width: 50px;
-}
-
-.tableBody {
-    background-color: white;
 }
 
 .tableCell {
     padding: 12px 16px;
     text-align: left;
     color: var(--text-muted);
-    background-color: white;
+    background-color: transparent;
 }
 
 .checkbox {
@@ -78,15 +74,17 @@
 /* Pagination Styles */
 .pagination {
     margin-top: 16px;
-    display: flex;
-    justify-content: center;
 }
 
 .paginationContent {
     display: flex;
+    gap: 8px;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+}
+
+.paginationNumbers {
+    display: flex;
 }
 
 .paginationItem {
@@ -95,26 +93,16 @@
 }
 
 .paginationLink {
-    padding: 8px 12px;
-    border: 1px solid var(--text-muted);
+    color: var(--color-primary);
     background-color: white;
-    color: var(--text-muted);
-    text-decoration: none;
-    border-radius: 4px;
+    border-radius: 15px;
     cursor: pointer;
-    transition: all 0.2s ease;
-    min-width: 40px;
-    text-align: center;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
 }
 
-.paginationLink:hover:not(:disabled) {
-    background-color: rgba(0, 0, 0, 0.05);
-}
-
-.paginationLink.active {
-    background-color: var(--text-muted);
-    color: white;
-    border-color: var(--text-muted);
+.active {
+    border: 2px solid var(--color-border);
 }
 
 .paginationPrevious,
@@ -122,28 +110,19 @@
     padding: 8px 12px;
     border: 1px solid var(--text-muted);
     background-color: white;
-    color: var(--text-muted);
+    color: var(--color-primary);
     cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-    min-width: 80px;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    gap: 8px;
 }
 
-.paginationPrevious:hover:not(:disabled),
-.paginationNext:hover:not(:disabled) {
-    background-color: rgba(0, 0, 0, 0.05);
-}
 
 .paginationPrevious:disabled,
 .paginationNext:disabled {
-    opacity: 0.5;
+    opacity: 0.4;
     cursor: not-allowed;
-    background-color: #f5f5f5;
-}
-
-.paginationEllipsis {
-    padding: 8px 12px;
-    color: var(--text-muted);
-    min-width: 40px;
-    text-align: center;
 }

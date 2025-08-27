@@ -3,6 +3,8 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    padding: 1rem;
+    padding-bottom: 2rem;
 }
 
 .breadcrumb {
@@ -22,4 +24,5 @@
     flex-direction: row;
     align-items: center;
     gap: 1rem;
+    font-size: 1rem;
 }

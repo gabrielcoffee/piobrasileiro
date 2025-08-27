@@ -1,0 +1,20 @@
+.acoes {
+    display: flex;
+    gap: 15px;
+    justify-content: left;
+    align-items: center;
+    color: var(--color-primary);
+}
+
+.avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.nomeCompleto {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}

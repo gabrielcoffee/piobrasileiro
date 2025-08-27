@@ -5,9 +5,10 @@ interface InputTextProps extends React.ComponentProps<"input"> {
     value?: string;
     label?: string;
     error?: string;
+    leftIcon?: React.ReactNode;
 }
 
-export function InputText({ value, label, error, className, ...props }: InputTextProps) {
+export function InputText({ value, label, error, className, leftIcon, ...props }: InputTextProps) {
 
     const hasError = error && error.length > 0;
     
@@ -17,6 +18,11 @@ export function InputText({ value, label, error, className, ...props }: InputTex
             <label className={`${styles.label} ${error ? styles.labelError : ''}`}>
             {label}
             </label>
+        )}
+        {leftIcon && (
+            <div className={styles.leftIcon}>
+                {leftIcon}
+            </div>
         )}
         <input
             className={`${styles.input} ${className || ''}`}

@@ -1,6 +1,7 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useState, useImperativeHandle, forwardRef, useEffect } from 'react';
 import styles from './styles/Table.module.css';
+import { ChevronRight } from 'lucide-react';
 
 // Define types for the table data
 interface TableHeaderItem {
@@ -19,15 +20,23 @@ interface TableProps {
     itemsPerPage?: number;
     hasSelector?: boolean;
     className?: string;
+    onSelectionChange?: (selectedRows: TableRowItem[]) => void;
 }
 
-export default function Table({ 
+export interface TableRef {
+    getSelectedRowsData: () => TableRowItem[];
+    getSelectedRowsCount: () => number;
+    clearSelection: () => void;
+}
+
+const Table = forwardRef<TableRef, TableProps>(({ 
     headerItems, 
     rowItems, 
     itemsPerPage = 8, 
     hasSelector = false,
-    className 
-}: TableProps) {
+    className,
+    onSelectionChange
+}, ref) => {
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
     
@@ -37,47 +46,80 @@ export default function Table({
     const endIndex = startIndex + itemsPerPage;
     const currentPageItems = rowItems.slice(startIndex, endIndex);
     
-    // Selection logic
-    const currentPageSelectedCount = Array.from(selectedRows).filter(
-        index => index >= startIndex && index < endIndex
-    ).length;
+    // Selection state
+    const [isAllSelected, setIsAllSelected] = useState(false);
+    const [isIndeterminate, setIsIndeterminate] = useState(false);
+
+    useEffect(() => {
+        const currentPageSelectedCount = Array.from(selectedRows)
+        .filter(index => index >= startIndex && index < endIndex)
+        .length;
+
+        setIsAllSelected(currentPageItems.length > 0 && currentPageSelectedCount === currentPageItems.length);
+        setIsIndeterminate(currentPageSelectedCount > 0 && currentPageSelectedCount < currentPageItems.length);
+
+    }, [currentPageItems, selectedRows, startIndex, endIndex]);
     
-    const isAllSelected = currentPageItems.length > 0 && currentPageSelectedCount === currentPageItems.length;
-    const isIndeterminate = currentPageSelectedCount > 0 && currentPageSelectedCount < currentPageItems.length;
+    // Expose methods to parent component
+    useImperativeHandle(ref, () => ({
+        getSelectedRowsData: () => {
+            return Array.from(selectedRows).map(index => rowItems[index]);
+        },
+        getSelectedRowsCount: () => {
+            return selectedRows.size;
+        },
+        clearSelection: () => {
+            setSelectedRows(new Set());
+            if (onSelectionChange) {
+                onSelectionChange([]);
+            }
+        }
+    }));
     
     const handleSelectAll = () => {
+        const newSelected = new Set(selectedRows);
+        
         if (isAllSelected) {
-            // Deselect all on current page
-            const newSelected = new Set(selectedRows);
             for (let i = startIndex; i < endIndex; i++) {
                 newSelected.delete(i);
             }
-            setSelectedRows(newSelected);
+            setIsAllSelected(false);
         } else {
-            // Select all on current page
-            const newSelected = new Set(selectedRows);
             for (let i = startIndex; i < endIndex; i++) {
                 newSelected.add(i);
             }
-            setSelectedRows(newSelected);
+            setIsAllSelected(false);
         }
+        
+        setSelectedRows(newSelected);
+        notifySelectionChange(newSelected);
     };
     
     const handleRowSelect = (rowIndex: number) => {
         const absoluteIndex = startIndex + rowIndex;
         const newSelected = new Set(selectedRows);
+
         
         if (newSelected.has(absoluteIndex)) {
             newSelected.delete(absoluteIndex);
         } else {
             newSelected.add(absoluteIndex);
         }
-        
+
         setSelectedRows(newSelected);
+        notifySelectionChange(newSelected);
     };
     
     const isRowSelected = (rowIndex: number) => {
         return selectedRows.has(startIndex + rowIndex);
+    };
+    
+    // Notify parent component of selection changes
+    const notifySelectionChange = (selectedIndices: Set<number>) => {
+        if (onSelectionChange) {
+            const selectedData = Array.from(selectedIndices).map(index => rowItems[index]);
+            onSelectionChange(selectedData);
+        }
     };
     
     // Generate page numbers for pagination
@@ -157,7 +199,7 @@ export default function Table({
                                                 input.indeterminate = isIndeterminate;
                                             }
                                         }}
-                                        onChange={handleSelectAll}
+                                        onChange={() => handleSelectAll()}
                                         className={styles.checkbox}
                                     />
                                 </th>
@@ -206,6 +248,7 @@ export default function Table({
             {totalPages > 1 && (
                 <div className={styles.pagination}>
                     <div className={styles.paginationContent}>
+
                         <div className={styles.paginationItem}>
                             <button 
                                 className={styles.paginationPrevious}
@@ -215,7 +258,8 @@ export default function Table({
                                 Previous
                             </button>
                         </div>
-                        
+
+                        <div className={styles.paginationNumbers}>                        
                         {getPageNumbers().map((page, index) => (
                             <div key={index} className={styles.paginationItem}>
                                 {page === '...' ? (
@@ -230,6 +274,8 @@ export default function Table({
                                 )}
                             </div>
                         ))}
+                        </div>
+
                         
                         <div className={styles.paginationItem}>
                             <button 
@@ -237,7 +283,8 @@ export default function Table({
                                 onClick={handleNext}
                                 disabled={currentPage === totalPages}
                             >
-                                Next
+                                Próximo
+                                <ChevronRight />
                             </button>
                         </div>
                     </div>
@@ -245,5 +292,7 @@ export default function Table({
             )}
         </div>
     );
-}
+});
+
+export default Table;
   

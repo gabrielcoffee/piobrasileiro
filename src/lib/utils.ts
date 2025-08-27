@@ -103,3 +103,18 @@ export function normalizeDateString(date: any): string {
     }
     return date;
 };
+
+export function getDateString(date: any): string {
+    const dateString = new Date(date).toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric' 
+    });
+    return dateString;
+};
+
+
+export function convertBufferToBase64(buffer: Buffer) {
+    const base64String = Buffer.from(buffer).toString('base64');
+    return `data:image/jpeg;base64,${base64String}`;
+}

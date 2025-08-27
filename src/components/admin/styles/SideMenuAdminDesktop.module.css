@@ -4,7 +4,7 @@
     left: 0;
     bottom: 0;
     width: 280px;
-    background-color: var(--color-slate-100);
+    background-color: white;
     z-index: 40;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
     overflow: hidden;
@@ -58,11 +58,6 @@
     justify-content: center;
     margin: 0 0.5rem;
     padding: 1rem 0.5rem;
-}
-
-.menuItem:hover {
-    background-color: var(--color-slate-100);
-    color: var(--color-primary);
 }
 
 .menuLabel {
