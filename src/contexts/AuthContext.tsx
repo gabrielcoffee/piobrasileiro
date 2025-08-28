@@ -125,7 +125,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsLoading(false);
 
         if (window.location.pathname.includes('/admin')) {
-            window.location.href = '/admin/login';
+            window.location.href = '/admin';
         } else {
             window.location.href = '/login';
         }

@@ -81,15 +81,17 @@ const Table = forwardRef<TableRef, TableProps>(({
     
     const handleSelectAll = () => {
         const newSelected = new Set(selectedRows);
+
+        const maxInThisPage = startIndex + currentPageItems.length;
         
         if (isAllSelected) {
-            for (let i = startIndex; i < endIndex; i++) {
+            for (let i = startIndex; i < maxInThisPage; i++) {
                 newSelected.delete(i);
             }
             setIsAllSelected(false);
 
         } else {
-            for (let i = startIndex; i < endIndex; i++) {
+            for (let i = startIndex; i < maxInThisPage; i++) {
                 newSelected.add(i);
             }
             setIsAllSelected(true);
@@ -187,6 +189,14 @@ const Table = forwardRef<TableRef, TableProps>(({
             setCurrentPage(currentPage + 1);
         }
     };
+
+    useEffect(() => {
+        if (selectedRows.size === 0) {
+            setIsAllSelected(false);
+        } else {
+            setIsAllSelected(true);
+        }
+    }, [selectedRows]);
 
     return (
         <div className={`${styles.container} ${className || ''}`}>

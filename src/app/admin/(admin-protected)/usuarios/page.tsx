@@ -73,7 +73,7 @@ export default function UsuariosPage() {
 
                 <SearchSection
                     searchPlaceholder="Pesquise por nome"
-                    dateSection={true}
+                    dateSection={false}
                     buttons={[
                         <Button key="filter" variant="full-white" iconLeft={<Filter size={24} />}>Filtrar</Button>,
                         <Button key="powerOff" variant="full-white" style={{color:'var(--color-error)'}} iconLeft={<PowerOff size={24} />}>Inativar</Button>,
@@ -94,6 +94,9 @@ export default function UsuariosPage() {
                     rowItems={usuarios}
                     itemsPerPage={8}
                     hasSelector={true}
+                    onSelectionChange={(selectedRows) => {
+                        console.log(selectedRows);
+                    }}
                 />
                 
             </Card>

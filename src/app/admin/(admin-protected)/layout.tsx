@@ -9,34 +9,23 @@ import { ReactNode, useEffect, useState } from "react";
 
 export default function ProtectedAdminLayout({ children }: { children: ReactNode}) {
     const { isLoading, isAuthenticated, user } = useAuth();
-    const [isDesktop, setIsDesktop] = useState(false);
     const router = useRouter();
 
     useEffect(() => {
-        if (!isLoading && !isAuthenticated && user?.role !== 'admin') {
+        if (!isLoading && !isAuthenticated || user?.role !== 'admin') {
             router.push('/admin');
         }
-    }, [isAuthenticated, isLoading, router, user]);
 
-    useEffect(() => {
-        const checkScreenSize = () => {
-            setIsDesktop(window.innerWidth >= 768);
-        };
-        
-        checkScreenSize();
-        window.addEventListener('resize', checkScreenSize);
-        
-        return () => window.removeEventListener('resize', checkScreenSize);
-    }, []);
+    }, [isAuthenticated, router, router]);
 
     if (isLoading) {
         return <Loading />
     }
 
-    if (!isAuthenticated || user?.role !== 'admin') {
+    if (!isAuthenticated) {
         return null;
     }
-    
+
     return (
         <>
             <Header />
