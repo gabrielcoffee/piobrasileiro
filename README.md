@@ -2,6 +2,15 @@
 
 Meal management system for PIO College, developed to facilitate meal scheduling and control for students and staff.
 
+# User Pages previews:
+
+<img width="240" alt="Screenshot 2025-08-28 at 3 02 03 PM" src="https://github.com/user-attachments/assets/a84bb431-0acb-46a7-a1cb-c15e2145b69e" />
+<img width="240" alt="Screenshot 2025-08-28 at 3 03 00 PM" src="https://github.com/user-attachments/assets/2569c91a-dc2d-47cd-a40a-9645144da106" />
+<img width="240" alt="Screenshot 2025-08-28 at 3 03 35 PM" src="https://github.com/user-attachments/assets/43f9ca3b-309f-4061-8b92-96f2b0cd6628" />
+<img width="240" alt="Screenshot 2025-08-28 at 3 03 56 PM" src="https://github.com/user-attachments/assets/be02c160-c479-49dc-a5ba-657b911bb869" />
+
+
+
 ## About the Project
 
 PIO Brasileiro is a modern web application that allows users to:
@@ -27,13 +36,15 @@ PIO Brasileiro is a modern web application that allows users to:
 ### Project Structure
 ```
 src/
-├── app/                 # Application pages (App Router)
-├── components/          # Reusable components
-│   ├── home/           # Home page components
-│   ├── refeicoes/      # Meal components
-│   ├── profile/        # Profile components
-│   └── ui/             # Interface components
-└── lib/                # Utilities and configurations
+├── app/                     
+    ├── (admin-protected)/   # Admin Protected routes
+    ├── (protected)/         # Authenticated user protected routes
+├── components/              
+│   ├── home/                # Home page components
+│   ├── refeicoes/           # Meal components
+│   ├── profile/             # Profile components
+│   └── ui/                  # Interface components
+└── lib/                     # Utilities and configurations
 ```
 
 ## Main Features
@@ -54,31 +65,9 @@ src/
 - Scheduling deadline alerts
 - Notification history
 
-## How to Execute
-
-1. Clone the repository
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Run the development server:
-```bash
-npm run dev
-```
-
-4. Open [http://localhost:3000](http://localhost:3000) in your browser
-
-## Available Scripts
-
-- `npm run dev` - Runs the development server
-- `npm run build` - Generates production build
-- `npm run start` - Runs the application in production
-- `npm run lint` - Runs the linter
-
 ## Component Structure
 
-The project uses a modular architecture with reusable components:
+The project uses a modular architecture with reusable components, these are a few examples:
 
 - **Header** - Header with navigation and notifications
 - **Footer** - Footer with navigation menu
