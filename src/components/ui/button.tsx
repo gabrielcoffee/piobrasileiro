@@ -6,6 +6,7 @@ type ButtonVariant = 'full' | 'outline' | 'text' | 'full-white';
 type ButtonAlign = 'left' | 'center' | 'right';
 
 interface ButtonProps extends React.ComponentProps<"button"> {
+    visible?: boolean;
     available?: boolean;
     variant?: ButtonVariant
     align?: ButtonAlign
@@ -16,6 +17,7 @@ interface ButtonProps extends React.ComponentProps<"button"> {
 }
 
 function Button({
+    visible = true,
     available = true,
     variant = 'full',
     className,
@@ -26,6 +28,8 @@ function Button({
     href,
     ...props
     }: ButtonProps) {
+
+    if (!visible) return null;
 
     const getVariantStyle = (variant: ButtonVariant) => {
         if (variant === 'outline') return styles.button_outline;
