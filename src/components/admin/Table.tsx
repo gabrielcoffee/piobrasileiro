@@ -36,7 +36,16 @@ const Table = forwardRef<TableRef, TableProps>(({
     hasSelector = false,
     className,
     onSelectionChange
-}, ref) => {
+}, ref) => {    
+    
+    if (rowItems.length === 0) {
+        return (
+            <div className={styles.emptyTable}>
+                <span>Nenhum item encontrado</span>
+            </div>
+        )
+    }
+
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
     
@@ -78,13 +87,13 @@ const Table = forwardRef<TableRef, TableProps>(({
                 newSelected.delete(i);
             }
             setIsAllSelected(false);
-            setIsIndeterminate(false);
+
         } else {
             for (let i = startIndex; i < endIndex; i++) {
                 newSelected.add(i);
             }
             setIsAllSelected(true);
-            setIsIndeterminate(false);
+
         }
         
         setSelectedRows(newSelected);
@@ -214,7 +223,7 @@ const Table = forwardRef<TableRef, TableProps>(({
                         {currentPageItems.map((rowItem, rowIndex) => (
                             <tr 
                                 key={startIndex + rowIndex} 
-                                className={`${styles.tableRow} ${isRowSelected(rowIndex) ? styles.selectedRow : ''}`}
+                                className={`${styles.tableRow} ${isRowSelected(rowIndex) ? styles.selectedRow : ''} ${rowItem.visualizada === true ? styles.seenRow : ''}`}
                             >
                                 {hasSelector && (
                                     <td className={styles.selectorCell}>

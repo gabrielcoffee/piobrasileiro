@@ -8,7 +8,6 @@
     border-radius: 15px;
     overflow: hidden;
     background-color: white;
-    margin-top: 2rem;
 }
 
 .table {
@@ -36,6 +35,10 @@
 
 .selectedRow {
     background-color: var(--color-green-bg) !important;
+}
+
+.seenRow {
+    background-color: var(--color-slate-100) !important;
 }
 
 .tableHead {
@@ -125,4 +128,11 @@
 .paginationNext:disabled {
     opacity: 0.4;
     cursor: not-allowed;
+}
+
+.emptyTable {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 12rem;
 }

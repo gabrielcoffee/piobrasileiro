@@ -104,13 +104,23 @@ export function normalizeDateString(date: any): string {
     return date;
 };
 
-export function getDateString(date: any): string {
-    const dateString = new Date(date).toLocaleDateString('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric' 
-    });
-    return dateString;
+export function getDateString(date: any, format: string = 'DD/MM/YYYY'): string {
+
+    if (format === 'DD/MM/YYYY HH:mm') {
+        return new Date(date).toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    } else {
+        return new Date(date).toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric' 
+        });
+    }
 };
 
 

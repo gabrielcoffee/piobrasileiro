@@ -34,6 +34,11 @@ export default function SearchSection({ searchPlaceholder, dateSection, buttons 
 
 
             <div className={styles.buttons}>
+                {dateSection && (
+                    <div className={styles.dateSection}>
+                        <Date />
+                    </div>
+                )}
                 {buttons && buttons.length > 0 && buttons.map((button, index) => (
                     button
                 ))}

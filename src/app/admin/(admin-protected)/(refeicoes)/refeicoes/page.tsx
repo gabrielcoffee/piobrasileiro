@@ -11,14 +11,14 @@ export default function ListaDeRefeicoesPage() {
     return (
         <div className={styles.container}>
             <Card>
-                <CardHeader title="Lista de usuários" breadcrumb={["Início", "Usuários"]} />
+                <CardHeader title="Lista de usuários" breadcrumb={["Início", "Refeições"]} />
 
                 <SearchSection
                     searchPlaceholder="Pesquise por nome"
                     dateSection={true}
                     buttons={[
-                        <Button variant="full-white" iconLeft={<Printer size={20} />}>Gerar Relatório</Button>,
-                        <Button variant="full" iconLeft={<Plus size={20} />}>Novo agendamento</Button>
+                        <Button key="report" variant="full-white" iconLeft={<Printer size={20} />}>Gerar Relatório</Button>,
+                        <Button key="new_booking" variant="full" iconLeft={<Plus size={20} />}>Novo agendamento</Button>
                     ]}
                 />
 

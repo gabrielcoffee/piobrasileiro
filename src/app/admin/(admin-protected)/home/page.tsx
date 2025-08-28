@@ -16,7 +16,7 @@ export default function HomePage() {
     return (
         <div className={styles.container}>
             <Card>
-                <CardHeader title="Início" breadcrumb={["Início", "Dashboards"]} />
+                <CardHeader title="Início" breadcrumb={["Início", "Informações"]} />
             </Card>
         </div>
     )
