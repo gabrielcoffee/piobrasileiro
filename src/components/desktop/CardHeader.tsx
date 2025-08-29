@@ -2,7 +2,13 @@ import { ReactNode } from "react";
 import styles from "./styles/CardHeader.module.css";
 import { PanelLeft } from "lucide-react";
 
-export default function CardHeader({ title, breadcrumb }: { title: string, breadcrumb: string[] }) {
+interface CardHeaderProps {
+    title: ReactNode;
+    breadcrumb: string[];
+    backButton?: boolean;
+}
+
+export default function CardHeader({ title, breadcrumb, backButton = false }: CardHeaderProps) {
     return (
         <div className={styles.cardHeader}>
             <strong>{title}</strong>

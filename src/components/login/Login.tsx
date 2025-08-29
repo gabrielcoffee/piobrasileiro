@@ -32,7 +32,6 @@ export default function Login({onForgotPasswordClick, onBackClick}: LoginProps) 
 
     useEffect(() => {
         if (!isLoading && isAuthenticated) {
-            console.log(user);
             if (user?.role === 'admin') {
                 router.push('/admin/home')
             } else {

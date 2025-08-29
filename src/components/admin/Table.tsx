@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useState, useImperativeHandle, forwardRef, useEffect } from 'react';
 import styles from './styles/Table.module.css';
 import { ChevronRight } from 'lucide-react';
@@ -37,14 +37,6 @@ const Table = forwardRef<TableRef, TableProps>(({
     className,
     onSelectionChange
 }, ref) => {    
-    
-    if (rowItems.length === 0) {
-        return (
-            <div className={styles.emptyTable}>
-                <span>Nenhum item encontrado</span>
-            </div>
-        )
-    }
 
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
@@ -62,8 +54,8 @@ const Table = forwardRef<TableRef, TableProps>(({
     // Selection state
     const [isAllSelected, setIsAllSelected] = useState(currentPageItems.length > 0 && currentPageSelectedCount === currentPageItems.length);
     const [isIndeterminate, setIsIndeterminate] = useState(currentPageSelectedCount > 0 && currentPageSelectedCount < currentPageItems.length);
-    
-    // Expose methods to parent component
+
+    // Expose these methods to parent
     useImperativeHandle(ref, () => ({
         getSelectedRowsData: () => {
             return Array.from(selectedRows).map(index => rowItems[index]);
@@ -198,6 +190,14 @@ const Table = forwardRef<TableRef, TableProps>(({
         }
     }, [selectedRows]);
 
+    if (rowItems.length === 0) {
+        return (
+            <div className={styles.emptyTable}>
+                <span>Nenhum item encontrado</span>
+            </div>
+        )
+    }
+
     return (
         <div className={`${styles.container} ${className || ''}`}>
             <div className={styles.tableWrapper}>
@@ -233,7 +233,11 @@ const Table = forwardRef<TableRef, TableProps>(({
                         {currentPageItems.map((rowItem, rowIndex) => (
                             <tr 
                                 key={startIndex + rowIndex} 
-                                className={`${styles.tableRow} ${isRowSelected(rowIndex) ? styles.selectedRow : ''} ${rowItem.visualizada === true ? styles.seenRow : ''}`}
+                                className={`
+                                    ${styles.tableRow} ${isRowSelected(rowIndex) ? styles.selectedRow : ''} 
+                                    ${rowItem.visualizada === true ? styles.seenRow : ''}
+                                    ${rowItem.active === false ? styles.inactiveRow : ''}
+                                    `}
                             >
                                 {hasSelector && (
                                     <td className={styles.selectorCell}>
