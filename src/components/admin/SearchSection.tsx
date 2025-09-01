@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 import { InputText } from "../ui/InputText";
 import styles from "./styles/SearchSection.module.css";
 import { useState } from "react";
+import { DateSection } from "./DateSection";
 
 interface SearchSectionProps {
     searchPlaceholder: string;
@@ -36,7 +37,7 @@ export default function SearchSection({ searchPlaceholder, dateSection, buttons 
             <div className={styles.buttons}>
                 {dateSection && (
                     <div className={styles.dateSection}>
-                        <Date />
+                        <DateSection />
                     </div>
                 )}
                 {buttons && buttons.length > 0 && buttons.map((button, index) => (

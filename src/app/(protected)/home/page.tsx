@@ -1,8 +1,6 @@
 'use client'
 
-import { Button } from "@/components/ui/Button";
 import { Bed, LucideSalad, PencilLine } from "lucide-react";
-import { DateSection } from "@/components/home/DateSection";
 import { PageTitle } from "@/components/home/PageTitle";
 import { WeekInfo } from "@/components/home/WeekInfoCard";
 import { Divider } from "@/components/ui/Divider";
@@ -11,6 +9,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { Loading } from "@/components/ui/Loading";
 import { queryApi, getCurrentWeekInfo } from "@/lib/utils";
+import { ShowDateSection } from "@/components/home/ShowDateSection";
+import { Button } from "@/components/ui/Button";
 
 export default function HomePage() {
     const { isLoading } = useAuth();
@@ -43,7 +43,7 @@ export default function HomePage() {
     return (
         <div className={styles.container}>
 
-            <DateSection/>
+            <ShowDateSection/>
 
             <div className={styles.section}>
                 <PageTitle

@@ -1,6 +1,6 @@
-import styles from './styles/DateSection.module.css';
+import styles from './styles/ShowDateSection.module.css';
 
-export function DateSection() {
+export function ShowDateSection() {
   const currentDate = new Date();
   const weekday = currentDate.toLocaleDateString('pt-BR', { weekday: 'long' });
   const date = currentDate.toLocaleDateString('pt-BR', { 
