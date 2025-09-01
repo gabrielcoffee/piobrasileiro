@@ -12,6 +12,7 @@ import { InputText } from "@/components/ui/InputText";
 import { DropdownInput } from "@/components/ui/DropdownInput";
 import { Button } from "@/components/ui/Button";
 import ProfileImage from "@/components/profile/ProfileImage";
+import { InputTextBox } from "@/components/ui/InputTextBox";
 
 
 export default function PerfilAdminPage() {    
@@ -26,7 +27,7 @@ export default function PerfilAdminPage() {
     const [numDocumento, setNumDocumento] = useState<string>('');
     const [tipoDocumento, setTipoDocumento] = useState<string>('');
     const [tipoUsuario, setTipoUsuario] = useState<string>('');
-
+    const [observacoes, setObservacoes] = useState<string>('');
     // Password states
     const [currentPassword, setCurrentPassword] = useState<string>('');
     const [newPassword, setNewPassword] = useState<string>('');
@@ -111,7 +112,8 @@ export default function PerfilAdminPage() {
             setNumDocumento(result.data.num_documento || '');
             setTipoDocumento(result.data.tipo_documento || '');
             setTipoUsuario(result.data.tipo_usuario || '');
-            
+            setObservacoes(result.data.observacoes || '');
+
             if (result.data.avatar_image_data) {
                 const bufferData = result.data.avatar_image_data;
                 const base64String = Buffer.from(bufferData).toString('base64');
@@ -159,7 +161,8 @@ export default function PerfilAdminPage() {
                 email: email,
                 num_documento: numDocumento,
                 tipo_documento: tipoDocumento,
-                tipo_usuario: tipoUsuario
+                tipo_usuario: tipoUsuario,
+                observacoes: observacoes
             });
 
             if (result.success) {
@@ -185,7 +188,8 @@ export default function PerfilAdminPage() {
             email !== usuario.email ||
             numDocumento !== usuario.num_documento ||
             tipoDocumento !== usuario.tipo_documento ||
-            tipoUsuario !== usuario.tipo_usuario
+            tipoUsuario !== usuario.tipo_usuario ||
+            observacoes !== usuario.observacoes
         );
     };
 
@@ -281,6 +285,16 @@ export default function PerfilAdminPage() {
                                 placeholder="Função"
                             />
                         </div>
+                    </div>
+
+
+                    <div className={styles.observacoesSection}>
+                        <InputTextBox
+                            label="Observações sobre restrição alimentar"
+                            value={observacoes}
+                            onChange={(e) => setObservacoes(e.target.value)}
+                            placeholder="Digite observações sobre restrições alimentares..."
+                        />
                     </div>
 
                     <div className={styles.userDataSaveButton}>

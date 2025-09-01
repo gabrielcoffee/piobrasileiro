@@ -12,6 +12,7 @@ import { InputText } from "@/components/ui/InputText";
 import { DropdownInput } from "@/components/ui/DropdownInput";
 import { Button } from "@/components/ui/Button";
 import ProfileImage from "@/components/profile/ProfileImage";
+import { InputTextBox } from "@/components/ui/InputTextBox";
 
 
 export default function UsuarioPage() {    
@@ -27,6 +28,7 @@ export default function UsuarioPage() {
     const [numDocumento, setNumDocumento] = useState<string>('');
     const [tipoDocumento, setTipoDocumento] = useState<string>('');
     const [tipoUsuario, setTipoUsuario] = useState<string>('');
+    const [observacoes, setObservacoes] = useState<string>('');
 
     // Password states
     const [currentPassword, setCurrentPassword] = useState<string>('');
@@ -112,6 +114,7 @@ export default function UsuarioPage() {
             setNumDocumento(result.data.num_documento || '');
             setTipoDocumento(result.data.tipo_documento || '');
             setTipoUsuario(result.data.tipo_usuario || '');
+            setObservacoes(result.data.observacoes || '');
             
             if (result.data.avatar_image_data) {
                 const bufferData = result.data.avatar_image_data;
@@ -123,63 +126,6 @@ export default function UsuarioPage() {
         }
     }
 
-    const handlePasswordChange = async () => {
-        if (!currentPassword || !newPassword) return;
-
-        if (!passwordRequirements) {
-            console.log('Senha válida');
-            return;
-        }
-
-        try {
-            const result = await queryApi('PUT', '/user/perfil/senha', {
-                oldPassword: currentPassword,
-                newPassword: newPassword
-            });
-
-            if (result.success) {
-                console.log('Senha alterada com sucesso');
-                setPasswordChanged(true);
-                setCurrentPassword('');
-                setNewPassword('');
-            } else {
-                console.error('Erro ao alterar senha:', result.error);
-            }
-        } catch (error) {
-            console.error('Erro ao alterar senha:', error);
-        }
-    };
-
-    const saveChanges = async () => {
-        // Check if password fields have values
-        if (currentPassword && newPassword) {
-            await handlePasswordChange();
-        }
-
-        // Update user data
-        try {
-            const result = await queryApi('PUT', `/admin/users/${id}`, {
-                nome_completo: nomeCompleto,
-                data_nasc: dataNasc,
-                genero: genero,
-                funcao: funcao,
-                email: email,
-                num_documento: numDocumento,
-                tipo_documento: tipoDocumento,
-                tipo_usuario: tipoUsuario
-            });
-
-            if (result.success) {
-                console.log('Usuário atualizado com sucesso');
-                fetchUsuario(); // Refresh data
-            } else {
-                console.error('Erro ao atualizar usuário:', result.error);
-            }
-        } catch (error) {
-            console.error('Erro ao atualizar usuário:', error);
-        }
-    };
-
     const saveUserData = async () => {
         try {
             const result = await queryApi('PUT', `/admin/users/${id}`, {
@@ -190,7 +136,8 @@ export default function UsuarioPage() {
                 email: email,
                 num_documento: numDocumento,
                 tipo_documento: tipoDocumento,
-                tipo_usuario: tipoUsuario
+                tipo_usuario: tipoUsuario,
+                observacoes: observacoes
             });
 
             if (result.success) {
@@ -216,7 +163,8 @@ export default function UsuarioPage() {
             email !== usuario.email ||
             numDocumento !== usuario.num_documento ||
             tipoDocumento !== usuario.tipo_documento ||
-            tipoUsuario !== usuario.tipo_usuario
+            tipoUsuario !== usuario.tipo_usuario ||
+            observacoes !== usuario.observacoes
         );
     };
 
@@ -316,6 +264,15 @@ export default function UsuarioPage() {
                                 placeholder="Função"
                             />
                         </div>
+                    </div>
+
+                    <div className={styles.observacoesSection}>
+                        <InputTextBox
+                            label="Observações sobre restrição alimentar"
+                            value={observacoes}
+                            onChange={(e) => setObservacoes(e.target.value)}
+                            placeholder="Digite observações sobre restrições alimentares..."
+                        />
                     </div>
 
                     <div className={styles.userDataSaveButton}>
