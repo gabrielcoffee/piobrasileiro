@@ -12,11 +12,15 @@ export default function ProtectedAdminLayout({ children }: { children: ReactNode
     const router = useRouter();
 
     useEffect(() => {
-        if (!isLoading && !isAuthenticated || user?.role !== 'admin') {
+        if (!isLoading && !isAuthenticated) {
             router.push('/admin');
         }
 
-    }, [isAuthenticated, router, router]);
+        if (user?.role === 'comum') {
+            router.push('/home');
+        }
+
+    }, [isAuthenticated, router, isLoading]);
 
     if (isLoading) {
         return <Loading />

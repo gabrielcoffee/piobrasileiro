@@ -10,4 +10,8 @@
     margin: auto;
     margin-bottom: 2rem;
     padding: 1rem;
+
+    input {
+        background-color: var(--color-slate-100);
+    }
 }

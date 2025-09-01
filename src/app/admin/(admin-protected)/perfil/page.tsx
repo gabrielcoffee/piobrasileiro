@@ -14,8 +14,7 @@ import { Button } from "@/components/ui/Button";
 import ProfileImage from "@/components/profile/ProfileImage";
 
 
-export default function UsuarioPage() {    
-    const { id } = useParams();
+export default function PerfilAdminPage() {    
     const [usuario, setUsuario] = useState<any>(null);
 
     // User data states
@@ -97,10 +96,10 @@ export default function UsuarioPage() {
     }, [newPassword])
 
     const fetchUsuario = async () => {
-        const result = await queryApi('GET', `/admin/users/${id}`);
+        const result = await queryApi('GET', `/admin/profile`);
 
         if (result.success) {
-            console.log(result.data);
+            console.log('baaa', result.data);
             setUsuario(result.data);
             
             // Set user data states
@@ -150,39 +149,9 @@ export default function UsuarioPage() {
         }
     };
 
-    const saveChanges = async () => {
-        // Check if password fields have values
-        if (currentPassword && newPassword) {
-            await handlePasswordChange();
-        }
-
-        // Update user data
-        try {
-            const result = await queryApi('PUT', `/admin/users/${id}`, {
-                nome_completo: nomeCompleto,
-                data_nasc: dataNasc,
-                genero: genero,
-                funcao: funcao,
-                email: email,
-                num_documento: numDocumento,
-                tipo_documento: tipoDocumento,
-                tipo_usuario: tipoUsuario
-            });
-
-            if (result.success) {
-                console.log('Usuário atualizado com sucesso');
-                fetchUsuario(); // Refresh data
-            } else {
-                console.error('Erro ao atualizar usuário:', result.error);
-            }
-        } catch (error) {
-            console.error('Erro ao atualizar usuário:', error);
-        }
-    };
-
     const saveUserData = async () => {
         try {
-            const result = await queryApi('PUT', `/admin/users/${id}`, {
+            const result = await queryApi('PUT', `/admin/profile`, {
                 nome_completo: nomeCompleto,
                 data_nasc: dataNasc,
                 genero: genero,
@@ -222,7 +191,7 @@ export default function UsuarioPage() {
 
     const handleAvatarChange = async (imageFile: File) => {
         // This is where the avatar is updated, returns the base64 string
-        const newAvatar = await uploadAvatarAdmin(imageFile, id as string);
+        const newAvatar = await uploadAvatar(imageFile);
         setAvatar(newAvatar || null);
     }
 
@@ -230,11 +199,7 @@ export default function UsuarioPage() {
         <div>
             <Card>
                 <CardHeader 
-                title={
-                    <Link href="/admin/usuarios" className={styles.backLink}><SquareArrowLeft size={20} />
-                        Voltar para lista
-                    </Link>
-                }
+                title="Meu Perfil"
                 breadcrumb={["Início", "Usuários"]} 
                 />
 
@@ -327,7 +292,53 @@ export default function UsuarioPage() {
                             Salvar alterações
                         </Button>
                     </div>
+                    
+                    <div className={styles.passwordSection}>
+                        
+                        <div className={styles.leftPswdSection}>
+                            <InputPassword
+                                label="Senha atual"
+                                value={currentPassword}
+                                onChange={(e) => setCurrentPassword(e.target.value)}
+                                placeholder="Insira sua senha atual"
+                            />
+                        </div>
+
+                        <div className={styles.rightPswdSection}>
+                            <InputPassword
+                                label="Nova senha"
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                                placeholder="Insira sua nova senha"
+                            />
+
+                            <div className={styles.passwordRequirements}>
+                                <p>Sua senha deve conter:</p>
+                                <ul className={styles.passwordRequirementsList}>
+                                    <li>{lengthRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 8 caracteres </li>
+                                    <li>{uppercaseRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 1 letra maiúscula </li>
+                                    <li>{lowercaseRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 1 letra minúscula </li>
+                                    <li>{numberRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 1 número </li>
+                                    <li>{nameRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Não deve conter seu nome ou data de nascimento </li>
+                                </ul>
+                            </div>
+
+                            <Button
+                                iconLeft={<Check size={20} />}
+                                available={passwordRequirements}
+                                onClick={handlePasswordChange}
+                            >
+                                Salvar senha
+                            </Button>
+
+                        </div>
+
+                    </div>
+                    
                 </div>
+
+
+                
             </Card>
         </div>
     )

@@ -1,0 +1,106 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  position: relative;
+}
+
+.label {
+  font-size: 1rem;
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.labelError {
+  color: var(--color-destructive);
+}
+
+.dropdown {
+  padding: .5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: .875rem;
+  outline: none;
+  transition: border-color 0.2s ease;
+  background-color: var(--color-slate-100);
+  color: var(--color-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 38px;
+}
+
+.dropdown:hover {
+  border-color: var(--color-primary);
+}
+
+.dropdownError {
+  border-color: var(--color-destructive);
+}
+
+.dropdownError:focus-within {
+  border-color: var(--color-destructive);
+}
+
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: var(--color-muted);
+}
+
+.selectedValue {
+  color: var(--color-text);
+}
+
+.disabled .selectedValue {
+  color: var(--color-text-muted);
+}
+
+.chevron {
+  color: var(--color-text-muted);
+  transition: transform 0.1s ease;
+}
+
+.chevronOpen {
+  transform: rotate(180deg);
+}
+
+.optionsList {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 2px;
+}
+
+.option {
+  padding: .5rem;
+  font-size: .875rem;
+  color: var(--color-text);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  background-color: white;
+}
+
+.option:hover {
+    background-color: var(--color-slate-100);
+}
+
+.optionSelected {
+  color: var(--color-text);
+  font-weight: 800;
+}
+
+.errorText {
+  font-size: 0.75rem;
+  color: var(--color-destructive);
+  margin-top: 0.25rem;
+}

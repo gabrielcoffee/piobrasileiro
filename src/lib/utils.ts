@@ -128,3 +128,173 @@ export function convertBufferToBase64(buffer: Buffer) {
     const base64String = Buffer.from(buffer).toString('base64');
     return `data:image/jpeg;base64,${base64String}`;
 }
+
+
+async function checkFileSize(imageFile: File): Promise<boolean> {
+    const maxSizeInBytes = 10 * 1024 * 1024; // 10MB in bytes
+    if (imageFile.size > maxSizeInBytes) {
+        console.error('File size exceeds 10MB limit');
+        return false;
+    }
+    return true;
+}
+
+export async function uploadAvatar(imageFile: File) {
+    // Check file size first
+    const isValidSize = await checkFileSize(imageFile);
+    if (!isValidSize) {
+        return;
+    }
+
+    // Create canvas for image processing
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+        console.error('Failed to get canvas context');
+        return;
+    }
+
+    // Set canvas size to 500x500
+    canvas.width = 500;
+    canvas.height = 500;
+
+    // Create image object
+    const img = new Image();
+
+    try {
+        // Load image
+        await new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = reject;
+            img.src = URL.createObjectURL(imageFile);
+        });
+
+        // Draw and resize image to canvas
+        ctx.drawImage(img, 0, 0, 500, 500);
+
+        // Convert to JPEG blob
+        const blob = await new Promise<Blob>((resolve) => {
+            canvas.toBlob((blob) => resolve(blob!), 'image/jpeg', 0.8);
+        });
+
+        // Create FormData for binary upload
+        const formData = new FormData();
+        formData.append('avatar_image', blob, 'avatar.jpg');
+
+        // Get base64 for ProfileImage compatibility
+        const base64String = await new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result!.toString().replace("data:image/jpeg;base64,", ""));
+            reader.readAsDataURL(blob);
+        });
+
+        // Clean up
+        URL.revokeObjectURL(img.src);
+
+        // Send to API
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('No token found');
+            return;
+        }
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/perfil/avatar`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            body: formData
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            console.log('Avatar updated successfully');
+            return base64String;
+        } else {
+            const errorData = await response.json();
+            console.error('Failed to update avatar:', errorData.message || 'Request failed');
+        }
+    } catch (error) {
+        console.error('Error processing image:', error);
+    }
+}
+
+export async function uploadAvatarAdmin(imageFile: File, userId: string) {
+    // Check file size first
+    const isValidSize = await checkFileSize(imageFile);
+    if (!isValidSize) {
+        return;
+    }
+
+    // Create canvas for image processing
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+        console.error('Failed to get canvas context');
+        return;
+    }
+
+    // Set canvas size to 500x500
+    canvas.width = 500;
+    canvas.height = 500;
+
+    // Create image object
+    const img = new Image();
+
+    try {
+        // Load image
+        await new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = reject;
+            img.src = URL.createObjectURL(imageFile);
+        });
+
+        // Draw and resize image to canvas
+        ctx.drawImage(img, 0, 0, 500, 500);
+
+        // Convert to JPEG blob
+        const blob = await new Promise<Blob>((resolve) => {
+            canvas.toBlob((blob) => resolve(blob!), 'image/jpeg', 0.8);
+        });
+
+        // Create FormData for binary upload
+        const formData = new FormData();
+        formData.append('avatar_image', blob, 'avatar.jpg');
+
+        // Get base64 for ProfileImage compatibility
+        const base64String = await new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result!.toString().replace("data:image/jpeg;base64,", ""));
+            reader.readAsDataURL(blob);
+        });
+
+        // Clean up
+        URL.revokeObjectURL(img.src);
+
+        // Send to API
+        const token = localStorage.getItem('token');
+        if (!token) {
+            console.error('No token found');
+            return;
+        }
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/admin/users/${userId}/avatar`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
+            body: formData
+        });
+
+        if (response.ok) {
+            const result = await response.json();
+            console.log('Avatar updated successfully');
+            return base64String;
+        } else {
+            const errorData = await response.json();
+            console.error('Failed to update avatar:', errorData.message || 'Request failed');
+        }
+    } catch (error) {
+        console.error('Error processing image:', error);
+    }
+}

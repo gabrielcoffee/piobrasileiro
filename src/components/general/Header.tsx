@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Menu, Bell, ChevronDown, UserCircle, LogOut } from 'lucide-react';
+import { Menu, Bell, ChevronDown, UserCircle, LogOut, User } from 'lucide-react';
 
 import styles from './styles/Header.module.css';
 import { SideMenu } from './SideMenu';
@@ -7,7 +7,8 @@ import NotificationMenu from './NotificationMenu';
 import { useAuth } from '@/contexts/AuthContext';
 import { SideMenuAdmin } from '../admin/SideMenuAdmin';
 import { SideMenuAdminDesktop } from '../admin/SideMenuAdminDesktop';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+
 
 export function Header() {
 
@@ -64,8 +65,14 @@ export function Header() {
         setProfileDropdownOpen(false);
     };
 
+    const router = useRouter();
+
     const handleProfileClick = () => {
-        window.location.href = '/perfil';
+        if (pathname.startsWith('/admin')) {
+            router.push('/admin/perfil');
+        } else {
+            router.push('/perfil');
+        }
         closeProfileDropdown();
     };
 
@@ -92,7 +99,7 @@ export function Header() {
                 </button>
             </header>
 
-            {/* Show the  */}
+            {/* Show the side menu */}
             {!isDesktop && pathname.startsWith('/admin') ? (
                 <SideMenuAdmin isOpen={sideMenuOpen} onClose={closeSideMenu} />
             ) : !isDesktop ? (
@@ -128,7 +135,7 @@ export function Header() {
                         {profileDropdownOpen && (
                             <div className={styles.dropdownMenu}>
                                 <button className={styles.dropdownItem} onClick={handleProfileClick}>
-                                    <UserCircle size={16} />
+                                    <User size={16} />
                                     Meu perfil
                                 </button>
                                 <button className={styles.dropdownItem} onClick={handleLogoutClick}>
@@ -138,8 +145,6 @@ export function Header() {
                             </div>
                         )}
                     </div>
-
-                    
                 </div>
             </div>
         </>
