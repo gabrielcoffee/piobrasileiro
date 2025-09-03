@@ -17,11 +17,10 @@ export async function generateReportPDFLib(action: string, weekInfo: any, notesI
         const manropeRegularBytes = await manropeRegularResponse.arrayBuffer();
         manrope = await pdfDoc.embedFont(manropeRegularBytes);
         
-        const manropeBoldResponse = await fetch('/fonts/Manrope-Bold.ttf');
+        const manropeBoldResponse = await fetch('/Manrope-Bold.ttf');
         const manropeBoldBytes = await manropeBoldResponse.arrayBuffer();
         manropeBold = await pdfDoc.embedFont(manropeBoldBytes);
     } catch (error) {
-        console.log('Manrope fonts not found, falling back to Helvetica');
         manrope = helvetica;
         manropeBold = helveticaBold;
     }

@@ -32,11 +32,6 @@ export default function ListaDeRefeicoesPage() {
         saturday: boolean;
         sunday: boolean;
     } | null>(null);
-    interface NotesInfo {
-        name: string;
-        note: string;
-    }
-    const [notesInfo, setNotesInfo] = useState<NotesInfo[]>([]);
 
     const getWeekDates = () => {
         const weekDates = [];
@@ -50,6 +45,10 @@ export default function ListaDeRefeicoesPage() {
     }
 
     const handleGenerateReport = () => {
+
+        if (dayInfo?.totalAlmoco === 0 && dayInfo?.totalJanta === 0) {
+            return;
+        }
 
         const daysInfo = getWeekDates().map((date: Date) => {
             return {
@@ -323,12 +322,15 @@ export default function ListaDeRefeicoesPage() {
                     buttons={
                         <>
                             <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowReportModal(false)}>Cancelar</Button>
-                            <Button iconLeft={<Printer size={20} />} variant="full" onClick={handleGenerateReport}>Gerar</Button>
+                            <Button available={dayInfo?.totalAlmoco === 0 && dayInfo?.totalJanta === 0 ? false : true} iconLeft={<Printer size={20} />} variant="full" onClick={handleGenerateReport}>Gerar</Button>
                         </>
                     }
                 >
                     <div className={styles.reportModalContent}>
                         <ReportCheckList onChange={handleDaysChange}/>
+                    </div>
+                    <div className={styles.reportModalContent}>
+                        {dayInfo?.totalAlmoco === 0 && dayInfo?.totalJanta === 0 && <span style={{color: 'var(--color-error)'}}>Não há refeições para gerar relatório</span>}
                     </div>
                 </Modal>
                 
