@@ -19,7 +19,7 @@ export default function Modal({ children, buttons, title, subtitle, onClose, isO
     return (
         <div className={styles.overlay} onClick={onClose}>
 
-            <div className={styles.modal}>
+            <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
 
                 <div className={styles.header}>
 
