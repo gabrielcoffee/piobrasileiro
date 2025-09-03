@@ -1,4 +1,3 @@
-
 export async function queryApi(method: string, route: string, body?: any) {
     try {
         const token = localStorage.getItem('token');
