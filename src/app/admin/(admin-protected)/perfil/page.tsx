@@ -100,7 +100,6 @@ export default function PerfilAdminPage() {
         const result = await queryApi('GET', `/admin/profile`);
 
         if (result.success) {
-            console.log('baaa', result.data);
             setUsuario(result.data);
             
             // Set user data states
@@ -152,6 +151,11 @@ export default function PerfilAdminPage() {
     };
 
     const saveUserData = async () => {
+
+        if (!hasUserDataChanges()) {
+            return;
+        }
+
         try {
             const result = await queryApi('PUT', `/admin/profile`, {
                 nome_completo: nomeCompleto,

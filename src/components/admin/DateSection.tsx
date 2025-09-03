@@ -2,6 +2,7 @@ import { Calendar, Check, ChevronLeft, ChevronRight, RotateCcw } from 'lucide-re
 import { Button } from '../ui/Button';
 import styles from './styles/DateSection.module.css';
 import { useState, useEffect } from 'react';
+import { getCurrentWeekInfo } from '@/lib/utils';
 
 interface DateSectionProps {
     selectedWeekStart?: Date;
@@ -20,19 +21,21 @@ export function DateSection({ selectedWeekStart, selectedWeekEnd, onWeekChange }
     const [tempWeekStart, setTempWeekStart] = useState<Date>(new Date());
     const [tempWeekEnd, setTempWeekEnd] = useState<Date>(new Date());
 
-    // Calculate the start of the current week (Monday)
+    // Calculate the start of the current week (Monday) - using same logic as utils.ts
     const getWeekStart = (date: Date): Date => {
-        const d = new Date(date);
-        const day = d.getDay();
-        const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Monday = 1, Sunday = 0
-        return new Date(d.setDate(diff));
+        const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+        const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Days to go back to Monday
+        
+        const monday = new Date(date);
+        monday.setDate(date.getDate() - daysToMonday);
+        return monday;
     };
 
     // Calculate the end of the current week (Sunday)
     const getWeekEnd = (weekStart: Date): Date => {
-        const d = new Date(weekStart);
-        d.setDate(d.getDate() + 6); // Add 6 days to get to Sunday
-        return d;
+        const sunday = new Date(weekStart);
+        sunday.setDate(weekStart.getDate() + 6);
+        return sunday;
     };
 
     // Generate calendar dates for a given month

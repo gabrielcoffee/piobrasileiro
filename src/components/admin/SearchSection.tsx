@@ -8,7 +8,7 @@ import { DateSection } from "./DateSection";
 
 interface SearchSectionProps {
     searchPlaceholder: string;
-    dateSection: boolean;
+    dateSection: React.ReactNode;
     buttons: React.ReactNode[];
 }
 
@@ -22,14 +22,14 @@ export default function SearchSection({ searchPlaceholder, dateSection, buttons 
                 
             <div className={styles.inputContainer}>
                 <div className={styles.leftIcon}>
-                    <Search />
+                    <Search size={20} />
                 </div>
                 <input
                     type="text"
                     placeholder={searchPlaceholder}
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className={styles.input}
+                    className={styles.inputSearch}
                 />
             </div>
 
@@ -37,7 +37,7 @@ export default function SearchSection({ searchPlaceholder, dateSection, buttons 
             <div className={styles.buttons}>
                 {dateSection && (
                     <div className={styles.dateSection}>
-                        <DateSection />
+                        {dateSection}
                     </div>
                 )}
                 {buttons && buttons.length > 0 && buttons.map((button, index) => (
