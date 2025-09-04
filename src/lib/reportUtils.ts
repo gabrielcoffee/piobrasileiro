@@ -563,7 +563,7 @@ export async function generateReportPDFLib(action: string, weekInfo: any, notesI
             color: separatorGray,
         });
     };
-
+    
     // Helper function to calculate row height for a note
     const calculateRowHeight = (note: any) => {
         const nameText = note.name || 'Nome não informado';

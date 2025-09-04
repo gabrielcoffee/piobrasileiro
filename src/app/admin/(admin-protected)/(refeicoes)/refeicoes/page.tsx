@@ -6,13 +6,14 @@ import Card from '@/components/desktop/Card';
 import CardHeader from '@/components/desktop/CardHeader';
 import Table from '@/components/admin/Table';
 import SearchSection from '@/components/admin/SearchSection';
-import { PencilLine, Plus, Printer, X } from 'lucide-react';
+import { Check, PencilLine, Plus, Printer, X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { convertBufferToBase64, getCurrentWeekInfo, queryApi } from '@/lib/utils';
 import { generateReportPDFLib } from '@/lib/reportUtils';
 import { DateSection } from '@/components/admin/DateSection';
 import Modal from '@/components/admin/Modal';
 import ReportCheckList from '@/components/refeicoes/ReportCheckList';
+import GuestAdminAddModal from '@/components/admin/GuestAdminAddModal';
 
 export default function ListaDeRefeicoesPage() {
 
@@ -23,6 +24,11 @@ export default function ListaDeRefeicoesPage() {
     const [selectedWeekStart, setSelectedWeekStart] = useState<Date>(new Date());
     const [selectedWeekEnd, setSelectedWeekEnd] = useState<Date>(new Date());
     const [showReportModal, setShowReportModal] = useState<boolean>(false);
+    const [showNewBookingModal, setShowNewBookingModal] = useState<boolean>(false);
+    const [showGuestBookingModal, setShowGuestBookingModal] = useState<boolean>(false);
+    const [showResidentBookingModal, setShowResidentBookingModal] = useState<boolean>(false);
+    const [guestFormData, setGuestFormData] = useState<any>(null);
+
     const [reportDays, setReportDays] = useState<{
         monday: boolean;
         tuesday: boolean;
@@ -32,6 +38,7 @@ export default function ListaDeRefeicoesPage() {
         saturday: boolean;
         sunday: boolean;
     } | null>(null);
+
 
     const getWeekDates = () => {
         const weekDates = [];
@@ -241,6 +248,35 @@ export default function ListaDeRefeicoesPage() {
         return weekDayButtons;
     }
 
+    const handleGuestBooking = () => {
+        setShowNewBookingModal(false);
+        setShowGuestBookingModal(true);
+    }
+
+    const handleResidentBooking = () => {
+        setShowNewBookingModal(false);
+        setShowResidentBookingModal(true);
+    }
+
+    const handleResidentBookingSave = () => {
+        setShowResidentBookingModal(false);
+    }
+
+    const handleGuestBookingSave = async () => {
+        console.log('Guest data:', guestFormData);
+        setShowGuestBookingModal(false);
+
+        const result = await queryApi('POST', '/admin/meals', {
+            tipo_pessoa: 'convidado',
+            convidado_id: guestFormData.convidado_id,
+            data: guestFormData.data,
+            almoco_colegio: guestFormData.almoco_colegio,
+            almoco_levar: guestFormData.almoco_levar,
+            janta_colegio: guestFormData.janta_colegio,
+            observacoes: guestFormData.observacoes,
+        })
+    }
+
     return (
         <div className={styles.container}>
             <Card>
@@ -257,7 +293,7 @@ export default function ListaDeRefeicoesPage() {
                     )}
                     buttons={[
                         <Button key="report" variant="full-white" iconLeft={<Printer size={20}/>} onClick={() => setShowReportModal(true)}>Gerar Relatório</Button>,
-                        <Button key="new_booking" variant="full" iconLeft={<Plus size={20} />}>Novo agendamento</Button>
+                        <Button key="new_booking" variant="full" onClick={() => setShowNewBookingModal(true)} iconLeft={<Plus size={20} />}>Novo agendamento</Button>
                     ]}
                 />
                 
@@ -333,7 +369,52 @@ export default function ListaDeRefeicoesPage() {
                         {dayInfo?.totalAlmoco === 0 && dayInfo?.totalJanta === 0 && <span style={{color: 'var(--color-error)'}}>Não há refeições para gerar relatório</span>}
                     </div>
                 </Modal>
-                
+
+                <Modal
+                    isOpen={showNewBookingModal}
+                    onClose={() => setShowNewBookingModal(false)}
+                    title="Novo agendamento"
+                    subtitle="Selecione o tipo de agendamento que deseja"
+                    buttons={
+                        <>
+                            <Button variant="full" onClick={() => handleGuestBooking()}>Convidado</Button>
+                            <Button variant="full-white" onClick={() => handleResidentBooking()}>Morador</Button>
+                        </>
+                    }
+                />
+
+                <Modal
+                    isOpen={showGuestBookingModal}
+                    onClose={() => setShowGuestBookingModal(false)}
+                    title="Novo agendamento convidado"
+                    buttons={<>
+                        <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowGuestBookingModal(false)}>Cancelar</Button>
+                        <Button variant="full" iconLeft={<Check size={20} />} onClick={() => handleGuestBookingSave()}>Salvar</Button>
+                    </>}
+                >
+                <GuestAdminAddModal 
+                    formData={(formData) => {
+                        setGuestFormData(formData);
+                    }}
+                />
+                </Modal>
+
+
+                <Modal
+                    isOpen={showResidentBookingModal}
+                    onClose={() => setShowResidentBookingModal(false)}
+                    title="Novo agendamento morador"
+                    buttons={
+                        <>
+                            <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowResidentBookingModal(false)}>Cancelar</Button>
+                            <Button variant="full" iconLeft={<Check size={20} />} onClick={() => handleResidentBookingSave()}>Salvar</Button>
+                        </>
+                    }
+                >
+                    <div className={styles.residentBookingModalContent}>
+                        
+                    </div>
+                </Modal>
             </Card>
         </div>
     );
