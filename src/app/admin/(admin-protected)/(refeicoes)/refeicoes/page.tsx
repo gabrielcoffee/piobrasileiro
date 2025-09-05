@@ -263,18 +263,37 @@ export default function ListaDeRefeicoesPage() {
     }
 
     const handleGuestBookingSave = async () => {
-        console.log('Guest data:', guestFormData);
+
+        if (!guestFormData) {
+            return;
+        }
+        if (!guestFormData.nome || !guestFormData.funcao || !guestFormData.origem || !guestFormData.data) {
+            return;
+        }
+
         setShowGuestBookingModal(false);
 
-        const result = await queryApi('POST', '/admin/meals', {
-            tipo_pessoa: 'convidado',
-            convidado_id: guestFormData.convidado_id,
+        const result = await queryApi('POST', '/admin/guestmeals', {
+            anfitriao_id: guestFormData.convidado_id,
             data: guestFormData.data,
+            nome: guestFormData.nome,
+            funcao: guestFormData.funcao,
+            origem: guestFormData.origem,
             almoco_colegio: guestFormData.almoco_colegio,
             almoco_levar: guestFormData.almoco_levar,
             janta_colegio: guestFormData.janta_colegio,
             observacoes: guestFormData.observacoes,
-        })
+        });
+
+        if (result.success) {
+            setShowGuestBookingModal(false);
+            console.log('Convidados salvo com sucesso');
+            fetchRefeicoes();
+
+        } else {
+            console.log('Erro ao salvar convida');
+            setShowGuestBookingModal(false);
+        }
     }
 
     return (
@@ -389,14 +408,14 @@ export default function ListaDeRefeicoesPage() {
                     title="Novo agendamento convidado"
                     buttons={<>
                         <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowGuestBookingModal(false)}>Cancelar</Button>
-                        <Button variant="full" iconLeft={<Check size={20} />} onClick={() => handleGuestBookingSave()}>Salvar</Button>
+                        <Button available={guestFormData?.nome && guestFormData?.funcao && guestFormData?.origem && guestFormData?.data ? true : false} variant="full" iconLeft={<Check size={20} />} onClick={() => handleGuestBookingSave()}>Salvar</Button>
                     </>}
                 >
-                <AddGuestAdminModal 
-                    formData={(formData) => {
-                        setGuestFormData(formData);
-                    }}
-                />
+                    <AddGuestAdminModal 
+                        formData={(formData: any) => {
+                            setGuestFormData(formData);
+                        }}
+                    />
                 </Modal>
 
 

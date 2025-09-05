@@ -6,6 +6,7 @@ import { InputTextBox } from '../ui/InputTextBox';
 import styles from './styles/AddGuestAdminModal.module.css';
 import { queryApi } from '@/lib/utils';
 import { InputTextSearch } from '../ui/InputTextSearch';
+import { SimpleDateSelect } from './SimpleDateSelect';
 
 type Option = {
     key: string;
@@ -13,7 +14,17 @@ type Option = {
 }
 
 interface AddGuestAdminModalProps {
-    formData?: (formData: any) => void;
+    formData?: (formData: {
+        anfitriao_id: string;
+        data: string;
+        nome: string;
+        funcao: string;
+        origem: string;
+        almoco_colegio: boolean;
+        almoco_levar: boolean;
+        janta_colegio: boolean;
+        observacoes: string;
+    }) => void;
 }
 
 export default function AddGuestAdminModal({ formData }: AddGuestAdminModalProps) {
@@ -26,60 +37,42 @@ export default function AddGuestAdminModal({ formData }: AddGuestAdminModalProps
     const [origem, setOrigem] = useState('');
     const [observacoes, setObservacoes] = useState('');
 
+    const [dataError, setDataError] = useState('');
+    const [nomeError, setNomeError] = useState('');
+    const [funcaoError, setFuncaoError] = useState('');
+    const [origemError, setOrigemError] = useState('');
+
     // Meal states
     const [lunchConfirmed, setLunchConfirmed] = useState(false);
     const [dinnerConfirmed, setDinnerConfirmed] = useState(false);
     const [takeOutOption, setTakeOutOption] = useState(false);
 
-    // Error states
-    const [errors, setErrors] = useState({
-        anfitriao: '',
-        data: '',
-        nome: '',
-        funcao: '',
-        origem: ''
-    });
-
     const validateForm = () => {
-        const newErrors = {
-            anfitriao: '',
-            data: '',
-            nome: '',
-            funcao: '',
-            origem: ''
-        };
-
-        if (!anfitriao.trim()) {
-            newErrors.anfitriao = 'Anfitrião é obrigatório';
-        }
-        if (!data.trim()) {
-            newErrors.data = 'Data é obrigatória';
+        if (!data) {
+            setDataError("Data é obrigatória");
         }
         if (!nome.trim()) {
-            newErrors.nome = 'Nome é obrigatório';
+            setNomeError("Nome é obrigatório");
         }
         if (!funcao.trim()) {
-            newErrors.funcao = 'Função é obrigatória';
+            setFuncaoError("Função é obrigatória");
         }
         if (!origem.trim()) {
-            newErrors.origem = 'Origem é obrigatória';
+            setOrigemError("Origem é obrigatória");
         }
-
-        setErrors(newErrors);
-        return !Object.values(newErrors).some(error => error !== '');
-    };
+    }
 
     useEffect(() => {
         formData && formData({
-            anfitriao,
-            data,
+            anfitriao_id: anfitriao,
+            data: data || '',
             nome,
             funcao,
             origem,
             observacoes,
-            lunchConfirmed,
-            dinnerConfirmed,
-            takeOutOption
+            almoco_colegio: lunchConfirmed,
+            almoco_levar: takeOutOption,
+            janta_colegio: dinnerConfirmed,
         });
     }, [anfitriao, data, nome, funcao, origem, observacoes, lunchConfirmed, dinnerConfirmed, takeOutOption]);
 
@@ -115,12 +108,9 @@ export default function AddGuestAdminModal({ formData }: AddGuestAdminModalProps
                         placeholder="Selecione"
                     />
 
-                    <InputText
-                        label="*Data"
-                        placeholder="Selecione a data"
-                        value={data}
-                        onChange={(e) => setData(e.target.value)}
-                        error={errors.data}
+                    <SimpleDateSelect
+                        selectedDate={data ? new Date(data) : undefined}
+                        onDateChange={(date) => setData(date?.toISOString())}
                     />
 
                     <InputText
@@ -128,7 +118,7 @@ export default function AddGuestAdminModal({ formData }: AddGuestAdminModalProps
                         placeholder="Insira o nome"
                         value={nome}
                         onChange={(e) => setNome(e.target.value)}
-                        error={errors.nome}
+                        error={nomeError}
                     />
 
                     <InputText
@@ -136,7 +126,7 @@ export default function AddGuestAdminModal({ formData }: AddGuestAdminModalProps
                         placeholder="Insira a função ou grau de parentesco"
                         value={funcao}
                         onChange={(e) => setFuncao(e.target.value)}
-                        error={errors.funcao}
+                        error={funcaoError}
                     />
 
                     <InputText
@@ -144,7 +134,7 @@ export default function AddGuestAdminModal({ formData }: AddGuestAdminModalProps
                         placeholder="De onde vem?"
                         value={origem}
                         onChange={(e) => setOrigem(e.target.value)}
-                        error={errors.origem}
+                        error={origemError}
                     />
                 </div>
 
@@ -194,10 +184,8 @@ export default function AddGuestAdminModal({ formData }: AddGuestAdminModalProps
                             <span className={styles.radioLabel}>Para levar</span>
                         </label>
                     </div>
-                </div>
 
                 {/* Jantar Section */}
-                <div className={styles.mealSection}>
                     <div className={styles.mealHeader}>
                         <h3 className={styles.mealTitle}>Jantar (17h - 20h)</h3>
                         <div className={styles.toggleContainer}>
