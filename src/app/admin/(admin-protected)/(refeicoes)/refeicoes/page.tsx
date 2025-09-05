@@ -13,7 +13,7 @@ import { generateReportPDFLib } from '@/lib/reportUtils';
 import { DateSection } from '@/components/admin/DateSection';
 import Modal from '@/components/admin/Modal';
 import ReportCheckList from '@/components/refeicoes/ReportCheckList';
-import GuestAdminAddModal from '@/components/admin/GuestAdminAddModal';
+import AddGuestAdminModal from '@/components/admin/AddGuestAdminModal';
 
 export default function ListaDeRefeicoesPage() {
 
@@ -392,7 +392,7 @@ export default function ListaDeRefeicoesPage() {
                         <Button variant="full" iconLeft={<Check size={20} />} onClick={() => handleGuestBookingSave()}>Salvar</Button>
                     </>}
                 >
-                <GuestAdminAddModal 
+                <AddGuestAdminModal 
                     formData={(formData) => {
                         setGuestFormData(formData);
                     }}

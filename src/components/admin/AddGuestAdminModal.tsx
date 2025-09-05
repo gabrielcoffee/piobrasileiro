@@ -3,17 +3,22 @@
 import React, { useEffect, useState } from 'react';
 import { InputText } from '../ui/InputText';
 import { InputTextBox } from '../ui/InputTextBox';
-import styles from './styles/GuestAdminAddModal.module.css';
-import { DropdownInput } from '../ui/DropdownInput';
+import styles from './styles/AddGuestAdminModal.module.css';
 import { queryApi } from '@/lib/utils';
+import { InputTextSearch } from '../ui/InputTextSearch';
 
-interface GuestAdminAddModalProps {
+type Option = {
+    key: string;
+    value: string;
+}
+
+interface AddGuestAdminModalProps {
     formData?: (formData: any) => void;
 }
 
-export default function GuestAdminAddModal({ formData }: GuestAdminAddModalProps) {
+export default function AddGuestAdminModal({ formData }: AddGuestAdminModalProps) {
     // Form states
-    const [anfitriaoOptions, setAnfitriaoOptions] = useState([]);
+    const [anfitriaoOptions, setAnfitriaoOptions] = useState<Option[]>([]);
     const [anfitriao, setAnfitriao] = useState('');
     const [data, setData] = useState('');
     const [nome, setNome] = useState('');
@@ -85,26 +90,31 @@ export default function GuestAdminAddModal({ formData }: GuestAdminAddModalProps
                 key: user.user_id,
                 value: user.nome_completo
             }));
+
+            // Sort users by name
+            users.sort((a: any, b: any) => a.value.localeCompare(b.value));
+
             setAnfitriaoOptions(users);
         }
     }
+
+    useEffect(() => {
+        fetchUserIdAndNames();
+    }, []);
 
     return (
         <div className={styles.container}>
             <div className={styles.form}>
                 {/* Anfitrião */}
                 <div className={styles.inputGroup}>
-                    <DropdownInput
+                    <InputTextSearch
                         label="Anfitrião"
                         value={anfitriao}
-                        onChange={(value) => setAnfitriao(value)}
-                        options={anfitriaoOptions}
+                        onChange={(e) => setAnfitriao(e.target.value)}
+                        searchOptions={anfitriaoOptions}
                         placeholder="Selecione"
                     />
-                </div>
 
-                {/* Data */}
-                <div className={styles.inputGroup}>
                     <InputText
                         label="*Data"
                         placeholder="Selecione a data"
@@ -112,10 +122,7 @@ export default function GuestAdminAddModal({ formData }: GuestAdminAddModalProps
                         onChange={(e) => setData(e.target.value)}
                         error={errors.data}
                     />
-                </div>
 
-                {/* Nome */}
-                <div className={styles.inputGroup}>
                     <InputText
                         label="*Nome"
                         placeholder="Insira o nome"
@@ -123,10 +130,7 @@ export default function GuestAdminAddModal({ formData }: GuestAdminAddModalProps
                         onChange={(e) => setNome(e.target.value)}
                         error={errors.nome}
                     />
-                </div>
 
-                {/* Função */}
-                <div className={styles.inputGroup}>
                     <InputText
                         label="*Função"
                         placeholder="Insira a função ou grau de parentesco"
@@ -134,10 +138,7 @@ export default function GuestAdminAddModal({ formData }: GuestAdminAddModalProps
                         onChange={(e) => setFuncao(e.target.value)}
                         error={errors.funcao}
                     />
-                </div>
 
-                {/* Origem */}
-                <div className={styles.inputGroup}>
                     <InputText
                         label="*Origem"
                         placeholder="De onde vem?"

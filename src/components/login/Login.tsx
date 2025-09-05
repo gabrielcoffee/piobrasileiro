@@ -96,6 +96,7 @@ export default function Login({onForgotPasswordClick, onBackClick}: LoginProps) 
             />
 
             <Checkbox
+                id="rememberMe"
                 label="Lembrar meus dados"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}

@@ -9,11 +9,12 @@ export function Checkbox({ label, className, ...props }: CheckboxProps) {
   return (
     <div className={styles.container}>
       <input
+        id={props.id}
         type="checkbox"
         className={`${styles.checkbox} ${className || ''}`}
         {...props}
       />
-      {label && <label className={styles.label}>{label}</label>}
+      {label && <label htmlFor={props.id} className={styles.label}>{label}</label>}
     </div>
   );
 } 
