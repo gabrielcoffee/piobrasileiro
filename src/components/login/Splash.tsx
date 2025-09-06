@@ -37,12 +37,12 @@ export default function Splash({onEnterClick}: SplashProps) {
                 clearInterval(timerRef.current);
             }
         };
-    }, []);
+    }, [startTimer]);
 
     const texts = [
-        <span>Seu <strong>agendamento de refeições </strong>na palma da mão.</span>,
-        <span>Vizualize a <strong>disponibilidade de hospedagem</strong> sempre que quiser.</span>,
-        <span>Você <strong>conectado com a sua casa</strong> de onde estiver.</span>,
+        <span key={0}>Seu <strong>agendamento de refeições </strong>na palma da mão.</span>,
+        <span key={1}>Vizualize a <strong>disponibilidade de hospedagem</strong> sempre que quiser.</span>,
+        <span key={2}>Você <strong>conectado com a sua casa</strong> de onde estiver.</span>,
     ]
 
     return (

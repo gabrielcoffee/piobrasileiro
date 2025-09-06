@@ -1,87 +1,49 @@
 'use client'
 
 import React, { useEffect, useState } from 'react';
-import { InputText } from '../ui/InputText';
-import { InputTextBox } from '../ui/InputTextBox';
-import styles from './styles/AddGuestAdminModal.module.css';
+import styles from './styles/AddUserMealModal.module.css';
 import { queryApi } from '@/lib/utils';
 import { InputTextSearch } from '../ui/InputTextSearch';
 import { SimpleDateSelect } from './SimpleDateSelect';
-import { Button } from '../ui/Button';
-import { Trash, Trash2 } from 'lucide-react';
+
 
 type Option = {
     key: string;
     value: string;
 }
 
-interface AddGuestAdminModalProps {
+interface AddUserMealModalProps {
     formData?: (formData: {
-        anfitriao_id: string;
+        usuario_id: string;
         data: string;
-        nome: string;
-        funcao: string;
-        origem: string;
         almoco_colegio: boolean;
         almoco_levar: boolean;
         janta_colegio: boolean;
-        observacoes: string;
     }) => void;
     isEdit?: boolean;
-    guestMealData?: any;
-    onDeleteGuest?: () => void;
+    userMealData?: any;
     date?: string;
 }
 
-export default function AddGuestAdminModal({ formData, isEdit = false, guestMealData = null, onDeleteGuest = () => {}, date = '' }: AddGuestAdminModalProps) {
+export default function AddUserMealModal({ formData, isEdit = false, userMealData = null, date = '' }: AddUserMealModalProps) {
     // Form states
-    const [anfitriaoOptions, setAnfitriaoOptions] = useState<Option[]>([]);
-    const [anfitriao, setAnfitriao] = useState('');
+    const [userOptions, setUserOptions] = useState<Option[]>([]);
+    const [user, setUser] = useState('');
     const [data, setData] = useState(date);
-    const [nome, setNome] = useState('');
-    const [funcao, setFuncao] = useState('');
-    const [origem, setOrigem] = useState('');
-    const [observacoes, setObservacoes] = useState('');
+    const [almoco_colegio, setAlmocoColegio] = useState(false);
+    const [almoco_levar, setAlmocoLevar] = useState(false);
+    const [janta_colegio, setJantaColegio] = useState(false);
     const [mealId, setMealId] = useState('');
-
-    const [dataError, setDataError] = useState('');
-    const [nomeError, setNomeError] = useState('');
-    const [funcaoError, setFuncaoError] = useState('');
-    const [origemError, setOrigemError] = useState('');
-
-    // Meal states
-    const [lunchConfirmed, setLunchConfirmed] = useState(false);
-    const [dinnerConfirmed, setDinnerConfirmed] = useState(false);
-    const [takeOutOption, setTakeOutOption] = useState(false);
-
-    const validateForm = () => {
-        if (!data) {
-            setDataError("Data é obrigatória");
-        }
-        if (!nome.trim()) {
-            setNomeError("Nome é obrigatório");
-        }
-        if (!funcao.trim()) {
-            setFuncaoError("Função é obrigatória");
-        }
-        if (!origem.trim()) {
-            setOrigemError("Origem é obrigatória");
-        }
-    }
 
     useEffect(() => {
         formData && formData({
-            anfitriao_id: anfitriao,
-            data,
-            nome,
-            funcao,
-            origem,
-            observacoes,
-            almoco_colegio: lunchConfirmed,
-            almoco_levar: takeOutOption,
-            janta_colegio: dinnerConfirmed,
+            usuario_id: user,
+            data: data,
+            almoco_colegio: almoco_colegio,
+            almoco_levar: almoco_levar,
+            janta_colegio: janta_colegio,
         });
-    }, [anfitriao, data, nome, funcao, origem, observacoes, lunchConfirmed, dinnerConfirmed, takeOutOption]);
+    }, [user, data, almoco_colegio, almoco_levar, janta_colegio]);
 
     const fetchUserIdAndNames = async () => {
         const result = await queryApi('GET', '/admin/users');
@@ -94,7 +56,7 @@ export default function AddGuestAdminModal({ formData, isEdit = false, guestMeal
             // Sort users by name
             users.sort((a: any, b: any) => a.value.localeCompare(b.value));
 
-            setAnfitriaoOptions(users);
+            setUserOptions(users);
         }
     }
 
@@ -103,35 +65,17 @@ export default function AddGuestAdminModal({ formData, isEdit = false, guestMeal
     }, []);
 
     useEffect(() => {
-        if (guestMealData) {
-            setAnfitriao(guestMealData.anfitriao_id);
-            setData(guestMealData.data);
-            setNome(guestMealData.nome);
-            setFuncao(guestMealData.funcao);
-            setOrigem(guestMealData.origem);
-            setObservacoes(guestMealData.observacoes);
-            setLunchConfirmed(guestMealData.almoco_colegio);
-            setTakeOutOption(guestMealData.almoco_levar);
-            setDinnerConfirmed(guestMealData.janta_colegio);
-            setMealId(guestMealData.id);
+        console.log('userMealData');
+        console.log(userMealData);
+        if (userMealData) {
+            setUser(userMealData.usuario_id);
+            setData(userMealData.data);
+            setAlmocoColegio(userMealData.almoco_colegio);
+            setAlmocoLevar(userMealData.almoco_levar);
+            setJantaColegio(userMealData.janta_colegio);
+            setMealId(userMealData.id);
         }
-    }, [guestMealData]);
-
-    const handleDeleteGuest = async() => {
-
-        if (!mealId) {
-            console.log('Refeicao sem id');
-            return;
-        }
-
-        const result = await queryApi('DELETE', `/admin/guestmeals/${mealId}`);
-        if (result.success) {
-            console.log('Convidado e refeicao deletados com sucesso');
-            onDeleteGuest();
-        } else {
-            console.log('Erro ao deletar refeicao e convidado no banco');
-        }
-    }
+    }, [userMealData]);
 
     return (
         <div className={styles.container}>
@@ -140,15 +84,18 @@ export default function AddGuestAdminModal({ formData, isEdit = false, guestMeal
                 <div className={styles.inputGroup}>
                     <InputTextSearch
                         label="*Nome"
-                        value={anfitriaoOptions.find((option) => option.key === anfitriao)?.value || ''}
-                        onSelect={(option: Option) => setAnfitriao(option.key)}
-                        searchOptions={anfitriaoOptions}
+                        value={userOptions.find((option) => option.key === user)?.value || ''}
+                        onSelect={(option: Option) => setUser(option.key)}
+                        searchOptions={userOptions}
                         placeholder="Selecione um usuário"
+                        disabled={isEdit}
+                        style={{ opacity: isEdit ? 0.5 : 1 }}
                     />
 
                     <SimpleDateSelect
-                        selectedDate={data ? new Date(data) : undefined}
+                        selectedDate={new Date(date) || undefined}
                         onDateChange={(date) => setData(date?.toISOString())}
+                        disabled={isEdit}
                     />
                 </div>
 
@@ -158,11 +105,11 @@ export default function AddGuestAdminModal({ formData, isEdit = false, guestMeal
                         <h3 className={styles.mealTitle}>Almoço (11h - 14h)</h3>
                         <div className={styles.toggleContainer}>
                             <span className={styles.toggleText}>
-                                {lunchConfirmed ? 'SIM' : 'NÃO'}
+                                {almoco_colegio ? 'SIM' : 'NÃO'}
                             </span>
                             <button
-                                className={`${styles.toggle} ${lunchConfirmed ? styles.toggleOn : styles.toggleOff}`}
-                                onClick={() => setLunchConfirmed(!lunchConfirmed)}
+                                className={`${styles.toggle} ${almoco_colegio ? styles.toggleOn : styles.toggleOff}`}
+                                onClick={() => setAlmocoColegio(!almoco_colegio)}
                             >
                                 <div className={styles.toggleCircle} />
                             </button>
@@ -170,28 +117,28 @@ export default function AddGuestAdminModal({ formData, isEdit = false, guestMeal
                     </div>
 
                     <div className={styles.optionsContainer}>
-                        <label className={`${styles.radioOption} ${!lunchConfirmed ? styles.disabled : ''}`}>
+                        <label className={`${styles.radioOption} ${!almoco_colegio ? styles.disabled : ''}`}>
                             <input
                                 type="radio"
                                 name="lunch"
                                 value="school"
-                                checked={!takeOutOption}
-                                onChange={() => setTakeOutOption(false)}
-                                disabled={!lunchConfirmed}
+                                checked={!almoco_levar}
+                                onChange={() => setAlmocoLevar(false)}
+                                disabled={!almoco_colegio}
                                 className={styles.radioInput}
                             />
                             <span className={styles.radioCircle} />
                             <span className={styles.radioLabel}>No Colégio PIO</span>
                         </label>
 
-                        <label className={`${styles.radioOption} ${!lunchConfirmed ? styles.disabled : ''}`}>
+                        <label className={`${styles.radioOption} ${!almoco_colegio ? styles.disabled : ''}`}>
                             <input
                                 type="radio"
                                 name="lunch"
                                 value="takeaway"
-                                checked={takeOutOption}
-                                onChange={() => setTakeOutOption(true)}
-                                disabled={!lunchConfirmed}
+                                checked={almoco_levar}
+                                onChange={() => setAlmocoLevar(true)}
+                                disabled={!almoco_colegio}
                                 className={styles.radioInput}
                             />
                             <span className={styles.radioCircle} />
@@ -204,11 +151,11 @@ export default function AddGuestAdminModal({ formData, isEdit = false, guestMeal
                         <h3 className={styles.mealTitle}>Jantar (17h - 20h)</h3>
                         <div className={styles.toggleContainer}>
                             <span className={styles.toggleText}>
-                                {dinnerConfirmed ? 'SIM' : 'NÃO'}
+                                {janta_colegio ? 'SIM' : 'NÃO'}
                             </span>
                             <button
-                                className={`${styles.toggle} ${dinnerConfirmed ? styles.toggleOn : styles.toggleOff}`}
-                                onClick={() => setDinnerConfirmed(!dinnerConfirmed)}
+                                className={`${styles.toggle} ${janta_colegio ? styles.toggleOn : styles.toggleOff}`}
+                                onClick={() => setJantaColegio(!janta_colegio)}
                             >
                                 <div className={styles.toggleCircle} />
                             </button>
@@ -216,13 +163,13 @@ export default function AddGuestAdminModal({ formData, isEdit = false, guestMeal
                     </div>
 
                     <div className={styles.optionsContainer}>
-                        <label className={`${styles.radioOption} ${!dinnerConfirmed ? styles.disabled : ''}`}>
+                        <label className={`${styles.radioOption} ${!janta_colegio ? styles.disabled : ''}`}>
                             <input
                                 type="radio"
                                 name="dinner"
                                 value="school"
                                 defaultChecked={true}
-                                disabled={!dinnerConfirmed}
+                                disabled={!janta_colegio}
                                 className={styles.radioInput}
                             />
                             <span className={styles.radioCircle} />

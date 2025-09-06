@@ -8,7 +8,7 @@ import { queryApi } from '@/lib/utils';
 import { InputTextSearch } from '../ui/InputTextSearch';
 import { SimpleDateSelect } from './SimpleDateSelect';
 import { Button } from '../ui/Button';
-import { Trash, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 
 type Option = {
     key: string;
@@ -28,12 +28,24 @@ interface AddGuestAdminModalProps {
         observacoes: string;
     }) => void;
     isEdit?: boolean;
-    guestMealData?: any;
+    guestMealData?: {
+        anfitriao_id: string;
+        id: string;
+        nome: string;
+        funcao: string;
+        origem: string;
+        data: string;
+        almoco_colegio: boolean;
+        almoco_levar: boolean;
+        janta_colegio: boolean;
+        observacoes: string;
+        rawData: any;
+    };
     onDeleteGuest?: () => void;
     date?: string;
 }
 
-export default function AddGuestAdminModal({ formData, isEdit = false, guestMealData = null, onDeleteGuest = () => {}, date = '' }: AddGuestAdminModalProps) {
+export default function AddGuestAdminModal({ formData, isEdit = false, guestMealData, onDeleteGuest = () => {}, date = '' }: AddGuestAdminModalProps) {
     // Form states
     const [anfitriaoOptions, setAnfitriaoOptions] = useState<Option[]>([]);
     const [anfitriao, setAnfitriao] = useState('');
@@ -43,7 +55,6 @@ export default function AddGuestAdminModal({ formData, isEdit = false, guestMeal
     const [origem, setOrigem] = useState('');
     const [observacoes, setObservacoes] = useState('');
     const [mealId, setMealId] = useState('');
-
     const [dataError, setDataError] = useState('');
     const [nomeError, setNomeError] = useState('');
     const [funcaoError, setFuncaoError] = useState('');
@@ -67,32 +78,34 @@ export default function AddGuestAdminModal({ formData, isEdit = false, guestMeal
         if (!origem.trim()) {
             setOrigemError("Origem é obrigatória");
         }
-    }
+    };
 
     useEffect(() => {
-        formData && formData({
-            anfitriao_id: anfitriao,
-            data,
-            nome,
-            funcao,
-            origem,
-            observacoes,
-            almoco_colegio: lunchConfirmed,
-            almoco_levar: takeOutOption,
-            janta_colegio: dinnerConfirmed,
-        });
-    }, [anfitriao, data, nome, funcao, origem, observacoes, lunchConfirmed, dinnerConfirmed, takeOutOption]);
+        if (formData) {
+            formData({
+                anfitriao_id: anfitriao,
+                data,
+                nome,
+                funcao,
+                origem,
+                observacoes,
+                almoco_colegio: lunchConfirmed,
+                almoco_levar: takeOutOption,
+                janta_colegio: dinnerConfirmed,
+            });
+        }
+    }, [anfitriao, data, nome, funcao, origem, observacoes, lunchConfirmed, dinnerConfirmed, takeOutOption, formData]);
 
     const fetchUserIdAndNames = async () => {
         const result = await queryApi('GET', '/admin/users');
         if (result.success) {
-            const users = result.data.map((user: any) => ({
+            const users = result.data.map((user: { user_id: string; nome_completo: string }) => ({
                 key: user.user_id,
                 value: user.nome_completo
             }));
 
             // Sort users by name
-            users.sort((a: any, b: any) => a.value.localeCompare(b.value));
+            users.sort((a: { value: string }, b: { value: string }) => a.value.localeCompare(b.value));
 
             setAnfitriaoOptions(users);
         }
@@ -104,7 +117,7 @@ export default function AddGuestAdminModal({ formData, isEdit = false, guestMeal
 
     useEffect(() => {
         if (guestMealData) {
-            setAnfitriao(guestMealData.anfitriao_id);
+            setAnfitriao(guestMealData.anfitriao_id || '');
             setData(guestMealData.data);
             setNome(guestMealData.nome);
             setFuncao(guestMealData.funcao);
@@ -147,7 +160,7 @@ export default function AddGuestAdminModal({ formData, isEdit = false, guestMeal
                     />
 
                     <SimpleDateSelect
-                        selectedDate={data ? new Date(data) : undefined}
+                        selectedDate={new Date(date) || undefined}
                         onDateChange={(date) => setData(date?.toISOString())}
                     />
 

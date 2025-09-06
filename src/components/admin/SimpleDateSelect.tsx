@@ -6,9 +6,10 @@ import { useState, useEffect } from 'react';
 interface SimpleDateSelectProps {
     selectedDate?: Date;
     onDateChange?: (date: Date) => void;
+    disabled?: boolean;
 }
 
-export function SimpleDateSelect({ selectedDate, onDateChange }: SimpleDateSelectProps) {
+export function SimpleDateSelect({ selectedDate, onDateChange, disabled }: SimpleDateSelectProps) {
     const [showMiniCalendar, setShowMiniCalendar] = useState(false);
     const [currentMonth, setCurrentMonth] = useState(new Date());
 
@@ -68,10 +69,11 @@ export function SimpleDateSelect({ selectedDate, onDateChange }: SimpleDateSelec
 
                 <span className={styles.dateLabel}>*Data</span>
                 <Button  
+                disabled={disabled}
                 variant="full-white"
                 style={{ width: '100%', height: '37px', justifyContent: 'flex-start', fontSize: '0.875rem', color: selectedDate ? 'var(--color-text)' : 'var(--color-text-muted)' }}
                 iconLeft={<Calendar />}
-                onClick={() => setShowMiniCalendar(!showMiniCalendar)}
+                onClick={() => !disabled && setShowMiniCalendar(!showMiniCalendar)}
                 className={styles.dateButton}
                 >
                     <span className={styles.dateButtonText}>

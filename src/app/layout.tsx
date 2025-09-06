@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
-import { AuthProvider, useAuth } from "@/contexts/AuthContext";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 /* Font principal utilizada no projeto */
 const manrope = Manrope({

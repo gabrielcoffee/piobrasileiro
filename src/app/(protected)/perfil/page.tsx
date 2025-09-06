@@ -5,7 +5,6 @@ import { UserRound, Check, X, CheckCheck, LogOut } from "lucide-react";
 import { InputText } from "@/components/ui/InputText";
 import { InputPassword } from "@/components/ui/InputPassword";
 import { Button } from "@/components/ui/Button";
-import ImageSelector from "@/components/profile/ProfileImage";
 
 import styles from "./page.module.css";
 import { queryApi, uploadAvatar } from "@/lib/utils";
@@ -87,7 +86,7 @@ export default function PerfilPage() {
         } else {
             setPasswordRequirements(false);
         }
-    }, [newPassword])
+    }, [newPassword, fullname, email, lengthRequirement, uppercaseRequirement, lowercaseRequirement, numberRequirement, nameRequirement, emailRequirement])
 
     const fetchUserProfileData = async () => {
         const result = await queryApi('GET', '/user/perfil');

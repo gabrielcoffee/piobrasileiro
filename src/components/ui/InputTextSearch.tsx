@@ -16,6 +16,7 @@ interface InputTextSearchProps {
     disabled?: boolean;
     className?: string;
     placeholder?: string;
+    style?: React.CSSProperties;
 }
 
 export function InputTextSearch({ value, label, error, leftIcon, searchOptions, onSelect, disabled, className, placeholder, ...props }: InputTextSearchProps) {

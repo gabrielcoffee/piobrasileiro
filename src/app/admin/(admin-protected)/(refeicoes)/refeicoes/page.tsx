@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import styles from './page.module.css';
 import Card from '@/components/desktop/Card';
 import CardHeader from '@/components/desktop/CardHeader';
@@ -8,12 +8,13 @@ import Table from '@/components/admin/Table';
 import SearchSection from '@/components/admin/SearchSection';
 import { Check, PencilLine, Plus, Printer, X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { convertBufferToBase64, getCurrentWeekInfo, queryApi } from '@/lib/utils';
+import { convertBufferToBase64, getCurrentWeekInfo, getDateString, queryApi } from '@/lib/utils';
 import { generateReportPDFLib } from '@/lib/reportUtils';
 import { DateSection } from '@/components/admin/DateSection';
 import Modal from '@/components/admin/Modal';
 import ReportCheckList from '@/components/refeicoes/ReportCheckList';
 import AddGuestAdminModal from '@/components/admin/AddGuestAdminModal';
+import AddUserMealModal from '@/components/admin/AddUserMealModal';
 
 export default function ListaDeRefeicoesPage() {
 
@@ -28,9 +29,11 @@ export default function ListaDeRefeicoesPage() {
     const [showGuestBookingModal, setShowGuestBookingModal] = useState<boolean>(false);
     const [showResidentBookingModal, setShowResidentBookingModal] = useState<boolean>(false);
     const [showGuestBookingEditModal, setShowGuestBookingEditModal] = useState<boolean>(false);
+    const [showResidentBookingEditModal, setShowResidentBookingEditModal] = useState<boolean>(false);
     const [selectedGuestMealData, setSelectedGuestMealData] = useState<any>(null);
+    const [selectedResidentMealData, setSelectedResidentMealData] = useState<any>(null);
     const [guestFormData, setGuestFormData] = useState<any>(null);
-
+    const [residentFormData, setResidentFormData] = useState<any>(null);
     const [reportDays, setReportDays] = useState<{
         monday: boolean;
         tuesday: boolean;
@@ -103,7 +106,7 @@ export default function ListaDeRefeicoesPage() {
         setReportDays(days);
     }
 
-    const getDayInfo = (date?: string) => {
+    const getDayInfo = useCallback((date?: string) => {
         const selectedDay = date || selectedDate;
         const dateMeals = refeicoes.filter((refeicao: any) => refeicao.data === selectedDay);
 
@@ -119,7 +122,7 @@ export default function ListaDeRefeicoesPage() {
             totalJanta : totalJanta,
             totalRefeicoes: totalAlmoco + totalJanta,
         }
-    }
+    }, [refeicoes, selectedDate])
 
     // Initialize with current week
     useEffect(() => {
@@ -135,7 +138,7 @@ export default function ListaDeRefeicoesPage() {
     // Update dayInfo when refeicoes or selectedDate changes
     useEffect(() => {
         setDayInfo(getDayInfo());
-    }, [refeicoes, selectedDate,]);
+    }, [getDayInfo]);
 
 
 
@@ -248,10 +251,6 @@ export default function ListaDeRefeicoesPage() {
         setShowResidentBookingModal(true);
     }
 
-    const handleResidentBookingSave = () => {
-        setShowResidentBookingModal(false);
-    }
-
     const handleGuestBookingEdit =  async () => {
 
         if (!guestFormData) {
@@ -321,8 +320,70 @@ export default function ListaDeRefeicoesPage() {
     }
 
     const editar = (meal: any) => {
-        setSelectedGuestMealData(meal);
-        setShowGuestBookingEditModal(true);
+
+        if (meal.tipo_pessoa === 'convidado') {
+            setSelectedGuestMealData(meal);
+            setShowGuestBookingEditModal(true);
+        } else if (meal.tipo_pessoa === 'usuario') {
+            setSelectedResidentMealData(meal);
+            setShowResidentBookingEditModal(true);
+        }
+    }
+
+    const handleResidentBookingSave = async () => {
+
+        if (!residentFormData) {
+            console.log('Não há dados para salvar');
+            return;
+        }
+        if (!residentFormData.usuario_id || !residentFormData.data || !(residentFormData.almoco_colegio || residentFormData.janta_colegio)) {
+            console.log('Não há dados para salvar 2');
+            return;
+        }
+
+        const result = await queryApi('POST', `/admin/meals/${residentFormData.usuario_id}`, {
+            usuario_id: residentFormData.usuario_id,
+            data: residentFormData.data.split('T')[0],
+            almoco_colegio: residentFormData.almoco_colegio,
+            almoco_levar: residentFormData.almoco_levar,
+            janta_colegio: residentFormData.janta_colegio,
+        });
+
+        if (result.success) {
+            console.log('Refeicao salva com sucesso');
+            setShowResidentBookingModal(false);
+            fetchRefeicoes();
+        } else {
+            console.log('Erro ao salvar refeicao');
+        }
+    }
+
+    const handleResidentBookingEdit = async () => {
+
+        console.log(residentFormData);
+
+        if (!residentFormData) {
+            console.log('Não há dados para editar');
+            return;
+        }
+        if (!(residentFormData.almoco_colegio || residentFormData.janta_colegio)) {
+            console.log('Não se pode salvar sem almoço ou jantar');
+            return;
+        }
+
+        const result = await queryApi('PUT', `/admin/meals/${selectedResidentMealData.id}`, {
+            almoco_colegio: residentFormData.almoco_colegio,
+            almoco_levar: residentFormData.almoco_levar,
+            janta_colegio: residentFormData.janta_colegio,
+        });
+
+        if (result.success) {
+            console.log('Refeicao editada com sucesso');
+            fetchRefeicoes();
+            setShowResidentBookingEditModal(false);
+        } else {
+            console.log('Erro ao editar refeicao');
+        }
     }
 
     const acoes = (meal: any) => {
@@ -332,6 +393,14 @@ export default function ListaDeRefeicoesPage() {
             </div>
         )
     }
+
+    const handleGuestFormData = useCallback((formData: any) => {
+        setGuestFormData(formData);
+    }, []);
+
+    const handleResidentFormData = useCallback((formData: any) => {
+        setResidentFormData(formData);
+    }, []);
 
     return (
         <div className={styles.container}>
@@ -399,9 +468,16 @@ export default function ListaDeRefeicoesPage() {
                         { key: "data", label: "Data" },
                         { key: "acao", label: "Ação" },
                     ]}
-                    rowItems={refeicoes.filter((refeicao: any) => {
+                    rowItems={
+                        refeicoes.filter((refeicao: any) => {
                         return refeicao.data === selectedDate;
-                    })}
+                    }).map((refeicao: any) => {
+                        return {
+                            ...refeicao,
+                            data: getDateString(refeicao.data),
+                        }
+                    })
+                    }
                     itemsPerPage={7}
                     hasSelector={true}
                 />
@@ -447,14 +523,12 @@ export default function ListaDeRefeicoesPage() {
                     title="Novo agendamento convidado"
                     buttons={<>
                         <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowGuestBookingModal(false)}>Cancelar</Button>
-                        <Button available={guestFormData?.nome && guestFormData?.funcao && guestFormData?.origem && guestFormData?.data ? true : false} variant="full" iconLeft={<Check size={20} />} onClick={() => handleGuestBookingSave()}>Salvar</Button>
+                        <Button available={guestFormData?.nome && guestFormData?.funcao && guestFormData?.origem && guestFormData?.data && (guestFormData?.almoco_colegio || guestFormData?.janta_colegio) ? true : false} variant="full" iconLeft={<Check size={20} />} onClick={() => handleGuestBookingSave()}>Salvar</Button>
                     </>}
                 >
                     <AddGuestAdminModal 
                         date={new Date(selectedDate + 'T00:00:00').toISOString()}
-                        formData={(formData: any) => {
-                            setGuestFormData(formData);
-                        }}
+                        formData={handleGuestFormData}
                     />
                 </Modal>
 
@@ -471,14 +545,12 @@ export default function ListaDeRefeicoesPage() {
                     <AddGuestAdminModal 
                         onDeleteGuest={() => handleGuestBookingEditDelete()}
                         guestMealData={selectedGuestMealData}
-                        formData={(formData: any) => {
-                            setGuestFormData(formData);
-                        }}
+                        formData={handleGuestFormData}
                         isEdit={true}
                     />
                 </Modal>
 
-
+                {/* NOVA REFEICAO MORADOR */}
                 <Modal
                     isOpen={showResidentBookingModal}
                     onClose={() => setShowResidentBookingModal(false)}
@@ -486,13 +558,32 @@ export default function ListaDeRefeicoesPage() {
                     buttons={
                         <>
                             <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowResidentBookingModal(false)}>Cancelar</Button>
-                            <Button variant="full" iconLeft={<Check size={20} />} onClick={() => handleResidentBookingSave()}>Salvar</Button>
+                            <Button available={residentFormData?.usuario_id && residentFormData?.data && (residentFormData?.almoco_colegio || residentFormData?.janta_colegio) ? true : false} variant="full" iconLeft={<Check size={20} />} onClick={() => handleResidentBookingSave()}>Salvar</Button>
                         </>
                     }
                 >
-                    <div className={styles.residentBookingModalContent}>
-                        
-                    </div>
+                    <AddUserMealModal
+                        date={new Date(selectedDate + 'T00:00:00').toISOString()}
+                        formData={handleResidentFormData}
+                    />
+                </Modal>
+
+                {/* EDITAR REFEICAO MORADOR */}
+                <Modal
+                    isOpen={showResidentBookingEditModal}
+                    onClose={() => setShowResidentBookingEditModal(false)}
+                    title="Editar agendamento morador"
+                    buttons={<>
+                        <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowResidentBookingEditModal(false)}>Cancelar</Button>
+                        <Button onClick={() => handleResidentBookingEdit()} available={residentFormData?.almoco_colegio || residentFormData?.janta_colegio ? true : false} variant="full" iconLeft={<Check size={20} />}>Salvar</Button>
+                    </>}
+                >
+                    <AddUserMealModal
+                        date={new Date(selectedDate + 'T00:00:00').toISOString()}
+                        isEdit={true}
+                        userMealData={selectedResidentMealData}
+                        formData={handleResidentFormData}
+                    />
                 </Modal>
             </Card>
         </div>

@@ -106,7 +106,8 @@ export function normalizeDateString(date: any): string {
 export function getDateString(date: any, format: string = 'DD/MM/YYYY'): string {
 
     if (format === 'DD/MM/YYYY HH:mm') {
-        return new Date(date).toLocaleDateString('pt-BR', {
+        const selectedDate = new Date(date);
+        return selectedDate.toLocaleDateString('pt-BR', {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric',
@@ -114,7 +115,8 @@ export function getDateString(date: any, format: string = 'DD/MM/YYYY'): string 
             minute: '2-digit'
         });
     } else {
-        return new Date(date).toLocaleDateString('pt-BR', {
+        const selectedDate = new Date(date + 'T00:00:00');
+        return selectedDate.toLocaleDateString('pt-BR', {
             day: '2-digit',
             month: '2-digit',
             year: 'numeric' 
