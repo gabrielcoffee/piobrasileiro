@@ -115,7 +115,18 @@ export function getDateString(date: any, format: string = 'DD/MM/YYYY'): string 
             minute: '2-digit'
         });
     } else {
+
+        if (date.includes('T')) {
+            const selectedDate = new Date(date);
+            return selectedDate.toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric' 
+            });
+        }
+
         const selectedDate = new Date(date + 'T00:00:00');
+
         return selectedDate.toLocaleDateString('pt-BR', {
             day: '2-digit',
             month: '2-digit',
