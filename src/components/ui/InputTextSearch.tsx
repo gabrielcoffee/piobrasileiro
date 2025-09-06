@@ -6,15 +6,19 @@ type Option = {
     value: string;
 }
 
-interface InputTextSearchProps extends React.ComponentProps<"input"> {
+interface InputTextSearchProps {
     value?: string;
     label?: string;
     error?: string;
     leftIcon?: React.ReactNode;
     searchOptions?: Option[];
+    onSelect?: (option: Option) => void;
+    disabled?: boolean;
+    className?: string;
+    placeholder?: string;
 }
 
-export function InputTextSearch({ value, label, error, className, leftIcon, searchOptions, ...props }: InputTextSearchProps) {
+export function InputTextSearch({ value, label, error, leftIcon, searchOptions, onSelect, disabled, className, placeholder, ...props }: InputTextSearchProps) {
 
     const [selectedOption, setSelectedOption] = useState<Option | null>(null);
     const [showOptions, setShowOptions] = useState(false);
@@ -22,6 +26,7 @@ export function InputTextSearch({ value, label, error, className, leftIcon, sear
     const handleSearchOptionChange = (option: Option) => {
         setSelectedOption(option);
         setShowOptions(false);
+        onSelect?.(option);
     }
 
     const hasError = error && error.length > 0;
@@ -42,12 +47,14 @@ export function InputTextSearch({ value, label, error, className, leftIcon, sear
             className={`${styles.input} ${className || ''}`}
             style={{ 
                 borderColor: hasError ? 'var(--color-error)' : 'var(--color-border)',
-                color: props.disabled ? 'var(--color-text-muted)' : 'var(--color-text)',
+                color: disabled ? 'var(--color-text-muted)' : 'var(--color-text)',
                 backgroundColor: selectedOption ? 'var(--color-slate-100)' : 'var(--color-white)'
             }}
-            value={selectedOption?.value || ''}
+            value={value}
             onChange={(e) => setSelectedOption({key: selectedOption?.key || '', value: e.target.value})}
             onFocus={() => setShowOptions(true)}
+            disabled={disabled}
+            placeholder={placeholder}
             {...props}
         />
         {showOptions && searchOptions && searchOptions.length > 0 &&(

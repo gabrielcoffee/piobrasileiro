@@ -27,6 +27,8 @@ export default function ListaDeRefeicoesPage() {
     const [showNewBookingModal, setShowNewBookingModal] = useState<boolean>(false);
     const [showGuestBookingModal, setShowGuestBookingModal] = useState<boolean>(false);
     const [showResidentBookingModal, setShowResidentBookingModal] = useState<boolean>(false);
+    const [showGuestBookingEditModal, setShowGuestBookingEditModal] = useState<boolean>(false);
+    const [selectedGuestMealData, setSelectedGuestMealData] = useState<any>(null);
     const [guestFormData, setGuestFormData] = useState<any>(null);
 
     const [reportDays, setReportDays] = useState<{
@@ -135,17 +137,7 @@ export default function ListaDeRefeicoesPage() {
         setDayInfo(getDayInfo());
     }, [refeicoes, selectedDate,]);
 
-    const editar = (id: string) => {
-        return;
-    }
 
-    const acoes = (id: string) => {
-        return (
-            <div className={styles.acoes}>
-                <PencilLine size={20} onClick={() => editar(id)} style={{color: 'var(--color-primary)', cursor: 'pointer'}} />
-            </div>
-        )
-    }
 
     function getAlmocoText(almoco_colegio: boolean, almoco_levar: boolean) {
         if (almoco_colegio) {
@@ -179,8 +171,6 @@ export default function ListaDeRefeicoesPage() {
             const meals = result.data.meals.map((meal: any) => {
                 const avatar = meal.avatar_image_data ? convertBufferToBase64(meal.avatar_image_data) : '/user.png';
 
-
-
                 return {
                     ...meal,
                     rawData: meal,
@@ -189,7 +179,7 @@ export default function ListaDeRefeicoesPage() {
                     tipo_usuario: getTipoUsuarioText(meal.tipo_pessoa),
                     jantar: meal.janta_colegio ? 'No Colégio Pio' : <X style={{color: 'var(--color-error)'}} />,
                     data: meal.data.split('T')[0],
-                    acao: acoes(meal.id),
+                    acao: acoes(meal),
                 }
           
             });
@@ -273,8 +263,10 @@ export default function ListaDeRefeicoesPage() {
 
         setShowGuestBookingModal(false);
 
+        console.log(guestFormData);
+
         const result = await queryApi('POST', '/admin/guestmeals', {
-            anfitriao_id: guestFormData.convidado_id,
+            anfitriao_id: guestFormData.anfitriao_id,
             data: guestFormData.data,
             nome: guestFormData.nome,
             funcao: guestFormData.funcao,
@@ -294,6 +286,24 @@ export default function ListaDeRefeicoesPage() {
             console.log('Erro ao salvar convida');
             setShowGuestBookingModal(false);
         }
+    }
+
+    const handleGuestBookingEditDelete = () => {
+        setShowGuestBookingEditModal(false);
+        fetchRefeicoes();
+    }
+
+    const editar = (meal: any) => {
+        setSelectedGuestMealData(meal);
+        setShowGuestBookingEditModal(true);
+    }
+
+    const acoes = (meal: any) => {
+        return (
+            <div className={styles.acoes}>
+                <PencilLine size={20} onClick={() => editar(meal)} style={{color: 'var(--color-primary)', cursor: 'pointer'}} />
+            </div>
+        )
     }
 
     return (
@@ -402,6 +412,8 @@ export default function ListaDeRefeicoesPage() {
                     }
                 />
 
+
+                {/* ADICIONAR NOVO CONVIDADO */}
                 <Modal
                     isOpen={showGuestBookingModal}
                     onClose={() => setShowGuestBookingModal(false)}
@@ -412,9 +424,30 @@ export default function ListaDeRefeicoesPage() {
                     </>}
                 >
                     <AddGuestAdminModal 
+                        date={new Date(selectedDate + 'T00:00:00').toISOString()}
                         formData={(formData: any) => {
                             setGuestFormData(formData);
                         }}
+                    />
+                </Modal>
+
+                {/* EDITAR CONVIDADO */}
+                <Modal
+                    isOpen={showGuestBookingEditModal}
+                    onClose={() => setShowGuestBookingEditModal(false)}
+                    title="Editar agendamento convidado"
+                    buttons={<>
+                        <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowGuestBookingEditModal(false)}>Cancelar</Button>
+                        <Button available={guestFormData?.nome && guestFormData?.funcao && guestFormData?.origem && guestFormData?.data ? true : false} variant="full" iconLeft={<Check size={20} />} onClick={() => handleGuestBookingSave()}>Salvar</Button>
+                    </>}
+                >
+                    <AddGuestAdminModal 
+                        onDeleteGuest={() => handleGuestBookingEditDelete()}
+                        guestMealData={selectedGuestMealData}
+                        formData={(formData: any) => {
+                            setGuestFormData(formData);
+                        }}
+                        isEdit={true}
                     />
                 </Modal>
 

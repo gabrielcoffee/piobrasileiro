@@ -7,6 +7,8 @@ import styles from './styles/AddGuestAdminModal.module.css';
 import { queryApi } from '@/lib/utils';
 import { InputTextSearch } from '../ui/InputTextSearch';
 import { SimpleDateSelect } from './SimpleDateSelect';
+import { Button } from '../ui/Button';
+import { Trash, Trash2 } from 'lucide-react';
 
 type Option = {
     key: string;
@@ -25,17 +27,22 @@ interface AddGuestAdminModalProps {
         janta_colegio: boolean;
         observacoes: string;
     }) => void;
+    isEdit?: boolean;
+    guestMealData?: any;
+    onDeleteGuest?: () => void;
+    date?: string;
 }
 
-export default function AddGuestAdminModal({ formData }: AddGuestAdminModalProps) {
+export default function AddGuestAdminModal({ formData, isEdit = false, guestMealData = null, onDeleteGuest = () => {}, date = '' }: AddGuestAdminModalProps) {
     // Form states
     const [anfitriaoOptions, setAnfitriaoOptions] = useState<Option[]>([]);
     const [anfitriao, setAnfitriao] = useState('');
-    const [data, setData] = useState('');
+    const [data, setData] = useState(date);
     const [nome, setNome] = useState('');
     const [funcao, setFuncao] = useState('');
     const [origem, setOrigem] = useState('');
     const [observacoes, setObservacoes] = useState('');
+    const [mealId, setMealId] = useState('');
 
     const [dataError, setDataError] = useState('');
     const [nomeError, setNomeError] = useState('');
@@ -65,7 +72,7 @@ export default function AddGuestAdminModal({ formData }: AddGuestAdminModalProps
     useEffect(() => {
         formData && formData({
             anfitriao_id: anfitriao,
-            data: data || '',
+            data,
             nome,
             funcao,
             origem,
@@ -95,6 +102,37 @@ export default function AddGuestAdminModal({ formData }: AddGuestAdminModalProps
         fetchUserIdAndNames();
     }, []);
 
+    useEffect(() => {
+        if (guestMealData) {
+            setAnfitriao(guestMealData.anfitriao_id);
+            setData(guestMealData.data);
+            setNome(guestMealData.nome);
+            setFuncao(guestMealData.funcao);
+            setOrigem(guestMealData.origem);
+            setObservacoes(guestMealData.observacoes);
+            setLunchConfirmed(guestMealData.almoco_colegio);
+            setTakeOutOption(guestMealData.almoco_levar);
+            setDinnerConfirmed(guestMealData.janta_colegio);
+            setMealId(guestMealData.id);
+        }
+    }, [guestMealData]);
+
+    const handleDeleteGuest = async() => {
+
+        if (!mealId) {
+            console.log('Refeicao sem id');
+            return;
+        }
+
+        const result = await queryApi('DELETE', `/admin/guestmeals/${mealId}`);
+        if (result.success) {
+            console.log('Convidado e refeicao deletados com sucesso');
+            onDeleteGuest();
+        } else {
+            console.log('Erro ao deletar refeicao e convidado no banco');
+        }
+    }
+
     return (
         <div className={styles.container}>
             <div className={styles.form}>
@@ -102,10 +140,10 @@ export default function AddGuestAdminModal({ formData }: AddGuestAdminModalProps
                 <div className={styles.inputGroup}>
                     <InputTextSearch
                         label="Anfitrião"
-                        value={anfitriao}
-                        onChange={(e) => setAnfitriao(e.target.value)}
+                        value={anfitriaoOptions.find((option) => option.key === anfitriao)?.value || ''}
+                        onSelect={(option: Option) => setAnfitriao(option.key)}
                         searchOptions={anfitriaoOptions}
-                        placeholder="Selecione"
+                        placeholder="Selecione um anfitrião"
                     />
 
                     <SimpleDateSelect
@@ -114,6 +152,7 @@ export default function AddGuestAdminModal({ formData }: AddGuestAdminModalProps
                     />
 
                     <InputText
+                        disabled={isEdit}
                         label="*Nome"
                         placeholder="Insira o nome"
                         value={nome}
@@ -122,6 +161,7 @@ export default function AddGuestAdminModal({ formData }: AddGuestAdminModalProps
                     />
 
                     <InputText
+                        disabled={isEdit}
                         label="*Função"
                         placeholder="Insira a função ou grau de parentesco"
                         value={funcao}
@@ -130,6 +170,7 @@ export default function AddGuestAdminModal({ formData }: AddGuestAdminModalProps
                     />
 
                     <InputText
+                        disabled={isEdit}
                         label="*Origem"
                         placeholder="De onde vem?"
                         value={origem}
@@ -226,6 +267,12 @@ export default function AddGuestAdminModal({ formData }: AddGuestAdminModalProps
                         onChange={(e) => setObservacoes(e.target.value)}
                     />
                 </div>
+
+                {isEdit && (
+                    <div className={styles.inputGroup}>
+                        <Button variant="text" iconLeft={<Trash2 size={20} />} className={styles.deleteGuestButton} onClick={() => handleDeleteGuest()}>Excluir convidado</Button>
+                    </div>
+                )}
 
 
             </div>
