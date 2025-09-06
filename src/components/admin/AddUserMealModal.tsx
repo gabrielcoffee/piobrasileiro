@@ -139,43 +139,16 @@ export default function AddGuestAdminModal({ formData, isEdit = false, guestMeal
                 {/* Anfitrião */}
                 <div className={styles.inputGroup}>
                     <InputTextSearch
-                        label="Anfitrião"
+                        label="*Nome"
                         value={anfitriaoOptions.find((option) => option.key === anfitriao)?.value || ''}
                         onSelect={(option: Option) => setAnfitriao(option.key)}
                         searchOptions={anfitriaoOptions}
-                        placeholder="Selecione um anfitrião"
+                        placeholder="Selecione um usuário"
                     />
 
                     <SimpleDateSelect
                         selectedDate={data ? new Date(data) : undefined}
                         onDateChange={(date) => setData(date?.toISOString())}
-                    />
-
-                    <InputText
-                        disabled={isEdit}
-                        label="*Nome"
-                        placeholder="Insira o nome"
-                        value={nome}
-                        onChange={(e) => setNome(e.target.value)}
-                        error={nomeError}
-                    />
-
-                    <InputText
-                        disabled={isEdit}
-                        label="*Função"
-                        placeholder="Insira a função ou grau de parentesco"
-                        value={funcao}
-                        onChange={(e) => setFuncao(e.target.value)}
-                        error={funcaoError}
-                    />
-
-                    <InputText
-                        disabled={isEdit}
-                        label="*Origem"
-                        placeholder="De onde vem?"
-                        value={origem}
-                        onChange={(e) => setOrigem(e.target.value)}
-                        error={origemError}
                     />
                 </div>
 
@@ -257,24 +230,6 @@ export default function AddGuestAdminModal({ formData, isEdit = false, guestMeal
                         </label>
                     </div>
                 </div>
-
-                {/* Observações */}
-                <div className={`${styles.inputGroup} ${styles.observacoesGroup}`}>
-                    <InputTextBox
-                        label="Observações sobre restrição alimentar"
-                        placeholder="Digite aqui as observações"
-                        value={observacoes}
-                        onChange={(e) => setObservacoes(e.target.value)}
-                    />
-                </div>
-
-                {isEdit && (
-                    <div className={styles.delete}>
-                        <Button variant="text" iconLeft={<Trash2 size={20} />} style={{color: 'var(--color-error)'}} onClick={() => handleDeleteGuest()}>Excluir convidado</Button>
-                    </div>
-                )}
-
-
             </div>
         </div>
     );

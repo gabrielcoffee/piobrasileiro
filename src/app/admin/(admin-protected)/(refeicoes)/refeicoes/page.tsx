@@ -252,6 +252,35 @@ export default function ListaDeRefeicoesPage() {
         setShowResidentBookingModal(false);
     }
 
+    const handleGuestBookingEdit =  async () => {
+
+        if (!guestFormData) {
+            console.log('Não há dados para editar');
+            return;
+        }
+        if (!guestFormData.nome || !guestFormData.funcao || !guestFormData.origem || !guestFormData.data) {
+            console.log('Não há dados para editar 2');
+            return;
+        }
+
+        const result = await queryApi('PUT', `/admin/guestmeals/${selectedGuestMealData.id}`, {
+            anfitriao_id: guestFormData.anfitriao_id,
+            data: guestFormData.data,
+            almoco_colegio: guestFormData.almoco_colegio,
+            almoco_levar: guestFormData.almoco_levar,
+            janta_colegio: guestFormData.janta_colegio,
+            observacoes: guestFormData.observacoes,
+        });
+
+        if (result.success) {
+            console.log('Refeicao editada com sucesso');
+            fetchRefeicoes();
+            setShowGuestBookingEditModal(false);
+        } else {
+            console.log('Não foi possível editar a refeição');
+        }
+    }
+
     const handleGuestBookingSave = async () => {
 
         if (!guestFormData) {
@@ -262,8 +291,6 @@ export default function ListaDeRefeicoesPage() {
         }
 
         setShowGuestBookingModal(false);
-
-        console.log(guestFormData);
 
         const result = await queryApi('POST', '/admin/guestmeals', {
             anfitriao_id: guestFormData.anfitriao_id,
@@ -438,7 +465,7 @@ export default function ListaDeRefeicoesPage() {
                     title="Editar agendamento convidado"
                     buttons={<>
                         <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowGuestBookingEditModal(false)}>Cancelar</Button>
-                        <Button available={guestFormData?.nome && guestFormData?.funcao && guestFormData?.origem && guestFormData?.data ? true : false} variant="full" iconLeft={<Check size={20} />} onClick={() => handleGuestBookingSave()}>Salvar</Button>
+                        <Button onClick={() => handleGuestBookingEdit()} available={guestFormData?.nome && guestFormData?.funcao && guestFormData?.origem && guestFormData?.data ? true : false} variant="full" iconLeft={<Check size={20} />}>Salvar</Button>
                     </>}
                 >
                     <AddGuestAdminModal 

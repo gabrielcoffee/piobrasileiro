@@ -167,12 +167,8 @@
     transition: color 0.2s ease;
 }
 
-.deleteGuestButton {
+.delete {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    color: var(--color-error);
-    font-size: 0.875rem;
-    font-weight: 400;
-    transition: color 0.2s ease;
+    margin-right: 60%;
 }
