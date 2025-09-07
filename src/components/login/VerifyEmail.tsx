@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/ClebersonDaSilvaSauro";
 import { InputText } from "@/components/ui/InputText";
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 import styles from "./styles/ForgotPassword.module.css";

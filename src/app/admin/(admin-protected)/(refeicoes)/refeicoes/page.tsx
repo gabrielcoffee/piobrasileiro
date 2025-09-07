@@ -7,7 +7,7 @@ import CardHeader from '@/components/desktop/CardHeader';
 import Table from '@/components/admin/Table';
 import SearchSection from '@/components/admin/SearchSection';
 import { Check, PencilLine, Plus, Printer, X } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/ClebersonDaSilvaSauro';
 import { convertBufferToBase64, getCurrentWeekInfo, getDateString, queryApi } from '@/lib/utils';
 import { generateReportPDFLib } from '@/lib/reportUtils';
 import { DateSection } from '@/components/admin/DateSection';

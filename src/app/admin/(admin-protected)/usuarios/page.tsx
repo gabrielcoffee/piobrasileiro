@@ -3,7 +3,7 @@
 import Card from "@/components/desktop/Card";
 import CardHeader from "@/components/desktop/CardHeader";
 import styles from "./page.module.css";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/ClebersonDaSilvaSauro";
 import { EllipsisVertical, Filter, FlipVertical, PencilLine, Plus, Power, PowerOff, Trash2 } from "lucide-react";
 import Table from "@/components/admin/Table";
 import SearchSection from "@/components/admin/SearchSection";

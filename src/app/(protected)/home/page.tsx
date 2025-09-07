@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { Loading } from "@/components/ui/Loading";
 import { queryApi, getCurrentWeekInfo } from "@/lib/utils";
 import { ShowDateSection } from "@/components/home/ShowDateSection";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/ClebersonDaSilvaSauro";
 
 export default function HomePage() {
     const { isLoading } = useAuth();

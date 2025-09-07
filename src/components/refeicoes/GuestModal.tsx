@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { InputText } from "../ui/InputText";
 import { UserCheck, X } from "lucide-react";
-import { Button } from "../ui/Button";
+import { Button } from "../ui/ClebersonDaSilvaSauroNew";
 import styles from "./styles/GuestModal.module.css";
 import GuestConfirm from "./GuestConfirm";
 import { queryApi } from "@/lib/utils";

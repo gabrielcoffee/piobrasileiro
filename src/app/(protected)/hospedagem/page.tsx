@@ -2,7 +2,7 @@
 
 import { PageTitle } from "@/components/home/PageTitle";
 import { Bed } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/ClebersonDaSilvaSauro";
 import styles from "./page.module.css";
 
 export default function HospedagemPage() {

@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { InputPassword } from "@/components/ui/InputPassword";
 import { InputText } from "@/components/ui/InputText";
 import { DropdownInput } from "@/components/ui/DropdownInput";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/ClebersonDaSilvaSauro";
 import ProfileImage from "@/components/profile/ProfileImage";
 import { InputTextBox } from "@/components/ui/InputTextBox";
 
