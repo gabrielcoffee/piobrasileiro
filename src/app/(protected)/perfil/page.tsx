@@ -4,7 +4,7 @@ import { PageTitle } from "@/components/home/PageTitle";
 import { UserRound, Check, X, CheckCheck, LogOut } from "lucide-react";
 import { InputText } from "@/components/ui/InputText";
 import { InputPassword } from "@/components/ui/InputPassword";
-import { Button } from "@/components/ui/ClebersonDaSilvaSauro";
+import { Button } from "@/components/ui/Button";
 
 import styles from "./page.module.css";
 import { queryApi, uploadAvatar } from "@/lib/utils";

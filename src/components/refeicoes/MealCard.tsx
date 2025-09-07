@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { LucidePlug, LucidePlus, Salad } from 'lucide-react';
 import styles from './styles/MealCard.module.css';
-import { Button } from '../ui/ClebersonDaSilvaSauroNew';
+import { Button } from '../ui/Button';
 import GuestModal from './GuestModal';
 import ConvidadosList from './ConvidadosList';
 

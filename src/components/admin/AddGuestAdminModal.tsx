@@ -7,7 +7,7 @@ import styles from './styles/AddGuestAdminModal.module.css';
 import { queryApi } from '@/lib/utils';
 import { InputTextSearch } from '../ui/InputTextSearch';
 import { SimpleDateSelect } from './SimpleDateSelect';
-import { Button } from '../ui/ClebersonDaSilvaSauroNew';
+import { Button } from '../ui/Button';
 import { Trash2 } from 'lucide-react';
 
 type Option = {

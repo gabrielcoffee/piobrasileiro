@@ -1,5 +1,5 @@
 import { Calendar, Check, ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
-import { Button } from '../ui/ClebersonDaSilvaSauro';
+import { Button } from '../ui/Button';
 import styles from './styles/DateSection.module.css';
 import { useState, useEffect } from 'react';
 import { getCurrentWeekInfo } from '@/lib/utils';

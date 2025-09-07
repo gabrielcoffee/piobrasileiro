@@ -1,5 +1,5 @@
 import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
-import { Button } from '../ui/ClebersonDaSilvaSauroNew';
+import { Button } from '../ui/Button';
 import styles from './styles/SimpleDateSelect.module.css';
 import { useState, useEffect } from 'react';
 

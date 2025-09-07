@@ -1,6 +1,6 @@
 import { UserCheck, X } from "lucide-react";
 import styles from "./styles/GuestConfirm.module.css";
-import { Button } from "../ui/ClebersonDaSilvaSauroNew";
+import { Button } from "../ui/Button";
 
 interface GuestConfirmProps {
     setIsOpen: (isOpen: boolean) => void;

@@ -1,6 +1,6 @@
 'use client'
 import { ArrowRightIcon } from "lucide-react";
-import { Button } from "@/components/ui/ClebersonDaSilvaSauro";
+import { Button } from "@/components/ui/Button";
 import Title from "@/components/ui/Title"; 
 import { useState, useEffect, useRef } from "react";
 import styles from "./styles/Splash.module.css";

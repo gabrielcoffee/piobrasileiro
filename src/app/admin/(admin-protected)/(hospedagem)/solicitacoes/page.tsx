@@ -6,7 +6,7 @@ import Card from '@/components/desktop/Card';
 import CardHeader from '@/components/desktop/CardHeader';
 import Table from '@/components/admin/Table';
 import { getDateString, queryApi } from '@/lib/utils';
-import { Button } from '@/components/ui/ClebersonDaSilvaSauro';
+import { Button } from '@/components/ui/Button';
 import { Eye } from 'lucide-react';
 
 export default function SolicitacoesPage() {
