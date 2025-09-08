@@ -180,8 +180,8 @@ export function Calendar() {
             </div>
 
             <div className={styles.confirmContainer}>
-                <Button variant="full" iconLeft={<Check size={20} />} onClick={handleSaveBlockDates}>
-                    Salvar
+                <Button variant="full" iconLeft={<Lock size={20} />} onClick={handleSaveBlockDates}>
+                    Salvar Bloqueios
                 </Button>
             </div>
         </div>
