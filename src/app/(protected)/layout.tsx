@@ -6,10 +6,14 @@ import { Loading } from "@/components/ui/Loading";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect } from "react";
+import { useScrollToTop } from "@/lib/useScrollToTop";
 
 export default function ProtectedLayout({ children }: { children: ReactNode}) {
     const { isLoading, isAuthenticated } = useAuth();
     const router = useRouter();
+    
+    // Scroll to top on route changes
+    useScrollToTop();
 
     useEffect(() => {
         if (!isLoading && !isAuthenticated) {
