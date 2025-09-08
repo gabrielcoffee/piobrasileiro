@@ -1,0 +1,165 @@
+.container {
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.dateButton {
+    width: 100%;
+    height: 100%;
+    padding: 12px;
+    color: var(--color-text);
+}
+
+.weekLeftArrow {
+    background-color: var(--color-white);
+    border-radius: 5px;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+.weekRightArrow {
+    background-color: var(--color-white);
+    border-radius: 5px;
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+.calendar {
+    padding: 1rem;
+    width: 100%;
+}
+
+.monthsContainer {
+  display: flex;
+  gap: 2rem;
+}
+
+.monthBlock {
+  flex: 1;
+  min-width: 0;
+}
+
+.confirmContainer {
+  display: flex;
+  margin-top: 2rem;
+  margin-left: 75%;
+}
+
+.headerContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.monthSelector {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    gap: 1rem;
+}
+
+.month {
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.blockDatesContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.blockDatesButton {
+    padding: 1rem;
+}
+
+
+
+.leftMonthArrow,
+.rightMonthArrow {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background-color 0.1s ease;
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+    padding: 0.5rem;
+}
+
+.leftMonthArrow:hover,
+.rightMonthArrow:hover {
+  background-color: var(--color-slate-100);
+}
+
+.weekDaysContainer {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.weekDay {
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  padding: 0.3rem 0;
+}
+
+.daysContainer {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(5, 6rem);
+}
+
+.day:hover {
+    background-color: var(--color-slate-100);
+}
+
+.day {
+    margin: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: var(--color-text);
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.1s ease;
+}
+
+.adjacentMonth {
+  color: var(--color-text-muted);
+  font-weight: 300;
+}
+
+.weekMiddle {
+  background-color: var(--color-primary-foreground);
+  color: var(--color-text);
+}
+
+.weekBoundary {
+  background-color: var(--color-primary);
+  color: white;
+}
+
+
+
+.selectedBlockDate {
+    background-color: var(--color-error-bg);
+    font-weight: 600;
+    border: 2px solid var(--color-error);
+}
+
+.selectedDate {
+    background-color: var(--color-slate-100) !important;
+    font-weight: 600;
+    border: 2px solid var(--color-primary) !important;
+}

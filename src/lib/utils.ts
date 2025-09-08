@@ -13,7 +13,7 @@ export async function queryApi(method: string, route: string, body?: any) {
         };
 
         // Add body for POST/PUT requests
-        if (body && (method.toUpperCase() === 'POST' || method.toUpperCase() === 'PUT')) {
+        if (body && (method.toUpperCase() === 'POST' || method.toUpperCase() === 'PUT' || method.toUpperCase() === 'DELETE')) {
             fetchOptions.headers = {
                 ...fetchOptions.headers,
                 'Content-Type': 'application/json'
