@@ -22,14 +22,15 @@ export async function queryApi(method: string, route: string, body?: any) {
         }
     
         const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}${route}`, fetchOptions);
-    
+        const json = await response.json();
+
         if (response.ok) {
-            const json = await response.json();
             const data = json.data || null;
             return {
                 success: true,
                 data, 
-                error: null 
+                error: null,
+                message: json.message || null
             };
         } else {
             // Handle different error statuses
@@ -41,12 +42,13 @@ export async function queryApi(method: string, route: string, body?: any) {
             } else if (response.status === 500) {
                 errorMessage = 'Server error';
             }
-            
+
             return { 
                 success: false, 
                 error: errorMessage, 
                 status: response.status,
-                data: null 
+                data: null,
+                message: json.error || null
             };
         }
     } catch (error) {

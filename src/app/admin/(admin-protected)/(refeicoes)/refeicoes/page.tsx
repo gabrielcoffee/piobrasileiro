@@ -15,8 +15,12 @@ import Modal from '@/components/admin/Modal';
 import ReportCheckList from '@/components/refeicoes/ReportCheckList';
 import AddGuestAdminModal from '@/components/admin/AddGuestAdminModal';
 import AddUserMealModal from '@/components/admin/AddUserMealModal';
+import { Loading } from '@/components/ui/Loading';
+import { useAuth } from '@/contexts/AuthContext';
 
 export default function ListaDeRefeicoesPage() {
+
+    const { isLoading, setIsLoading } = useAuth();
 
     const [refeicoes, setRefeicoes] = useState([]);
     const [selectedWeek, setSelectedWeek] = useState<Date>(new Date());
@@ -332,6 +336,11 @@ export default function ListaDeRefeicoesPage() {
 
     const handleResidentBookingSave = async () => {
 
+        if (!checkResidentAvaliability()) {
+            console.log('Não há disponibilidade para salvar');
+            return;
+        }
+
         if (!residentFormData) {
             console.log('Não há dados para salvar');
             return;
@@ -354,7 +363,7 @@ export default function ListaDeRefeicoesPage() {
             setShowResidentBookingModal(false);
             fetchRefeicoes();
         } else {
-            console.log('Erro ao salvar refeicao');
+            console.log(result.message);
         }
     }
 
@@ -401,6 +410,13 @@ export default function ListaDeRefeicoesPage() {
     const handleResidentFormData = useCallback((formData: any) => {
         setResidentFormData(formData);
     }, []);
+
+    const checkResidentAvaliability = () => {
+        return residentFormData?.usuario_id && residentFormData?.data && (residentFormData?.almoco_colegio || residentFormData?.janta_colegio) 
+        && !refeicoes.some((refeicao: any) => {
+            return refeicao.data === residentFormData.data.split('T')[0] && refeicao.usuario_id === residentFormData.usuario_id
+        });
+    }
 
     return (
         <div className={styles.container}>
@@ -457,6 +473,9 @@ export default function ListaDeRefeicoesPage() {
                         {currentWeekDaysButtons()}
                     </div>
                 </div>
+
+                {isLoading ? <Loading /> : (
+                <>
 
                 <Table
                     headerItems={[
@@ -558,7 +577,7 @@ export default function ListaDeRefeicoesPage() {
                     buttons={
                         <>
                             <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowResidentBookingModal(false)}>Cancelar</Button>
-                            <Button available={residentFormData?.usuario_id && residentFormData?.data && (residentFormData?.almoco_colegio || residentFormData?.janta_colegio) ? true : false} variant="full" iconLeft={<Check size={20} />} onClick={() => handleResidentBookingSave()}>Salvar</Button>
+                            <Button available={checkResidentAvaliability()} variant="full" iconLeft={<Check size={20} />} onClick={() => handleResidentBookingSave()}>Salvar</Button>
                         </>
                     }
                 >
@@ -585,6 +604,7 @@ export default function ListaDeRefeicoesPage() {
                         formData={handleResidentFormData}
                     />
                 </Modal>
+                </>)}
             </Card>
         </div>
     );
