@@ -31,3 +31,27 @@
     align-items: center;
     gap: 0.5rem;
 }
+
+.detalhesModalContent {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.part {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.partTitle {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.partValue {
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--color-text);
+}
