@@ -1,0 +1,278 @@
+'use client'
+
+import React, { useEffect, useState } from 'react';
+import { InputText } from '../ui/InputText';
+import { InputTextBox } from '../ui/InputTextBox';
+import styles from './styles/AddGuestAdminModal.module.css';
+import { queryApi } from '@/lib/utils';
+import { InputTextSearch } from '../ui/InputTextSearch';
+import { SimpleDateSelect } from './SimpleDateSelect';
+import { Button } from '../ui/Button';
+import { Trash2, UserPlus } from 'lucide-react';
+
+type Option = {
+    key: string;
+    value: string;
+}
+
+interface AddBookingModalProps {
+    bookingDataChange?: (bookingData: {
+        id: string;
+        anfitriao_id: string;
+        hospede_id: string;
+        data_chegada: string;
+        data_saida: string;
+        quarto_id: string;
+        almoco: boolean;
+        jantar: boolean;
+        observacoes: string;
+    }) => void;
+    isEdit?: boolean;
+    bookingData?: {
+        id: string;
+        anfitriao_id: string;
+        hospede_id: string;
+        data_chegada: string;
+        data_saida: string;
+        quarto_id: string;
+        almoco: boolean;
+        jantar: boolean;
+        observacoes: string;
+    };
+}
+
+export default function AddBookingModal({ bookingDataChange, isEdit = false, bookingData }: AddBookingModalProps) {
+    // Form states
+    const [anfitriaoOptions, setAnfitriaoOptions] = useState<Option[]>([]);
+    const [hospedeOptions, setHospedeOptions] = useState<Option[]>([]);
+    const [quartoOptions, setQuartoOptions] = useState<Option[]>([]);
+    const [anfitriao, setAnfitriao] = useState('');
+    const [hospede, setHospede] = useState('');
+    const [quarto, setQuarto] = useState('');
+    const [dataChegada, setDataChegada] = useState('');
+    const [dataSaida, setDataSaida] = useState('');
+    const [almoco, setAlmoco] = useState(false);
+    const [jantar, setJantar] = useState(false);
+    const [observacoes, setObservacoes] = useState('');
+    const [bookingId, setBookingId] = useState('');
+    const [nomeNewHospede, setNomeNewHospede] = useState('');
+
+    const [anfitriaoError, setAnfitriaoError] = useState('');
+    const [hospedeError, setHospedeError] = useState('');
+    const [quartoError, setQuartoError] = useState('');
+    const [dataChegadaError, setDataChegadaError] = useState('');
+    const [dataSaidaError, setDataSaidaError] = useState('');
+
+    const validateForm = () => {
+
+        if (!anfitriao) {
+            setAnfitriaoError("Anfitrião é obrigatório");
+        }
+        if (!hospede) {
+            setHospedeError("Hospede é obrigatório");
+        }
+        if (!quarto) {
+            setQuartoError("Quarto é obrigatório");
+        }
+        if (!dataChegada) {
+            setDataChegadaError("Data de chegada é obrigatória");
+        }
+        if (!dataSaida) {
+            setDataSaidaError("Data de saída é obrigatória");
+        }
+    };
+
+    useEffect(() => {
+        if (bookingDataChange) {
+            bookingDataChange({
+                id: bookingId,
+                anfitriao_id: anfitriao,
+                hospede_id: hospede,
+                data_chegada: dataChegada,
+                data_saida: dataSaida,
+                quarto_id: quarto,
+                almoco: almoco,
+                jantar: jantar,
+                observacoes: observacoes,
+            });
+        }
+    }, [anfitriao, hospede, quarto, dataChegada, dataSaida, almoco, jantar, observacoes, bookingDataChange]);
+
+    const handleQuickAddGuest = async () => {
+        if (!nomeNewHospede) {
+            console.log('Nome do hóspede é obrigatório');
+            return;
+        }
+
+        const result = await queryApi('POST', '/admin/guests/quick', {
+            nome: nomeNewHospede
+        });
+
+        if (result.success) {
+            setNomeNewHospede('');
+            setHospede(result.data.id);
+            fetchHospedesIdAndNames();
+        }
+
+    }
+
+
+    const fetchUserAnfitriaoIdAndNames = async () => {
+        const result = await queryApi('GET', '/admin/users');
+        if (result.success) {
+            const users = result.data.map((user: { user_id: string; nome_completo: string }) => ({
+                key: user.user_id,
+                value: user.nome_completo
+            }));
+            users.sort((a: { value: string }, b: { value: string }) => a.value.localeCompare(b.value));
+            setAnfitriaoOptions(users);
+        }
+    }
+
+    const fetchHospedesIdAndNames = async () => {
+        const result = await queryApi('GET', '/admin/guests');
+        if (result.success) {
+
+            const hospedes = result.data.map((guest: any) => ({
+                key: guest.id,
+                value: guest.nome
+            }));
+
+            setHospedeOptions(hospedes);
+        }
+    }
+
+    const fetchQuartosIdAndNames = async () => {
+        const result = await queryApi('GET', '/admin/rooms');
+        if (result.success) {
+            const rooms = result.data.map((room: any) => ({
+                key: room.id,
+                value: room.numero + ' - ( ' + room.capacidade + ' )'
+            }));
+            setQuartoOptions(rooms);
+        }
+    }
+
+    useEffect(() => {
+        fetchUserAnfitriaoIdAndNames();
+        fetchHospedesIdAndNames();
+        fetchQuartosIdAndNames();
+    }, []);
+
+    useEffect(() => {
+        if (bookingData && bookingData.id && isEdit) {
+            setAnfitriao(bookingData.anfitriao_id || '');
+            setHospede(bookingData.hospede_id || '');
+            setQuarto(bookingData.quarto_id || '');
+            setDataChegada(bookingData.data_chegada || '');
+            setDataSaida(bookingData.data_saida || '');
+            setAlmoco(bookingData.almoco || false);
+            setJantar(bookingData.jantar || false);
+            setObservacoes(bookingData.observacoes || '');
+            setBookingId(bookingData.id || '');
+        }
+    }, [bookingData, isEdit]);
+
+    return (
+        <div className={styles.container}>
+            <div className={styles.form}>
+                {/* Anfitrião */}
+                <div className={styles.inputGroup}>
+                    <InputTextSearch
+                        label="*Anfitrião"
+                        value={anfitriaoOptions.find((option) => option.key === anfitriao)?.value || ''}
+                        onSelect={(option: Option) => setAnfitriao(option.key)}
+                        searchOptions={anfitriaoOptions}
+                        placeholder="Selecione"
+                    />
+
+                    <div className={styles.inputGroupHospede}>
+                        <InputTextSearch
+                            label="*Nome do hóspede"
+                            value={hospedeOptions.find((option) => option.key === hospede)?.value || ''}
+                            onSelect={(option: Option) => setHospede(option.key)}
+                            searchOptions={hospedeOptions}
+                            placeholder="Selecione"
+                        />
+
+                        <div className={styles.inputGroup2}>
+                            <InputText className={styles.quickAddGuestInput} placeholder="Adicione um hóspede" value={nomeNewHospede} onChange={(e) => setNomeNewHospede(e.target.value)} />
+                            <UserPlus className={styles.quickAddGuestIcon} size={30} onClick={() => handleQuickAddGuest()} />
+                        </div>
+                    </div>
+
+                    <SimpleDateSelect
+                        label="*Data de chegada"
+                        cantBeBeforeToday={true}
+                        selectedDate={new Date(dataChegada) || undefined}
+                        onDateChange={(date) => setDataChegada(date?.toISOString())}
+                    />
+
+                    <SimpleDateSelect
+                        label="*Data de saída"
+                        cantBeBeforeToday={true}
+                        selectedDate={new Date(dataSaida) || undefined}
+                        onDateChange={(date) => setDataSaida(date?.toISOString())}
+                    />
+
+                    <InputTextSearch
+                        label="*Quarto - (capacidade)"
+                        value={quartoOptions.find((option) => option.key === quarto)?.value || ''}
+                        onSelect={(option: Option) => setQuarto(option.key)}
+                        searchOptions={quartoOptions}
+                        placeholder="Selecione"
+                    />
+
+
+                {/* MEALS Section */}
+
+                <div className={styles.mealSection}>
+                <span className={styles.mealSectionTitle}>*Incluir refeições?</span>
+
+                    {/* Almoço Section */}
+                    <div className={styles.mealHeader}>
+                        <h3 className={styles.mealTitle}>Almoço (11h - 14h)</h3>
+                        <div className={styles.toggleContainer}>
+                            <span className={styles.toggleText}>
+                                {almoco ? 'SIM' : 'NÃO'}
+                            </span>
+                            <button
+                                className={`${styles.toggle} ${almoco ? styles.toggleOn : styles.toggleOff}`}
+                                onClick={() => setAlmoco(!almoco)}
+                            >
+                                <div className={styles.toggleCircle} />
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Jantar Section */}
+                    <div className={styles.mealHeader}>
+                        <h3 className={styles.mealTitle}>Jantar (17h - 20h)</h3>
+                        <div className={styles.toggleContainer}>
+                            <span className={styles.toggleText}>
+                                {jantar ? 'SIM' : 'NÃO'}
+                            </span>
+                            <button
+                                className={`${styles.toggle} ${jantar ? styles.toggleOn : styles.toggleOff}`}
+                                onClick={() => setJantar(!jantar)}
+                            >
+                                <div className={styles.toggleCircle} />
+                            </button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+
+                {/* Observações */}
+                <div className={`${styles.inputGroup} ${styles.observacoesGroup}`}>
+                    <InputTextBox
+                        label="Observações sobre restrição alimentar"
+                        placeholder="Digite aqui as observações"
+                        value={observacoes}
+                        onChange={(e) => setObservacoes(e.target.value)}
+                    />
+                </div>
+            </div>
+        </div>
+    );
+}

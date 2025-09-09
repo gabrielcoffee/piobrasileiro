@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import styles from './styles/InputTextSearch.module.css';
 
 type Option = {
@@ -23,6 +23,7 @@ export function InputTextSearch({ value, label, error, leftIcon, searchOptions, 
 
     const [selectedOption, setSelectedOption] = useState<Option | null>(null);
     const [showOptions, setShowOptions] = useState(false);
+    const containerRef = useRef<HTMLDivElement>(null);
 
     const handleSearchOptionChange = (option: Option) => {
         setSelectedOption(option);
@@ -31,9 +32,26 @@ export function InputTextSearch({ value, label, error, leftIcon, searchOptions, 
     }
 
     const hasError = error && error.length > 0;
+
+    // Add this useEffect after your state declarations
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (showOptions && containerRef.current && !containerRef.current.contains(event.target as Node)) {
+                setShowOptions(false);
+            }
+        };
+
+        if (showOptions) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showOptions]);
     
     return (
-        <div className={styles.container}>
+        <div ref={containerRef} className={styles.container}>
         {label && (
             <label className={`${styles.label} ${error ? styles.labelError : ''}`}>
             {label}

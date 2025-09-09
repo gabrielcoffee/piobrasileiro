@@ -185,6 +185,25 @@ export function DateSection({ selectedWeekStart, selectedWeekEnd, onWeekChange }
         }
     }, [showMiniCalendar, curWeekStart, curWeekEnd]);
 
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (showMiniCalendar) {
+                const calendar = document.querySelector(`.${styles.miniCalendar}`);
+                if (calendar && !calendar.contains(event.target as Node)) {
+                    setShowMiniCalendar(false);
+                }
+            }
+        };
+    
+        if (showMiniCalendar) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+    
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showMiniCalendar]);
+
     // Generate dates for left and right months
     const leftMonthDates = generateCalendarDates(currentMonth.getFullYear(), currentMonth.getMonth());
     const rightMonthDates = generateCalendarDates(currentMonth.getFullYear(), currentMonth.getMonth() + 1);

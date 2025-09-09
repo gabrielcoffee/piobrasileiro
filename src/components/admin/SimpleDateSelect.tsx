@@ -7,9 +7,11 @@ interface SimpleDateSelectProps {
     selectedDate?: Date;
     onDateChange?: (date: Date) => void;
     disabled?: boolean;
+    label?: string;
+    cantBeBeforeToday?: boolean;
 }
 
-export function SimpleDateSelect({ selectedDate, onDateChange, disabled }: SimpleDateSelectProps) {
+export function SimpleDateSelect({ selectedDate, onDateChange, disabled, label = '*Data', cantBeBeforeToday = false }: SimpleDateSelectProps) {
     const [showMiniCalendar, setShowMiniCalendar] = useState(false);
     const [currentMonth, setCurrentMonth] = useState(new Date());
 
@@ -39,8 +41,22 @@ export function SimpleDateSelect({ selectedDate, onDateChange, disabled }: Simpl
         return date.getMonth() === currentMonth.getMonth();
     };
 
+    // Check if a date is before today
+    const isBeforeToday = (date: Date) => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Reset time to start of day
+        const dateToCheck = new Date(date);
+        dateToCheck.setHours(0, 0, 0, 0); // Reset time to start of day
+        return dateToCheck < today;
+    };
+
     // Handle date click in calendar
     const handleDateClick = (date: Date) => {
+        // If cantBeBeforeToday is true and the selected date is before today, don't select it
+        if (cantBeBeforeToday && isBeforeToday(date)) {
+            return; // Don't close calendar or call onDateChange
+        }
+        
         setShowMiniCalendar(false);
         onDateChange?.(date);
     };
@@ -58,6 +74,26 @@ export function SimpleDateSelect({ selectedDate, onDateChange, disabled }: Simpl
         onDateChange?.(now);
     }, []);
 
+    // Add this useEffect after your existing useEffect
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (showMiniCalendar) {
+                const calendar = document.querySelector(`.${styles.miniCalendar}`);
+                if (calendar && !calendar.contains(event.target as Node)) {
+                    setShowMiniCalendar(false);
+                }
+            }
+        };
+
+        if (showMiniCalendar) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [showMiniCalendar]);
+
 
     // Generate dates for left and right months
     const monthDates = generateCalendarDates(currentMonth.getFullYear(), currentMonth.getMonth());
@@ -67,7 +103,7 @@ export function SimpleDateSelect({ selectedDate, onDateChange, disabled }: Simpl
 
             <div className={styles.dateBox}>
 
-                <span className={styles.dateLabel}>*Data</span>
+                <span className={styles.dateLabel}>{label}</span>
                 <Button  
                 disabled={disabled}
                 variant="full-white"
@@ -124,8 +160,14 @@ export function SimpleDateSelect({ selectedDate, onDateChange, disabled }: Simpl
                                                 : ''
                                         } ${
                                             date.toISOString() === selectedDate?.toISOString() ? styles.selectedDate : ''
+                                        } ${
+                                            cantBeBeforeToday && isBeforeToday(date) ? styles.disabledDate : ''
                                         }`}
                                         onClick={() => handleDateClick(date)}
+                                        style={{
+                                            cursor: cantBeBeforeToday && isBeforeToday(date) ? 'not-allowed' : 'pointer',
+                                            opacity: cantBeBeforeToday && isBeforeToday(date) ? 0.5 : 1
+                                        }}
                                     >
                                         {date.getDate()}
                                     </div>
