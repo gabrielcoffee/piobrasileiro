@@ -6,9 +6,11 @@ interface InputTextProps extends React.ComponentProps<"input"> {
     label?: string;
     error?: string;
     leftIcon?: React.ReactNode;
+    onlyNumber?: boolean;
+    numberValue?: number;
 }
 
-export function InputText({ value, label, error, className, leftIcon, ...props }: InputTextProps) {
+export function InputText({ value, label, error, className, leftIcon, numberValue = 0, onlyNumber = false, ...props }: InputTextProps) {
 
     const hasError = error && error.length > 0;
     
@@ -30,7 +32,16 @@ export function InputText({ value, label, error, className, leftIcon, ...props }
                 borderColor: hasError ? 'var(--color-error)' : 'var(--color-border)',
                 color: props.disabled ? 'var(--color-text-muted)' : 'var(--color-text)'
             }}
-            value={value || ''}
+            type={onlyNumber ? 'number' : 'text'}
+            value={onlyNumber ? numberValue.toString() : value || ''}
+            onChange={(e) => {
+                if (onlyNumber) {
+                    e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                }
+                else {
+                    e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                }
+            }}
             {...props}
         />
         {error && <span className={styles.errorText}>{error}</span>}

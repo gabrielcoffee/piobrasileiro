@@ -1,0 +1,95 @@
+
+.toggleContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem;
+}
+
+.toggle {
+    position: relative;
+    width: 48px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    padding: 2px;
+}
+
+.toggleOff {
+    background-color: var(--color-gray-200);
+}
+
+.toggleOn {
+    background-color: var(--color-primary);
+}
+
+.toggleCircle {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: var(--color-white);
+    transition: transform 0.2s ease;
+}
+
+.toggleOn .toggleCircle {
+    transform: translateX(24px);
+}
+
+.toggleOff .toggleCircle {
+    transform: translateX(0);
+}
+
+.toggleText {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--color-text);
+    min-width: 30px;
+}
+
+.newRoomModalContent {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+
+.acoes {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    gap: 1rem;
+    color: var(--color-primary);
+}
+
+.occupied {
+    color: var(--color-error);
+    font-weight: 500;
+    display: flex;
+    align-items: center
+}
+
+.available {
+    color: var(--color-primary);
+    font-weight: 500;
+    display: flex;
+    align-items: center
+}
+
+.occupiedIcon {
+    width: 10px;
+    height: 10px;
+    background-color: var(--color-error);
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}
+
+.availableIcon {
+    width: 10px;
+    height: 10px;
+    background-color: var(--color-primary);
+    border-radius: 50%;
+    margin-right: 0.5rem;
+}

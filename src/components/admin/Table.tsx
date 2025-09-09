@@ -274,7 +274,7 @@ const Table = forwardRef<TableRef, TableProps>(({
                                 onClick={handlePrevious}
                                 disabled={currentPage === 1}
                             >
-                                Previous
+                                Anterior
                             </button>
                         </div>
 
