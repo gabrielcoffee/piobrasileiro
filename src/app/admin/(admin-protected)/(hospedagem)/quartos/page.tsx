@@ -22,7 +22,6 @@ export default function QuartosPage() {
     const [weekDaysList, setWeekDaysList] = useState<any[]>([]);
     const [showNewRoomModal, setShowNewRoomModal] = useState<boolean>(false);
     const [showEditRoomModal, setShowEditRoomModal] = useState<boolean>(false);
-    const [roomOccupation, setRoomOccupation] = useState<any[]>([]);
     
     const [selectedRoomData, setSelectedRoomData] = useState<any>(null);
     const [nome, setNome] = useState<string>('');
@@ -89,7 +88,7 @@ export default function QuartosPage() {
 
     const fetchRooms = async () => {
         const roomOccupation = await getRoomOccupation();
-        const result = await queryApi('GET', '/admin/rooms');
+        const result = await queryApi('GET', '/admin/rooms/all');
     
         if (result.success) {
             const quartos = result.data.map((room: any) => {
@@ -108,12 +107,12 @@ export default function QuartosPage() {
                 // Add each day of the week as a property
                 weekDates.forEach((date) => {
                     const dateString = date.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+
+                    const dataChegada = occupation?.ocupacoes[0]?.data_chegada;
+                    const dataSaida = occupation?.ocupacoes[0]?.data_saida;
                     
-                    // Check if this room is occupied on this date
-                    const isOccupied = occupation?.ocupacoes?.some((occDate: string) => {
-                        // Assuming ocupacoes contains date strings in YYYY-MM-DD format
-                        return occDate === dateString;
-                    }) || false;
+                    // Check if this room is occupied on this date (checking if the date is in between ocupacoes.data_chegada and ocupacoes.data_saida)
+                    const isOccupied = dateString >= dataChegada && dateString <= dataSaida;
     
                     // Add the day status to the room data
                     roomData[dateString] = 
@@ -125,6 +124,9 @@ export default function QuartosPage() {
     
                 return roomData;
             });
+
+            // Ordenar quartos por nome
+            quartos.sort((a: any, b: any) => a.numero.localeCompare(b.numero));
             
             setQuartos(quartos);
             console.log(quartos);

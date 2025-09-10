@@ -24,7 +24,7 @@ interface AddBookingModalProps {
         data_saida: string;
         quarto_id: string;
         almoco: boolean;
-        jantar: boolean;
+        janta: boolean;
         observacoes: string;
     }) => void;
     isEdit?: boolean;
@@ -36,7 +36,7 @@ interface AddBookingModalProps {
         data_saida: string;
         quarto_id: string;
         almoco: boolean;
-        jantar: boolean;
+        janta: boolean;
         observacoes: string;
     };
 }
@@ -49,38 +49,13 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
     const [anfitriao, setAnfitriao] = useState('');
     const [hospede, setHospede] = useState('');
     const [quarto, setQuarto] = useState('');
-    const [dataChegada, setDataChegada] = useState('');
-    const [dataSaida, setDataSaida] = useState('');
+    const [dataChegada, setDataChegada] = useState(bookingData?.data_chegada || new Date().toISOString());
+    const [dataSaida, setDataSaida] = useState(bookingData?.data_saida || new Date().toISOString());
     const [almoco, setAlmoco] = useState(false);
-    const [jantar, setJantar] = useState(false);
+    const [janta, setJanta] = useState(false);
     const [observacoes, setObservacoes] = useState('');
     const [bookingId, setBookingId] = useState('');
     const [nomeNewHospede, setNomeNewHospede] = useState('');
-
-    const [anfitriaoError, setAnfitriaoError] = useState('');
-    const [hospedeError, setHospedeError] = useState('');
-    const [quartoError, setQuartoError] = useState('');
-    const [dataChegadaError, setDataChegadaError] = useState('');
-    const [dataSaidaError, setDataSaidaError] = useState('');
-
-    const validateForm = () => {
-
-        if (!anfitriao) {
-            setAnfitriaoError("Anfitrião é obrigatório");
-        }
-        if (!hospede) {
-            setHospedeError("Hospede é obrigatório");
-        }
-        if (!quarto) {
-            setQuartoError("Quarto é obrigatório");
-        }
-        if (!dataChegada) {
-            setDataChegadaError("Data de chegada é obrigatória");
-        }
-        if (!dataSaida) {
-            setDataSaidaError("Data de saída é obrigatória");
-        }
-    };
 
     useEffect(() => {
         if (bookingDataChange) {
@@ -92,11 +67,11 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
                 data_saida: dataSaida,
                 quarto_id: quarto,
                 almoco: almoco,
-                jantar: jantar,
+                janta: janta,
                 observacoes: observacoes,
             });
         }
-    }, [anfitriao, hospede, quarto, dataChegada, dataSaida, almoco, jantar, observacoes, bookingDataChange]);
+    }, [anfitriao, hospede, quarto, dataChegada, dataSaida, almoco, janta, observacoes, bookingDataChange]);
 
     const handleQuickAddGuest = async () => {
         if (!nomeNewHospede) {
@@ -149,6 +124,8 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
                 key: room.id,
                 value: room.numero + ' - ( ' + room.capacidade + ' )'
             }));
+            // Sort rooms by name
+            rooms.sort((a: { value: string }, b: { value: string }) => a.value.localeCompare(b.value));
             setQuartoOptions(rooms);
         }
     }
@@ -167,7 +144,7 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
             setDataChegada(bookingData.data_chegada || '');
             setDataSaida(bookingData.data_saida || '');
             setAlmoco(bookingData.almoco || false);
-            setJantar(bookingData.jantar || false);
+            setJanta(bookingData.janta || false);
             setObservacoes(bookingData.observacoes || '');
             setBookingId(bookingData.id || '');
         }
@@ -250,11 +227,11 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
                         <h3 className={styles.mealTitle}>Jantar (17h - 20h)</h3>
                         <div className={styles.toggleContainer}>
                             <span className={styles.toggleText}>
-                                {jantar ? 'SIM' : 'NÃO'}
+                                {janta ? 'SIM' : 'NÃO'}
                             </span>
                             <button
-                                className={`${styles.toggle} ${jantar ? styles.toggleOn : styles.toggleOff}`}
-                                onClick={() => setJantar(!jantar)}
+                                className={`${styles.toggle} ${janta ? styles.toggleOn : styles.toggleOff}`}
+                                onClick={() => setJanta(!janta)}
                             >
                                 <div className={styles.toggleCircle} />
                             </button>

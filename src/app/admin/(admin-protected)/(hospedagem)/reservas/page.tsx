@@ -9,7 +9,7 @@ import { DateSection } from '@/components/admin/DateSection';
 import { Filter, PencilLine, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import Table from '@/components/admin/Table';
-import { queryApi } from '@/lib/utils';
+import { getCurrentWeekInfo, getDateString, queryApi } from '@/lib/utils';
 import Modal from '@/components/admin/Modal';
 import AddBookingModal from '@/components/admin/AddBookingModal';
 
@@ -44,7 +44,7 @@ export default function GestaoDeReservasPage() {
         const result = await queryApi('DELETE', `/admin/accommodations/${selectedBookingData.id}`);
         if (result.success) {
             console.log('Reserva excluida com sucesso');
-            fetchReservas();
+            fetchReservas(selectedWeekStart, selectedWeekEnd);
             setShowDeleteBookingModal(false);
         } else {
             console.log('Erro ao excluir reserva', result.error);
@@ -67,13 +67,13 @@ export default function GestaoDeReservasPage() {
             data_saida: selectedBookingData.data_saida,
             quarto_id: selectedBookingData.quarto_id,
             almoco: selectedBookingData.almoco,
-            jantar: selectedBookingData.jantar,
+            janta: selectedBookingData.janta,
             observacoes: selectedBookingData.observacoes,
         });
 
         if (result.success) {
             console.log('Reserva editada com sucesso');
-            fetchReservas();
+            fetchReservas(selectedWeekStart, selectedWeekEnd);
             setShowEditBookingModal(false);
         } else {
             console.log('Erro ao editar reserva', result.error);
@@ -102,13 +102,13 @@ export default function GestaoDeReservasPage() {
             data_saida: selectedBookingData.data_saida,
             quarto_id: selectedBookingData.quarto_id,
             almoco: selectedBookingData.almoco,
-            jantar: selectedBookingData.jantar,
+            janta: selectedBookingData.janta,
             observacoes: selectedBookingData.observacoes,
         });
 
         if (result.success) {
             console.log('Reserva salva com sucesso');
-            fetchReservas();
+            fetchReservas(selectedWeekStart, selectedWeekEnd);
             setShowNewBookingModal(false);
         } else {
             console.log('Erro ao salvar reserva', result.error);
@@ -124,16 +124,29 @@ export default function GestaoDeReservasPage() {
         );
     }
 
-    const fetchReservas = async () => {
+    const getStatusHtml = (status: any) => {
+        if (status === 'Ativa') {
+            return <span className={styles.ativa}>Ativa</span>;
+        } else if (status === 'Prevista') {
+            return <span className={styles.prevista}>Prevista</span>;
+        } else if (status === 'Encerrada') {
+            return <span className={styles.encerrada}>Encerrada</span>;
+        }
+    }
+
+    const fetchReservas = async (startDate: Date, endDate: Date) => {
         const result = await queryApi('POST', '/admin/accommodations/data', {
-            startDate: selectedWeekStart,
-            endDate: selectedWeekEnd,
+            startDate: startDate,
+            endDate: endDate,
         });
 
         if (result.success) {
             const completeReservas = result.data.map((reserva: any) => {
                 return {
                     ...reserva,
+                    data_chegada: getDateString(reserva.data_chegada),
+                    data_saida: getDateString(reserva.data_saida),
+                    status: getStatusHtml(reserva.status),
                     acao: acoes(reserva),
                 }
             });
@@ -142,11 +155,14 @@ export default function GestaoDeReservasPage() {
     }
 
     useEffect(() => {
-        fetchReservas();
+        const currentWeekInfo = getCurrentWeekInfo();
+        setSelectedWeekStart(currentWeekInfo.monday);
+        setSelectedWeekEnd(currentWeekInfo.sunday);
+        fetchReservas(currentWeekInfo.monday, currentWeekInfo.sunday);
     }, []);
 
     useEffect(() => {
-        fetchReservas();    
+        fetchReservas(selectedWeekStart, selectedWeekEnd);
     }, [selectedWeekStart, selectedWeekEnd]);
 
     return (
@@ -158,7 +174,7 @@ export default function GestaoDeReservasPage() {
                     searchPlaceholder="Pesquise por nome"
                     buttons={[
                         <Button key="filter" variant="full-white" iconLeft={<Filter size={24} />}>Filtrar</Button>,
-                        <Button key="new_booking" variant="full" onClick={() => setShowNewBookingModal(true)} iconLeft={<Plus size={20} />}>Novo agendamento</Button>
+                        <Button key="new_booking" variant="full" onClick={() => {setShowNewBookingModal(true); setSelectedBookingData(null);}} iconLeft={<Plus size={20} />}>Novo agendamento</Button>
                     ]}
                     dateSection={(
                         <DateSection
@@ -185,7 +201,7 @@ export default function GestaoDeReservasPage() {
             </Card>
 
             <Modal
-                title="Novo agendamento"
+                title="Nova reserva"
                 buttons={
                     <>
                         <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowNewBookingModal(false)}>Cancelar</Button>
@@ -199,6 +215,38 @@ export default function GestaoDeReservasPage() {
                     bookingDataChange={handleNewBookingChangeData} 
                     bookingData={selectedBookingData}
                 />
+            </Modal>
+
+            <Modal
+                title="Editar reserva"
+                buttons={
+                    <>
+                        <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowEditBookingModal(false)}>Cancelar</Button>
+                        <Button available={selectedBookingData?.anfitriao_id && selectedBookingData?.hospede_id && selectedBookingData?.data_chegada && selectedBookingData?.data_saida && selectedBookingData?.quarto_id ? true : false} variant="full" onClick={() => handleEditBooking()}>Salvar</Button>
+                    </>
+                }
+                onClose={() => setShowEditBookingModal(false)}
+                isOpen={showEditBookingModal}
+            >
+                <AddBookingModal
+                    isEdit={true}
+                    bookingDataChange={handleNewBookingChangeData} 
+                    bookingData={selectedBookingData}
+                />
+            </Modal>
+
+            <Modal
+                title="Excluir reserva"
+                subtitle="Esta ação é irreversível e resultará na exclusão permanente de todo o histórico desta reserva."
+                buttons={
+                    <>
+                        <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowDeleteBookingModal(false)}>Cancelar</Button>
+                        <Button variant="full" style={{backgroundColor: 'var(--color-error)', border: '1px solid var(--color-error)'}} onClick={() => handleDeleteBooking()}>Sim tenho certeza</Button>
+                    </>
+                }
+                onClose={() => setShowDeleteBookingModal(false)}
+                isOpen={showDeleteBookingModal}
+            >
             </Modal>
             
         </div>

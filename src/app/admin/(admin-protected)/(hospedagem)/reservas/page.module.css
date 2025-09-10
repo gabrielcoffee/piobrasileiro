@@ -14,3 +14,24 @@
     justify-content: center;
     color: var(--color-primary);
 }
+
+.ativa {
+    background-color: #45A242;
+    color: white;
+    padding: 0.2rem 1rem;
+    border-radius: 24px;
+}
+
+.prevista {
+    background-color: #CC9907;
+    color: white;
+    padding: 0.2rem 1rem;
+    border-radius: 24px;
+}
+
+.encerrada {
+    background-color: #DC2626;
+    color: white;
+    padding: 0.2rem 1rem;
+    border-radius: 24px;
+}

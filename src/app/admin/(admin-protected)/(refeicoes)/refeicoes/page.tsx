@@ -136,7 +136,7 @@ export default function ListaDeRefeicoesPage() {
         setSelectedWeekEnd(currentWeekInfo.sunday);
         setSelectedWeek(now);
         setSelectedDate(now.toISOString().split('T')[0]);
-        fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
+        fetchRefeicoes(currentWeekInfo.monday, currentWeekInfo.sunday);
     }, []);
 
     // Update dayInfo when refeicoes or selectedDate changes
