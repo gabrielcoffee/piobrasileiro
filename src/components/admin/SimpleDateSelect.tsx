@@ -4,7 +4,7 @@ import styles from './styles/SimpleDateSelect.module.css';
 import { useState, useEffect } from 'react';
 
 interface SimpleDateSelectProps {
-    selectedDate?: Date;
+    selectedDate: Date;
     onDateChange?: (date: Date) => void;
     disabled?: boolean;
     label?: string;
@@ -14,6 +14,7 @@ interface SimpleDateSelectProps {
 export function SimpleDateSelect({ selectedDate, onDateChange, disabled, label = '*Data', cantBeBeforeToday = false }: SimpleDateSelectProps) {
     const [showMiniCalendar, setShowMiniCalendar] = useState(false);
     const [currentMonth, setCurrentMonth] = useState(new Date());
+    const [curSelectedDate, setCurSelectedDate] = useState<Date>(selectedDate);
 
     // Generate calendar dates for a given month
     const generateCalendarDates = (year: number, month: number) => {
@@ -58,6 +59,7 @@ export function SimpleDateSelect({ selectedDate, onDateChange, disabled, label =
         }
         
         setShowMiniCalendar(false);
+        setCurSelectedDate(date);
         onDateChange?.(date);
     };
 
@@ -66,13 +68,6 @@ export function SimpleDateSelect({ selectedDate, onDateChange, disabled, label =
         newMonth.setMonth(newMonth.getMonth() + value);
         setCurrentMonth(newMonth);
     };
-
-    // Initialize with current week
-    useEffect(() => {
-        const now = new Date();
-        setCurrentMonth(now);
-        onDateChange?.(now);
-    }, []);
 
     // Add this useEffect after your existing useEffect
     useEffect(() => {
@@ -113,7 +108,7 @@ export function SimpleDateSelect({ selectedDate, onDateChange, disabled, label =
                 className={styles.dateButton}
                 >
                     <span className={styles.dateButtonText}>
-                        {selectedDate ? selectedDate?.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'Selecione uma data'}
+                        {curSelectedDate ? curSelectedDate?.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'Selecione uma data'}
                     </span>
                 </Button>
             </div>
@@ -159,7 +154,7 @@ export function SimpleDateSelect({ selectedDate, onDateChange, disabled, label =
                                                 ? styles.adjacentMonth 
                                                 : ''
                                         } ${
-                                            date.toISOString() === selectedDate?.toISOString() ? styles.selectedDate : ''
+                                            date.toISOString() === curSelectedDate?.toISOString() ? styles.selectedDate : ''
                                         } ${
                                             cantBeBeforeToday && isBeforeToday(date) ? styles.disabledDate : ''
                                         }`}

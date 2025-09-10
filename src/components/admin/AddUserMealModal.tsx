@@ -65,9 +65,7 @@ export default function AddUserMealModal({ formData, isEdit = false, userMealDat
     }, []);
 
     useEffect(() => {
-        console.log('userMealData');
-        console.log(userMealData);
-        if (userMealData) {
+        if (userMealData && isEdit) {
             setUser(userMealData.usuario_id);
             setData(userMealData.data);
             setAlmocoColegio(userMealData.almoco_colegio);

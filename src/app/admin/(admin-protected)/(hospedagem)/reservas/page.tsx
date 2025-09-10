@@ -105,6 +105,7 @@ export default function GestaoDeReservasPage() {
             jantar: selectedBookingData.jantar,
             observacoes: selectedBookingData.observacoes,
         });
+
         if (result.success) {
             console.log('Reserva salva com sucesso');
             fetchReservas();
@@ -143,6 +144,10 @@ export default function GestaoDeReservasPage() {
     useEffect(() => {
         fetchReservas();
     }, []);
+
+    useEffect(() => {
+        fetchReservas();    
+    }, [selectedWeekStart, selectedWeekEnd]);
 
     return (
         <div className={styles.container}>

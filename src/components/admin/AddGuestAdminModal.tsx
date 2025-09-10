@@ -116,7 +116,7 @@ export default function AddGuestAdminModal({ formData, isEdit = false, guestMeal
     }, []);
 
     useEffect(() => {
-        if (guestMealData) {
+        if (guestMealData && isEdit) {
             setAnfitriao(guestMealData.anfitriao_id || '');
             setData(guestMealData.data);
             setNome(guestMealData.nome);

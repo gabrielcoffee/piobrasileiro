@@ -135,8 +135,8 @@ export default function ListaDeRefeicoesPage() {
         setSelectedWeekStart(currentWeekInfo.monday);
         setSelectedWeekEnd(currentWeekInfo.sunday);
         setSelectedWeek(now);
-        setSelectedDate(now.toISOString().split('T')[0]); // Current day for current week
-        fetchRefeicoes();
+        setSelectedDate(now.toISOString().split('T')[0]);
+        fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
     }, []);
 
     // Update dayInfo when refeicoes or selectedDate changes
@@ -144,7 +144,9 @@ export default function ListaDeRefeicoesPage() {
         setDayInfo(getDayInfo());
     }, [getDayInfo]);
 
-
+    useEffect(() => {
+        fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
+    }, [selectedWeekStart, selectedWeekEnd]);
 
     function getAlmocoText(almoco_colegio: boolean, almoco_levar: boolean) {
         if (almoco_colegio) {
@@ -169,8 +171,11 @@ export default function ListaDeRefeicoesPage() {
         return 'Comum';
     }
 
-    const fetchRefeicoes = async () => {
-        const result = await queryApi('GET', '/admin/meals');
+    const fetchRefeicoes = async (startDate: Date, endDate: Date) => {
+        const result = await queryApi('POST', '/admin/meals/data', {
+            startDate: startDate,
+            endDate: endDate,
+        });
 
         if (result.success) {
 
@@ -277,7 +282,7 @@ export default function ListaDeRefeicoesPage() {
 
         if (result.success) {
             console.log('Refeicao editada com sucesso');
-            fetchRefeicoes();
+            fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
             setShowGuestBookingEditModal(false);
         } else {
             console.log('Não foi possível editar a refeição');
@@ -310,7 +315,7 @@ export default function ListaDeRefeicoesPage() {
         if (result.success) {
             setShowGuestBookingModal(false);
             console.log('Convidados salvo com sucesso');
-            fetchRefeicoes();
+            fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
 
         } else {
             console.log('Erro ao salvar convida');
@@ -320,7 +325,7 @@ export default function ListaDeRefeicoesPage() {
 
     const handleGuestBookingEditDelete = () => {
         setShowGuestBookingEditModal(false);
-        fetchRefeicoes();
+        fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
     }
 
     const editar = (meal: any) => {
@@ -361,7 +366,7 @@ export default function ListaDeRefeicoesPage() {
         if (result.success) {
             console.log('Refeicao salva com sucesso');
             setShowResidentBookingModal(false);
-            fetchRefeicoes();
+            fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
         } else {
             console.log(result.message);
         }
@@ -388,7 +393,7 @@ export default function ListaDeRefeicoesPage() {
 
         if (result.success) {
             console.log('Refeicao editada com sucesso');
-            fetchRefeicoes();
+            fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
             setShowResidentBookingEditModal(false);
         } else {
             console.log('Erro ao editar refeicao');
