@@ -17,6 +17,7 @@ interface MealCardProps {
     onRemoveGuest?: (guestMealId: string) => void;
     onGuestAdded?: () => void;
     style?: React.CSSProperties;
+    blocked?: boolean;
 }
 
 export default function MealCard({ 
@@ -30,7 +31,8 @@ export default function MealCard({
     onUpdate,
     onRemoveGuest,
     onGuestAdded,
-    style
+    style,
+    blocked = false
 }: MealCardProps) {
     const [lunchConfirmed, setLunchConfirmed] = useState(lunch);
     const [dinnerConfirmed, setDinnerConfirmed] = useState(dinner);
@@ -76,12 +78,12 @@ export default function MealCard({
     return (
         <div className={styles.container} id={id} style={style}>
             {/* Date Header */}
-            <div className={styles.dateHeader}>
-                <span className={styles.dateText}>{dayName}</span>
+            <div className={`${styles.dateHeader} ${blocked ? styles.blocked : ''}`}>
+                <span className={`${styles.dateText} ${blocked ? styles.blockedTxt : ''}`}>{dayName} {blocked ? '(Data Bloqueada)' : ''}</span>
             </div>
 
             {/* Meal Card */}
-            <div className={`${styles.mealCard} ${isAnyMealConfirmed ? styles.mealCardEnabled : ''}`}>
+            <div className={`${styles.mealCard} ${isAnyMealConfirmed ? styles.mealCardEnabled : ''} ${blocked ? styles.mealCardBlocked : ''}`}>
                 <div className={styles.cardHeader}>
                     <div className={styles.titleContainer}>
                         <Salad size={24} className={styles.saladIcon} />
@@ -99,7 +101,7 @@ export default function MealCard({
                             </span>
                             <button
                                 className={`${styles.toggle} ${lunchConfirmed ? styles.toggleOn : styles.toggleOff}`}
-                                onClick={() => updateLunch(!lunchConfirmed)}
+                                onClick={() => {blocked ? null : updateLunch(!lunchConfirmed)}}
                             >
                                 <div className={styles.toggleCircle} />
                             </button>
@@ -113,7 +115,7 @@ export default function MealCard({
                                 name={`lunch-${id}`}
                                 value="school"
                                 checked={!takeOutOption}
-                                onChange={() => updateTakeOut(false)}
+                                onChange={() => {blocked ? null : updateTakeOut(false)}}
                                 disabled={!lunchConfirmed}
                                 className={styles.radioInput}
                             />
@@ -127,7 +129,7 @@ export default function MealCard({
                                 name={`lunch-${id}`}
                                 value="takeaway"
                                 checked={takeOutOption}
-                                onChange={() => updateTakeOut(true)}
+                                onChange={() => {blocked ? null : updateTakeOut(true)}}
                                 disabled={!lunchConfirmed}
                                 className={styles.radioInput}
                             />
@@ -158,7 +160,7 @@ export default function MealCard({
                             </span>
                             <button
                                 className={`${styles.toggle} ${dinnerConfirmed ? styles.toggleOn : styles.toggleOff}`}
-                                onClick={() => updateDinner(!dinnerConfirmed)}
+                                onClick={() => {blocked ? null : updateDinner(!dinnerConfirmed)}}
                             >
                                 <div className={styles.toggleCircle} />
                             </button>

@@ -9,6 +9,7 @@
     margin-top: 2rem;
 }
 
+
 .dateText {
   background-color: var(--color-slate-200);
   color: var(--color-text);
@@ -208,4 +209,14 @@
     padding: 0.5rem 1rem !important;
     cursor: pointer !important;
     transition: all 0.2s ease !important;
+}
+
+.mealCardBlocked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+  
+.dateText.blockedTxt {
+    color: var(--color-error);
+    background-color: var(--color-error-bg);
 }

@@ -121,13 +121,13 @@ export function Calendar() {
                         <div className={styles.headerContainer}>
                             <div className={styles.monthSelector}>
                                 <button className={styles.leftMonthArrow} onClick={() => moveMonth(-1)}>
-                                    <ChevronLeft size={16} />
+                                    <ChevronLeft size={32} />
                                 </button>
                                 <span className={styles.month}>
                                     {new Date(currentMonth.getFullYear(), currentMonth.getMonth()).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }).charAt(0).toUpperCase() + new Date(currentMonth.getFullYear(), currentMonth.getMonth()).toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' }).slice(1)}
                                 </span>
                                 <button className={styles.rightMonthArrow} onClick={() => moveMonth(1)}>
-                                    <ChevronRight size={16} />
+                                    <ChevronRight size={32} />
                                 </button>
                             </div>
 

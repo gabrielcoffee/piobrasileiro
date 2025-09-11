@@ -17,6 +17,7 @@ interface MealDay {
     takeOut: boolean;       // almoco_levar
     dayIndex: number;       // índice para identificação
     isPast: boolean;        // passou das 19h00 de hoje
+    blocked: boolean;       // data bloqueada
 }
 
 export default function RefeicoesPage() {
@@ -24,6 +25,7 @@ export default function RefeicoesPage() {
     const [meals, setMeals] = useState<any[] | null>(null);
     const [guestMeals, setGuestMeals] = useState<any[] | null>(null);
     const [guestMealList, setGuestMealList] = useState<any[][]>([]);
+    const [blockedDates, setBlockedDates] = useState<string[]>([]);
 
     const [mealsList, setMealsList] = useState<MealDay[]>([]);
     const [hasChanges, setHasChanges] = useState(false);
@@ -43,15 +45,17 @@ export default function RefeicoesPage() {
         const result = await queryApi('GET', '/user/weekmeals');
 
         if (result.success) {
-            // User meals - set to empty array if no meals exist
             if (result.data.userMeals && result.data.userMeals.length > 0) {
                 setMeals(result.data.userMeals);
+                setBlockedDates(result.data.blockedDates);
             } else {
-                setMeals([]); // Set empty array to trigger createMealList
+                setMeals([]); 
+                setBlockedDates([]);
             }
         } else {
             console.error('Erro ao buscar refeições:', result.error);
-            setMeals([]); // Set empty array even on error to show placeholders
+            setMeals([]); 
+            setBlockedDates([]);
         }
     }
 
@@ -61,14 +65,13 @@ export default function RefeicoesPage() {
         if (result.success) {
             if (result.data.guestMeals && result.data.guestMeals.length > 0) {
                 setGuestMeals(result.data.guestMeals);
-                console.log(result.data.guestMeals);
             } else {
                 setGuestMeals([]);
             }
         } else {
             console.error('Erro ao buscar convidados:', result.error);
         }
-    }
+    }   
 
     // Esta função cria a lista de refeições apenas para dias futuros (incluindo hoje se antes das 19h00)
     const createMealList = useCallback(() => {
@@ -103,6 +106,8 @@ export default function RefeicoesPage() {
                 return normalizedMealDate === dateStr;
             });
 
+            const isBlocked = blockedDates.includes(dateStr);
+
             if (existingMeal) {
                 // Usa dados do banco
                 mealList.push({
@@ -113,7 +118,8 @@ export default function RefeicoesPage() {
                     dinner: existingMeal.janta_colegio,
                     takeOut: existingMeal.almoco_levar,
                     dayIndex,
-                    isPast
+                    isPast,
+                    blocked: isBlocked || false
                 });
             } else {
                 // Cria placeholder para dia sem dados
@@ -125,7 +131,8 @@ export default function RefeicoesPage() {
                     dinner: false,
                     takeOut: false,
                     dayIndex,
-                    isPast
+                    isPast,
+                    blocked: isBlocked || false
                 });
             }
             dayIndex++;
@@ -305,6 +312,7 @@ export default function RefeicoesPage() {
                     id={`meal-card-${meal.dayIndex}`}
                     date={meal.displayDate}
                     dayName={meal.dayName}
+                    blocked={meal.blocked}
                     lunch={meal.lunch}
                     dinner={meal.dinner}
                     takeOut={meal.takeOut}
