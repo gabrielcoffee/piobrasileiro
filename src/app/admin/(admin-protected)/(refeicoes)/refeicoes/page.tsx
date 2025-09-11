@@ -60,45 +60,21 @@ export default function ListaDeRefeicoesPage() {
         return weekDates;
     }
 
-    const handleGenerateReport = () => {
 
-        if (dayInfo?.totalAlmoco === 0 && dayInfo?.totalJanta === 0) {
+    const handleGenerateReport = async () => {
+
+        if (refeicoes.length === 0) {
             return;
         }
 
-        const daysInfo = getWeekDates().map((date: Date) => {
-            return {
-                date: date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit'}),
-                day: date.toLocaleDateString('pt-BR', { weekday: 'long'}).charAt(0).toUpperCase() 
-                    + date.toLocaleDateString('pt-BR', { weekday: 'long'}).slice(1),
-                mealsInfo: getDayInfo(date.toISOString().split('T')[0])
-            }
-        })
+        const result = await queryApi('GET', '/admin/dashboard/report');
 
-        const weekInfo = {
-            period: daysInfo[0].date + ' a ' + daysInfo[6].date,
-            totalAlmoco: daysInfo.reduce((acc: number, day: any) => acc + day.mealsInfo.totalAlmoco, 0),
-            totalJantares: daysInfo.reduce((acc: number, day: any) => acc + day.mealsInfo.totalJanta, 0),
-            daysInfo: daysInfo
+        if (result.success) {
+            const { weekInfo, notesInfo } = result.data;
+            generateReportPDFLib('print', weekInfo, notesInfo);
+        } else {
+            console.error('Erro ao buscar dados:', result.error);
         }
-
-        // Get unique notes from all users that have meals in the week
-        const notesInfo = refeicoes.map((meal: any) => {
-            const weekDatesFormatted = getWeekDates().map((date: Date) => date.toISOString().split('T')[0]);
-            if (weekDatesFormatted.includes(meal.data)) {
-                return {
-                    name: meal.rawData.nome,
-                    note: meal.rawData.observacoes
-                }
-            }
-        }).filter((note, index, self) =>
-            index === self.findIndex((t) => t?.name === note?.name) && note?.note !== null && note?.note !== ''
-        );
-
-        console.log(weekInfo);
-        console.log(notesInfo);
-
-        generateReportPDFLib('print', weekInfo, notesInfo);
     }
 
     const handleDaysChange = (days: {
@@ -406,6 +382,13 @@ export default function ListaDeRefeicoesPage() {
     }
 
     const acoes = (meal: any) => {
+        if (meal.tipo_pessoa === 'hospede') {
+            return (
+                <div className={styles.acoes}>
+                    <PencilLine size={20} style={{color: 'var(--color-slate-300)', cursor: 'not-allowed'}} />
+                </div>
+            )
+        }
         return (
             <div className={styles.acoes}>
                 <PencilLine size={20} onClick={() => editar(meal)} style={{color: 'var(--color-primary)', cursor: 'pointer'}} />
