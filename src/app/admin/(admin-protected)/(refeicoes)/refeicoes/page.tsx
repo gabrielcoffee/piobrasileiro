@@ -95,6 +95,9 @@ export default function ListaDeRefeicoesPage() {
             index === self.findIndex((t) => t?.name === note?.name) && note?.note !== null && note?.note !== ''
         );
 
+        console.log(weekInfo);
+        console.log(notesInfo);
+
         generateReportPDFLib('print', weekInfo, notesInfo);
     }
 
@@ -128,6 +131,17 @@ export default function ListaDeRefeicoesPage() {
         }
     }, [refeicoes, selectedDate])
 
+    // Update dayInfo when refeicoes or selectedDate changes
+    useEffect(() => {
+        setDayInfo(getDayInfo());
+    }, [getDayInfo]);
+
+    useEffect(() => {
+        if (selectedWeekStart && selectedWeekEnd) {
+            fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
+        }
+    }, [selectedWeekStart, selectedWeekEnd]);
+
     // Initialize with current week
     useEffect(() => {
         const now = new Date();
@@ -138,15 +152,6 @@ export default function ListaDeRefeicoesPage() {
         setSelectedDate(now.toISOString().split('T')[0]);
         fetchRefeicoes(currentWeekInfo.monday, currentWeekInfo.sunday);
     }, []);
-
-    // Update dayInfo when refeicoes or selectedDate changes
-    useEffect(() => {
-        setDayInfo(getDayInfo());
-    }, [getDayInfo]);
-
-    useEffect(() => {
-        fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
-    }, [selectedWeekStart, selectedWeekEnd]);
 
     function getAlmocoText(almoco_colegio: boolean, almoco_levar: boolean) {
         if (almoco_colegio) {

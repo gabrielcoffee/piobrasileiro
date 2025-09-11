@@ -194,6 +194,10 @@ const Table = forwardRef<TableRef, TableProps>(({
         return (
             <div className={styles.emptyTable}>
                 <span>Nenhum item encontrado</span>
+                <span style={{cursor: 'pointer', color: 'var(--color-primary)'}} 
+                    onClick={() => window.location.reload()}>
+                    Tente recarregar a página
+                </span>
             </div>
         )
     }

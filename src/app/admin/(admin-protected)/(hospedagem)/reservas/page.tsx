@@ -154,16 +154,20 @@ export default function GestaoDeReservasPage() {
         }
     }
 
+
+    useEffect(() => {
+        if (selectedWeekStart && selectedWeekEnd) {
+            fetchReservas(selectedWeekStart, selectedWeekEnd);
+        }
+    }, [selectedWeekStart, selectedWeekEnd]);
+
+     
     useEffect(() => {
         const currentWeekInfo = getCurrentWeekInfo();
         setSelectedWeekStart(currentWeekInfo.monday);
         setSelectedWeekEnd(currentWeekInfo.sunday);
         fetchReservas(currentWeekInfo.monday, currentWeekInfo.sunday);
     }, []);
-
-    useEffect(() => {
-        fetchReservas(selectedWeekStart, selectedWeekEnd);
-    }, [selectedWeekStart, selectedWeekEnd]);
 
     return (
         <div className={styles.container}>

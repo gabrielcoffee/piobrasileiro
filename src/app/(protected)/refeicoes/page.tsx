@@ -255,7 +255,7 @@ export default function RefeicoesPage() {
 
     // USE EFFECTS UPDATES
 
-    // Auto-save com debounce de 5 segundos
+    // Auto-save com debounce de 1.5 segundos
     useEffect(() => {
         if (hasChanges) {
             const timer = setTimeout(() => {
