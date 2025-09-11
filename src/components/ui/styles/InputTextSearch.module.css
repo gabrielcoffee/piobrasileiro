@@ -87,3 +87,11 @@
     width: 100%;
 }
 
+.warningOnRight {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--color-warning);
+    margin-left:auto;
+
+}

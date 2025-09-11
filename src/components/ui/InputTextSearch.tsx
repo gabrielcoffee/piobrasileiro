@@ -1,9 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styles from './styles/InputTextSearch.module.css';
+import { AlertCircle } from 'lucide-react';
 
 type Option = {
     key: string;
     value: string;
+    warningOnRight?: string;
 }
 
 interface InputTextSearchProps {
@@ -80,7 +82,17 @@ export function InputTextSearch({ value, label, error, leftIcon, searchOptions, 
             <div className={styles.searchOptionsContainer}>
                 <div className={styles.searchOptions}>
                     {searchOptions.map((option) => (
-                        <div className={styles.option} key={option.key} onClick={() => handleSearchOptionChange(option)}>{option.value}</div>
+                        <div className={styles.option} key={option.key} onClick={() => handleSearchOptionChange(option)}>
+                            {option.value}
+                            {
+                                option.warningOnRight && (
+                                    <span className={styles.warningOnRight}>
+                                        <AlertCircle size={16}/>
+                                        {option.warningOnRight}
+                                    </span>
+                                )
+                            }
+                        </div>
                     ))}
                 </div>
             </div>

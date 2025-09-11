@@ -13,6 +13,7 @@ import { Trash2, UserPlus } from 'lucide-react';
 type Option = {
     key: string;
     value: string;
+    warningOnRight?: string;
 }
 
 interface AddBookingModalProps {
@@ -56,7 +57,7 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
     const [observacoes, setObservacoes] = useState('');
     const [bookingId, setBookingId] = useState('');
     const [nomeNewHospede, setNomeNewHospede] = useState('');
-
+    const [roomData, setRoomData] = useState<any[]>([]);
     useEffect(() => {
         if (bookingDataChange) {
             bookingDataChange({
@@ -118,17 +119,42 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
     }
 
     const fetchQuartosIdAndNames = async () => {
-        const result = await queryApi('GET', '/admin/rooms');
+        const result = await queryApi('GET', '/admin/room-occupation');
+
         if (result.success) {
-            const rooms = result.data.map((room: any) => ({
-                key: room.id,
-                value: room.numero + ' - ( ' + room.capacidade + ' )'
-            }));
-            // Sort rooms by name
-            rooms.sort((a: { value: string }, b: { value: string }) => a.value.localeCompare(b.value));
-            setQuartoOptions(rooms);
+            setRoomData(result.data);
+            defineRoomOptions(result.data);
         }
     }
+
+    const defineRoomOptions = async (rooms: any[]) => {
+        const roomsOptions = rooms.map((room: any) => {
+
+            const isOccupied = room.ocupacoes.some((ocupacao: any) => {
+                return (dataChegada.split('T')[0] <= ocupacao.data_saida 
+                && dataSaida.split('T')[0] >= ocupacao.data_chegada)
+                ||
+                (dataChegada.split('T')[0] >= ocupacao.data_chegada 
+                && dataSaida.split('T')[0] <= ocupacao.data_saida);
+            });
+
+            return {
+                key: room.quarto_id,
+                value: room.numero + ' - ( ' + room.capacidade + ' )',
+                warningOnRight: isOccupied ? 'Ocupado neste período' : ''
+            }
+        });
+
+        roomsOptions.sort((a: { value: string }, b: { value: string }) => a.value.localeCompare(b.value));
+        setQuartoOptions(roomsOptions);
+    }
+
+    useEffect(() => {
+        if (roomData) {
+            defineRoomOptions(roomData);
+        }
+    }, [dataChegada, dataSaida]);
+
 
     useEffect(() => {
         fetchUserAnfitriaoIdAndNames();
@@ -194,7 +220,9 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
 
                     <InputTextSearch
                         label="*Quarto - (capacidade)"
-                        value={quartoOptions.find((option) => option.key === quarto)?.value || ''}
+                        value={
+                            quartoOptions.find((option) => option.key === quarto)?.value || ''
+                        }
                         onSelect={(option: Option) => setQuarto(option.key)}
                         searchOptions={quartoOptions}
                         placeholder="Selecione"
