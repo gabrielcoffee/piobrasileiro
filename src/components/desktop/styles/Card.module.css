@@ -9,7 +9,8 @@
     border-radius: 10px;
     margin: auto;
     margin-bottom: 2rem;
-    padding: 1rem;
+    padding: 2rem;
+    
 
     input {
         background-color: var(--color-slate-100);

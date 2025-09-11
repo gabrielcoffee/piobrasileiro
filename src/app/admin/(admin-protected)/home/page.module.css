@@ -1,10 +1,7 @@
-
-
 .weekInfo {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
     padding-top: 0;
     font-size: 1.5rem;
     font-weight: 600;
@@ -15,7 +12,6 @@
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    padding: 1rem;
 }
 
 .dashboardRow {
@@ -51,7 +47,8 @@
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    padding: 1rem;
+    padding-top: 1rem;
+    padding-bottom: 1rem;
     align-items: center;
 }
 

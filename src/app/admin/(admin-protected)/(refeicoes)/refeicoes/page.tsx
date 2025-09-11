@@ -67,10 +67,14 @@ export default function ListaDeRefeicoesPage() {
             return;
         }
 
-        const result = await queryApi('GET', '/admin/dashboard/report');
+        const result = await queryApi('POST', '/admin/report', {
+            startDate: selectedWeekStart,
+            endDate: selectedWeekEnd,
+        });
 
         if (result.success) {
             const { weekInfo, notesInfo } = result.data;
+            console.log(weekInfo);
             generateReportPDFLib('print', weekInfo, notesInfo);
         } else {
             console.error('Erro ao buscar dados:', result.error);
@@ -502,15 +506,12 @@ export default function ListaDeRefeicoesPage() {
                     buttons={
                         <>
                             <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowReportModal(false)}>Cancelar</Button>
-                            <Button available={dayInfo?.totalAlmoco === 0 && dayInfo?.totalJanta === 0 ? false : true} iconLeft={<Printer size={20} />} variant="full" onClick={handleGenerateReport}>Gerar</Button>
+                            <Button iconLeft={<Printer size={20} />} variant="full" onClick={handleGenerateReport}>Gerar</Button>
                         </>
                     }
                 >
                     <div className={styles.reportModalContent}>
                         <ReportCheckList onChange={handleDaysChange}/>
-                    </div>
-                    <div className={styles.reportModalContent}>
-                        {dayInfo?.totalAlmoco === 0 && dayInfo?.totalJanta === 0 && <span style={{color: 'var(--color-error)'}}>Não há refeições para gerar relatório</span>}
                     </div>
                 </Modal>
 
