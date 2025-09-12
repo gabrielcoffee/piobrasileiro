@@ -540,7 +540,7 @@ export default function ListaDeRefeicoesPage() {
                     </>}
                 >
                     <AddGuestAdminModal 
-                        date={new Date(selectedDate + 'T00:00:00').toISOString()}
+                        date={selectedDate}
                         formData={handleGuestFormData}
                     />
                 </Modal>
@@ -557,6 +557,7 @@ export default function ListaDeRefeicoesPage() {
                 >
                     <AddGuestAdminModal 
                         onDeleteGuest={() => handleGuestBookingEditDelete()}
+                        date={selectedDate}
                         guestMealData={selectedGuestMealData}
                         formData={handleGuestFormData}
                         isEdit={true}

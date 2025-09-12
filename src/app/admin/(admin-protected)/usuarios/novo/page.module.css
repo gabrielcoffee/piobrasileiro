@@ -1,0 +1,187 @@
+.backLink {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.Data {
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.imageContainer {
+    margin: 1rem;
+    display: flex;
+}
+
+.container {
+    margin-left: 24px;
+    margin-right: 24px;
+    padding-bottom: 6rem; /* Space for fixed footer */
+    min-height: 100vh;
+}
+
+.passwordTitle {
+    margin-top: 2rem;
+    margin-bottom: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-primary);
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.passwordTitle:hover {
+    color: var(--color-primary-hover, #4CAF50);
+}
+
+.inputsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.userDataSection {
+    display: flex;
+    align-items: flex-start;
+    gap: 3rem;
+    margin-top: 2rem;
+    padding: 0 1rem;
+}
+
+.leftDataSection {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.rightDataSection {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.observacoesSection {
+    margin-top: 2rem;
+    padding: 0 1rem;
+}
+
+.userDataSaveButton {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+    padding: 0 1rem;
+    width: 50%;
+    margin-left: auto;
+}
+
+.passwordSection {
+    display: flex;
+    align-items: flex-start;
+    gap: 3rem;
+    margin-top: 2rem;
+    padding: 0 1rem;
+}
+
+.leftPswdSection {
+    flex: 1;
+    min-width: 0;
+}
+
+.rightPswdSection {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    position: relative;
+}
+
+.passwordRequirements {
+    margin-top: 0;
+    flex: 1;
+}
+
+.passwordRequirements p {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: var(--color-text);
+}
+
+.passwordRequirements ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.passwordRequirements li {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    margin-bottom: 0.5rem;
+    position: relative;
+    padding-left: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.passwordRequirements li::before {
+    content: '•';
+    color: var(--color-text-secondary);
+    position: absolute;
+    left: 0;
+    font-size: 16px;
+}
+
+.passwordError {
+    color: var(--color-error);
+    font-size: 12px;
+    margin-top: 0.5rem;
+}
+
+.passwordRequirementsList {
+    li {
+        display: flex;
+        flex-direction: row;
+        gap: 0.5rem;
+        align-items: center;
+    }
+}
+
+.saveButton {
+    align-self: flex-end;
+    margin-top: auto;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: background-color 0.2s ease;
+}
+
+.saveButton:hover {
+    background-color: var(--color-primary-hover, #4CAF50);
+}
+
+.saveButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.logoutButton {
+    color: var(--color-error);
+    margin-top: 2.5rem;
+    width: 50%;
+}

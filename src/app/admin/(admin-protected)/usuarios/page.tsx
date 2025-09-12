@@ -125,7 +125,7 @@ export default function UsuariosPage() {
                         <Button key="filter" variant="full-white" iconLeft={<Filter size={24} />}>Filtrar</Button>,
                         <Button visible={canShowExcluirButtons} key="powerOff" variant="full-white" style={{color:'var(--color-error)'}} iconLeft={<PowerOff size={24} />} onClick={() => setIsInativarModalOpen(true)}>Inativar</Button>,
                         <Button visible={canShowExcluirButtons} key="trash" variant="full-white" style={{color:'var(--color-error)'}} iconLeft={<Trash2 size={24} />} onClick={() => setIsExcluirModalOpen(true)}>Excluir</Button>,
-                        <Button key="plus" variant="full"  iconLeft={<Plus size={24} />}>Novo usuário</Button>
+                        <Button key="plus" variant="full" onClick={() => router.push('/admin/usuarios/novo')} iconLeft={<Plus size={24} />}>Novo usuário</Button>
                     ]}
                 />
 

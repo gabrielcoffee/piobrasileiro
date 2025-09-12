@@ -160,7 +160,7 @@ export default function AddGuestAdminModal({ formData, isEdit = false, guestMeal
                     />
 
                     <SimpleDateSelect
-                        selectedDate={new Date(date) || undefined}
+                        selectedDate={new Date(date + 'T00:00:00') || new Date()}
                         onDateChange={(date) => setData(date?.toISOString())}
                     />
 
