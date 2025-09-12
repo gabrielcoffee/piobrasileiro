@@ -26,8 +26,14 @@ export default function UsuariosPage() {
             <div className={styles.acoes}>
                 {active ? <Power size={20} style={{cursor: 'pointer'}} onClick={() => toggleActiveUser(id)} /> : <PowerOff size={20} style={{color: 'var(--color-error)', cursor: 'pointer'}} onClick={() => toggleActiveUser(id)} />}
                 <PencilLine size={20} onClick={() => editar(id)} style={{cursor: 'pointer'}} />
+                <Trash2 size={20} onClick={() => excluir(id)} style={{color: 'var(--color-error)', cursor: 'pointer'}} />
             </div>
         );
+    }
+
+    const excluir = (id: string) => {
+        setSelectedUsers([{user_id: id}]);
+        setIsExcluirModalOpen(true);
     }
 
     const fetchUsuarios = async () => {

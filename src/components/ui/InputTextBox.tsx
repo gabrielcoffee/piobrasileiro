@@ -30,7 +30,7 @@ export function InputTextBox({ value, label, error, className, leftIcon, ...prop
                 borderColor: hasError ? 'var(--color-error)' : 'var(--color-border)',
                 color: props.disabled ? 'var(--color-text-muted)' : 'var(--color-text)'
             }}
-            value={value || ''}
+            value={value && value.length > 250 ? value.slice(0, 250) : value || ''}
             rows={3}
             {...props}
         />

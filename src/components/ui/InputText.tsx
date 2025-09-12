@@ -32,15 +32,14 @@ export function InputText({ value, label, error, className, leftIcon, numberValu
                 borderColor: hasError ? 'var(--color-error)' : 'var(--color-border)',
                 color: props.disabled ? 'var(--color-text-muted)' : 'var(--color-text)'
             }}
-            type={onlyNumber ? 'number' : 'text'}
-            value={onlyNumber ? numberValue.toString() : value || ''}
+            type={onlyNumber ? 'number' : props.type ?? 'text'}
+            value={onlyNumber ? numberValue.toString() : (value && value.length > 100 ? value.slice(0, 100) : value || '')}
             onChange={(e) => {
                 if (onlyNumber) {
                     e.target.value = e.target.value.replace(/[^0-9]/g, '');
                 }
-                else {
-                    e.target.value = e.target.value.replace(/[^0-9]/g, '');
-                }
+
+                props.onChange?.(e);
             }}
             {...props}
         />

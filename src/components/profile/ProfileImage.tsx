@@ -6,9 +6,10 @@ import styles from "./styles/ProfileImage.module.css";
 interface ProfileImageProps {
   avatarImage: string | null;
   uploadAvatar: (imageFile: File) => Promise<void>;
+  isCreating?: boolean;
 }
 
-export default function ProfileImage({ avatarImage, uploadAvatar }: ProfileImageProps) {
+export default function ProfileImage({ avatarImage, uploadAvatar, isCreating = false }: ProfileImageProps) {
     const [imageSrc, setImageSrc] = useState<string | null>(null);
 
     const handleImageError = useCallback(() => {

@@ -13,11 +13,11 @@ import { DropdownInput } from "@/components/ui/DropdownInput";
 import { Button } from "@/components/ui/Button";
 import ProfileImage from "@/components/profile/ProfileImage";
 import { InputTextBox } from "@/components/ui/InputTextBox";
+import ProfileImageCreating from "@/components/profile/ProfileImageCreating";
+import { InputDate } from "@/components/ui/InputDate";
 
 
 export default function UsuarioPage() {    
-    const { id } = useParams();
-    const [usuario, setUsuario] = useState<any>(null);
     const router = useRouter();
     // User data states
     const [nomeCompleto, setNomeCompleto] = useState<string>('');
@@ -31,7 +31,7 @@ export default function UsuarioPage() {
     const [observacoes, setObservacoes] = useState<string>('');
 
     // Password states
-    const [avatar, setAvatar] = useState<string | null>(null);
+    const [avatar, setAvatar] = useState<File | null>(null);
 
     const saveUserData = async () => {
         try {
@@ -47,26 +47,28 @@ export default function UsuarioPage() {
                 observacoes: observacoes
             });
 
+            console.log(result.data);
+
+            if (avatar) {
+                await uploadAvatarAdmin(avatar as File, result.data.user.id as string);
+            }
+
+            console.log(result.data);
+
             if (result.success) {
-                console.log('Dados do usuário atualizados com sucesso');
+                console.log('Dados do usuário salvos com sucesso');
                 router.push('/admin/usuarios');
             } else {
-                console.error('Erro ao atualizar dados do usuário:', result.error);
+                console.error('Erro ao salvar dados do usuário:', result.error);
             }
         } catch (error) {
-            console.error('Erro ao atualizar dados do usuário:', error);
+            console.error('Erro ao salvar dados do usuário:', error);
         }
     };
 
-    useEffect(() => {
-        console.log(nomeCompleto, genero, funcao, email, numDocumento, tipoDocumento, tipoUsuario, observacoes);
-    }, [nomeCompleto, genero, funcao, email, numDocumento, tipoDocumento, tipoUsuario, observacoes]);
-
-    const handleAvatarChange = async (imageFile: File) => {
-        // This is where the avatar is updated, returns the base64 string
-        const newAvatar = await uploadAvatarAdmin(imageFile, id as string);
-        setAvatar(newAvatar || null);
-    }
+    const handleImageSelect = (file: File) => {
+        setAvatar(file);
+    };
 
     return (
         <div>
@@ -83,9 +85,8 @@ export default function UsuarioPage() {
                 <span className={styles.Data}>Dados</span>
 
                 <div className={styles.imageContainer}>
-                    <ProfileImage 
-                        uploadAvatar={handleAvatarChange} 
-                        avatarImage={avatar} 
+                    <ProfileImageCreating
+                        onImageSelect={handleImageSelect} 
                     />
                 </div>
 
@@ -98,12 +99,11 @@ export default function UsuarioPage() {
                                 onChange={(e) => setNomeCompleto(e.target.value)}
                                 placeholder="Nome completo"
                             />
-                            <InputText
+                            <InputDate
                                 label="Data de nascimento"
                                 value={dataNasc}
-                                onChange={(e) => setDataNasc(e.target.value)}
+                                onChange={(value) => setDataNasc(value)}
                                 placeholder="Data de nascimento"
-                                type="date"
                             />
                             <DropdownInput
                                 label="Tipo de documento"
@@ -167,12 +167,17 @@ export default function UsuarioPage() {
                             onChange={(e) => setObservacoes(e.target.value)}
                             placeholder="Digite observações sobre restrições alimentares..."
                         />
+
+                    </div>
+
+                    <div className={styles.passwordWarning}>
+                        <span>Por padrão, novos usuários recebem a senha: <strong>Senha@123</strong></span>
                     </div>
 
                     <div className={styles.userDataSaveButton}>
                         <Button
                             iconLeft={<Check size={20} />}
-                            available={nomeCompleto && genero  ? true : false}
+                            available={nomeCompleto && dataNasc && genero && funcao && email && numDocumento && tipoDocumento && tipoUsuario ? true : false}
                             onClick={saveUserData}
                         >
                             Salvar alterações

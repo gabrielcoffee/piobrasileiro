@@ -185,3 +185,14 @@
     margin-top: 2.5rem;
     width: 50%;
 }
+
+.passwordWarning {
+    margin-top: 1rem;
+    padding: 0 1rem;
+    text-align: right;
+}
+
+.passwordWarning span {
+    font-size: 14px;
+    color: var(--color-text-secondary);
+}
