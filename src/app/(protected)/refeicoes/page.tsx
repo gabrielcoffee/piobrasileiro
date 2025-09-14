@@ -5,8 +5,11 @@ import styles from "./page.module.css";
 import { MealDaysSection } from "@/components/refeicoes/MealDaysSection";
 import DaySelector from "@/components/refeicoes/DaySelector";
 import MealCard from "@/components/refeicoes/MealCard";
-import { queryApi, getCurrentWeekInfo, normalizeDateString } from "@/lib/utils";
+import { queryApi, normalizeDateString, getCurrentWeekInfoRegular } from "@/lib/utils";
 import { useEffect, useState, useCallback, useRef } from "react";
+import SaveFooter from "@/components/refeicoes/SaveFooter";
+import { ArrowLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 interface MealDay {
     date: string;           // "2025-08-18" (formato do banco)
@@ -21,6 +24,8 @@ interface MealDay {
 }
 
 export default function RefeicoesPage() {
+
+    const router = useRouter();
 
     const [meals, setMeals] = useState<any[] | null>(null);
     const [guestMeals, setGuestMeals] = useState<any[] | null>(null);
@@ -46,6 +51,7 @@ export default function RefeicoesPage() {
 
         if (result.success) {
             if (result.data.userMeals && result.data.userMeals.length > 0) {
+                console.log('Refeições encontradas:', result.data.userMeals);
                 setMeals(result.data.userMeals);
                 setBlockedDates(result.data.blockedDates);
             } else {
@@ -76,11 +82,13 @@ export default function RefeicoesPage() {
     // Esta função cria a lista de refeições apenas para dias futuros (incluindo hoje se antes das 19h00)
     const createMealList = useCallback(() => {
         
-        const weekInfo = getCurrentWeekInfo();
+        const weekInfo = getCurrentWeekInfoRegular();
         const today = new Date();
+        const tomorrow = new Date();
+        tomorrow.setDate(today.getDate() + 1);
         const currentHour = today.getHours();
         const currentMinute = today.getMinutes();
-        const isAfterCutoff = currentHour > 19 || (currentHour === 19 && currentMinute >= 0);
+        const isAfterCutoffToday = currentHour > 19 || (currentHour === 19 && currentMinute >= 0);
 
         const mealList: MealDay[] = [];
         let dayIndex = 0;
@@ -96,9 +104,10 @@ export default function RefeicoesPage() {
                 year: 'numeric' 
             }).toUpperCase();
 
-            // Verifica se o dia já passou das 19h00
+            // Verifica se o dia já passou das 19h00 para hoje
             const isToday = date.toDateString() === today.toDateString();
-            const isPast = isToday ? isAfterCutoff : date < today;
+            const isTomorrow = date.toDateString() === tomorrow.toDateString();
+            const isPast = isToday ? true : isTomorrow ? (isAfterCutoffToday ? true : false) : date < today;
 
             // Procura por refeicoes que possuem a mesma data no banco (meals)
             const existingMeal = meals?.find((meal: any) => {
@@ -143,10 +152,10 @@ export default function RefeicoesPage() {
     }, [meals]);
 
     const createGuestMealList = useCallback(() => {
-        const weekInfo = getCurrentWeekInfo();
+        const weekInfo = getCurrentWeekInfoRegular();
         
         // Inicializa array com 7 arrays vazios (um para cada dia da semana)
-        const guestMealsByDay: any[][] = [[], [], [], [], [], [], []];
+        const guestMealsByDay: any[][] = [[], [], [], [], [], [], [], []];
 
         guestMeals?.forEach((guestMeal: any) => {
             // Normaliza a data do guestMeal
@@ -230,8 +239,8 @@ export default function RefeicoesPage() {
             if (!meal.isPast) {
                 newMealsList[index] = {
                     ...meal,
-                    lunch: markAsTrue,
-                    dinner: markAsTrue,
+                    lunch: meal.blocked ? meal.lunch : markAsTrue,
+                    dinner: meal.blocked ? meal.dinner : markAsTrue,
                     // Não altera o takeOut
                 };
             }
@@ -262,7 +271,8 @@ export default function RefeicoesPage() {
 
     // USE EFFECTS UPDATES
 
-    // Auto-save com debounce de 1.5 segundos
+    // Auto-save com debounce de 1.5 segundos (desativado // versão antiga)
+    /*
     useEffect(() => {
         if (hasChanges) {
             const timer = setTimeout(() => {
@@ -272,6 +282,7 @@ export default function RefeicoesPage() {
             return () => clearTimeout(timer);
         }
     }, [hasChanges, mealsList]);
+    */
 
     useEffect(() => {
         fetchWeekMeals();
@@ -291,19 +302,22 @@ export default function RefeicoesPage() {
     }, [guestMeals, createGuestMealList]);
 
     return (
+        <>
+        <div className={styles.gobackHeader}>
+            <ArrowLeft size={24} onClick={() => router.back()} />
+        </div>
         <div className={styles.container}>
             <MealDaysSection/>
 
             <DaySelector 
                 mealsList={mealsList}
                 onDaySelect={(dayIndex: number) => {
-                    // Scroll para o MealCard correspondente
+                    dayIndex = dayIndex + 1;
                     const mealCard = document.getElementById(`meal-card-${dayIndex}`);
                     if (mealCard) {
                         mealCard.scrollIntoView({ behavior: 'smooth' });
                     }
                 }}
-                onMarkAllMeals={markAllMeals}
             />
 
             {mealsList.map((meal, index) => (
@@ -323,8 +337,10 @@ export default function RefeicoesPage() {
                     style={{ display: meal.isPast ? 'none' : 'block' }}
                 />
             ))}
-
             <Divider/>
         </div>
+
+        <SaveFooter hasChanges={hasChanges} onMarkAllMeals={markAllMeals} onSaveAndSend={saveMeals} />
+        </>
     );
 }

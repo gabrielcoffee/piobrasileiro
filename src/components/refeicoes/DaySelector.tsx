@@ -16,10 +16,10 @@ interface MealDay {
 interface DaySelectorProps {
     mealsList: MealDay[];
     onDaySelect: (dayIndex: number) => void;
-    onMarkAllMeals: (markAsTrue: boolean) => void;
+    onMarkAllMeals?: (markAsTrue: boolean) => void;
 }
 
-export default function DaySelector({ mealsList, onDaySelect, onMarkAllMeals }: DaySelectorProps) {
+export default function DaySelector({ mealsList, onDaySelect, onMarkAllMeals = () => {} }: DaySelectorProps) {
 
     const [haveSelected, setHaveSelected] = useState(false);
 
@@ -64,13 +64,15 @@ export default function DaySelector({ mealsList, onDaySelect, onMarkAllMeals }: 
     const handleMarkAllClick = () => {
         const newState = !haveSelected;
         setHaveSelected(newState);
-        onMarkAllMeals(newState);
+        onMarkAllMeals?.(newState);
     };
 
     return (
         <div className={styles.container}>
             <div className={styles.textAndButtonContainer}>
                 <span className={styles.daySelectorText}>Por favor, selecione suas refeições até <strong>hoje às 19h00.</strong></span>
+
+                {/* 
                 <button 
                 className={`${styles.checkButton} ${haveSelected ? styles.selected : ""}`} 
                 onClick={handleMarkAllClick}
@@ -85,9 +87,9 @@ export default function DaySelector({ mealsList, onDaySelect, onMarkAllMeals }: 
                             <CheckCheck color="var(--color-primary)"/> Marcar todas
                         </span>
                     )}
-
-                    
                 </button>
+                */}
+
             </div>
             <div className={styles.daysContainer}>
                 {daysOfWeek.map((day, index) => {

@@ -8,3 +8,17 @@
   .section {
     margin-bottom: 1.5rem;
   } 
+
+  .gobackHeader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    width: 50%;
+    display: flex;
+    align-items: center;
+    padding-left: 24px;
+    z-index: 20;
+    background-color: var(--color-slate-100);
+  }
