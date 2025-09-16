@@ -53,6 +53,7 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
         if (isCollapsed) {
             // If collapsed, expand the menu
             setIsCollapsed(false);
+            set(!false);
             // If item has submenu, expand it too
             if (item.submenu) {
                 setExpandedMenus([item.id]);
@@ -81,6 +82,10 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
             fetchNotifications();
         }
     }, [pathname]);
+
+    useEffect(() => {
+        fetchNotifications();
+    }, []);
 
     const renderMenuItem = (item: any) => {
         const IconComponent = item.icon;

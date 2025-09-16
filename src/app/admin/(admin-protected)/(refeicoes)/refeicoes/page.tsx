@@ -6,7 +6,7 @@ import Card from '@/components/desktop/Card';
 import CardHeader from '@/components/desktop/CardHeader';
 import Table from '@/components/admin/Table';
 import SearchSection from '@/components/admin/SearchSection';
-import { Check, PencilLine, Plus, Printer, X } from 'lucide-react';
+import { Check, Info, PencilLine, Plus, Printer, X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { convertBufferToBase64, getCurrentWeekInfo, getDateString, queryApi } from '@/lib/utils';
 import { generateReportPDFLib } from '@/lib/reportUtils';
@@ -146,13 +146,27 @@ export default function ListaDeRefeicoesPage() {
         }
     }
 
-    function getTipoUsuarioText(tipo_pessoa: string) {
+    function getTipoUsuarioText(meal: any) {
+
+        const tipo_pessoa = meal.tipo_pessoa;
+
         if (tipo_pessoa === 'usuario') {
             return 'Comum';
         } else if (tipo_pessoa === 'hospede') {
             return 'Hóspede';
         } else if (tipo_pessoa === 'convidado') {
-            return 'Convidado';
+            return (
+            <div>
+                <div className={styles.convidado}>
+                    Convidado 
+                    <Info size={18} style={{color: 'var(--color-primary)', cursor: 'help'}} className={styles.infoIcon}/>
+                    <div className={styles.convidadoInfo}>
+                        <span><strong>Anfitrião: </strong>{meal.anfitriao_nome}</span>
+                        <span><strong>Observações sobre a refeição: </strong>{meal.observacoes.length > 100 ? meal.observacoes.slice(0, 100) + '...' : meal.observacoes || 'Nenhuma observação'}</span>
+                    </div>
+                </div>
+            </div>
+            );
         }
         return 'Comum';
     }
@@ -175,7 +189,7 @@ export default function ListaDeRefeicoesPage() {
                     nome_limpo: meal.nome.toLowerCase(),
                     nome: <span className={styles.nomeCompleto}><img src={avatar} alt="Avatar" className={styles.avatar} />{meal.nome} </span>,
                     almoco: getAlmocoText(meal.almoco_colegio, meal.almoco_levar),
-                    tipo_usuario: getTipoUsuarioText(meal.tipo_pessoa),
+                    tipo_usuario: getTipoUsuarioText(meal),
                     jantar: meal.janta_colegio ? 'No Colégio Pio' : <X style={{color: 'var(--color-error)'}} />,
                     data: meal.data.split('T')[0],
                     acao: acoes(meal),
