@@ -17,27 +17,17 @@ interface ForgotPasswordProps {
 
 export default function ForgotPassword({onEnterClick, onBackClick}: ForgotPasswordProps) {
     const [email, setEmail] = useState('');
-    const [emailWrong, setEmailWrong] = useState(false);
     const [view, setView] = useState<ViewType>('forgotPassword');
+    const [emailWrong, setEmailWrong] = useState(false);
 
     const handleForgotPassword = async () => {
-        const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/forgot-password`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email })
-        });
+        const result = await queryApi('POST', '/auth/forgot-password', { email });
 
-        if (result.ok) {
+        if (result.success) {
             console.log('Email enviado com sucesso');
-            setEmailWrong(false);
-            setView('verifyEmail');
         } else {
-            const json = await result.json();
-            console.log('Erro ao enviar email:', json.message);
+            console.log('Erro ao enviar email:', result.error);
             setEmailWrong(true);
-            setView('forgotPassword');
         }
     }
     
@@ -64,7 +54,7 @@ export default function ForgotPassword({onEnterClick, onBackClick}: ForgotPasswo
                         <p className={styles.subtitle}>Recupere-a aqui!</p>
                     </div>
         
-                    <span className={styles.instruction}>Insira seu e-mail e você receberá um link para redefinir seua senha</span>
+                    <span className={styles.instruction}>Insira seu e-mail e você receberá um link para redefinir sua senha</span>
         
                     <InputText
                         type="email"
@@ -72,7 +62,6 @@ export default function ForgotPassword({onEnterClick, onBackClick}: ForgotPasswo
                         placeholder="email@email.com"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        error={emailWrong ? "E-mail incorreto" : ""}
                     />
         
                     <div className={styles.buttonContainer}>
