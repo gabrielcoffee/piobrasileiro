@@ -22,6 +22,7 @@ export default function GestaoDeReservasPage() {
     const [showNewBookingModal, setShowNewBookingModal] = useState<boolean>(false);
     const [showEditBookingModal, setShowEditBookingModal] = useState<boolean>(false);
     const [showDeleteBookingModal, setShowDeleteBookingModal] = useState<boolean>(false);
+    const [searchText, setSearchText] = useState<string>('');
 
     const [reservas, setReservas] = useState<any[]>([]);
 
@@ -175,6 +176,8 @@ export default function GestaoDeReservasPage() {
                 <CardHeader title="Gestão de Reservas" breadcrumb={["Início", "Hospedagem", "Reservas"]} />
 
                 <SearchSection
+                    searchText={searchText}
+                    setSearchText={setSearchText}
                     searchPlaceholder="Pesquise por nome"
                     buttons={[
                         <Button key="filter" variant="full-white" iconLeft={<Filter size={24} />}>Filtrar</Button>,
@@ -190,6 +193,8 @@ export default function GestaoDeReservasPage() {
                 />
 
                 <Table
+                    searchText={searchText}
+                    searchKey="nome"
                     headerItems={[
                         { key: "nome", label: "Nome" },
                         { key: "anfitriao", label: "Anfitrião" },

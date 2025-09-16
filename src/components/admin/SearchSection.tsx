@@ -3,18 +3,24 @@
 import { Search } from "lucide-react";
 import { InputText } from "../ui/InputText";
 import styles from "./styles/SearchSection.module.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { DateSection } from "./DateSection";
 
 interface SearchSectionProps {
     searchPlaceholder: string;
     dateSection: React.ReactNode;
     buttons: React.ReactNode[];
+    searchText?: string;
+    setSearchText?: (text: string) => void;
 }
 
-export default function SearchSection({ searchPlaceholder, dateSection, buttons }: SearchSectionProps) {
+export default function SearchSection({ searchPlaceholder, dateSection, buttons, searchText, setSearchText }: SearchSectionProps) {
 
-    const [search, setSearch] = useState("");
+    const [search, setSearch] = useState(searchText || '');
+
+    useEffect(() => {
+        setSearchText?.(search);
+    }, [search]);
     
     return (
         <div className={styles.container}>

@@ -19,6 +19,9 @@ export default function UsuariosPage() {
     const [isInativarModalOpen, setIsInativarModalOpen] = useState(false);
     const [canShowExcluirButtons, setCanShowExcluirButtons] = useState(false);
     const [selectedUsers, setSelectedUsers] = useState<any[]>([]);
+    const [searchText, setSearchText] = useState<string>('');
+
+
     const router = useRouter();
 
     const acoes = (active: boolean,id: string) => {
@@ -48,13 +51,15 @@ export default function UsuariosPage() {
             const avatar = user.avatar_image_data ? convertBufferToBase64(user.avatar_image_data) : '/user.png';
             return {
                 ...user,
+                nome_limpo: user.nome_completo.toLowerCase(),
                 nome_completo:  <span className={styles.nomeCompleto}><img src={avatar} alt="Avatar" className={styles.avatar} />{user.nome_completo} </span>,
                 data_nasc: user.data_nasc ? getDateString(user.data_nasc) : null,
                 avatar: avatar,
                 acao: acoes(user.active, user.user_id)
             }
-        })
-
+        }).sort((a: any, b: any) => {
+            return a.nome_limpo.localeCompare(b.nome_limpo);
+        });
         setUsuarios(users);
     }
 
@@ -125,6 +130,8 @@ export default function UsuariosPage() {
                 <CardHeader title="Lista de usuários" breadcrumb={["Início", "Usuários"]} />
 
                 <SearchSection
+                    searchText={searchText}
+                    setSearchText={setSearchText}
                     searchPlaceholder="Pesquise por nome"
                     dateSection={false}
                     buttons={[
@@ -136,6 +143,8 @@ export default function UsuariosPage() {
                 />
 
                 <Table
+                    searchText={searchText}
+                    searchKey="nome_limpo"
                     headerItems={[
                         { key: "nome_completo", label: "Nome" },
                         { key: "tipo_usuario", label: "Tipo de usuário" },

@@ -38,6 +38,7 @@ export default function ListaDeRefeicoesPage() {
     const [selectedResidentMealData, setSelectedResidentMealData] = useState<any>(null);
     const [guestFormData, setGuestFormData] = useState<any>(null);
     const [residentFormData, setResidentFormData] = useState<any>(null);
+    const [searchText, setSearchText] = useState<string>('');
     const [reportDays, setReportDays] = useState<{
         monday: boolean;
         tuesday: boolean;
@@ -171,6 +172,7 @@ export default function ListaDeRefeicoesPage() {
                 return {
                     ...meal,
                     rawData: meal,
+                    nome_limpo: meal.nome.toLowerCase(),
                     nome: <span className={styles.nomeCompleto}><img src={avatar} alt="Avatar" className={styles.avatar} />{meal.nome} </span>,
                     almoco: getAlmocoText(meal.almoco_colegio, meal.almoco_levar),
                     tipo_usuario: getTipoUsuarioText(meal.tipo_pessoa),
@@ -179,7 +181,11 @@ export default function ListaDeRefeicoesPage() {
                     acao: acoes(meal),
                 }
           
+            }).sort((a: any, b: any) => {
+                return a.nome_limpo.localeCompare(b.nome_limpo);
             });
+
+
 
             setRefeicoes(meals);
         } else {
@@ -421,6 +427,8 @@ export default function ListaDeRefeicoesPage() {
                 <CardHeader title="Lista de usuários" breadcrumb={["Início", "Refeições"]} />
 
                 <SearchSection
+                    searchText={searchText}
+                    setSearchText={setSearchText}
                     searchPlaceholder="Pesquise por nome"
                     dateSection={(
                     <DateSection
@@ -475,6 +483,8 @@ export default function ListaDeRefeicoesPage() {
                 <>
 
                 <Table
+                    searchText={searchText} 
+                    searchKey="nome_limpo"
                     headerItems={[
                         { key: "nome", label: "Nome" },
                         { key: "tipo_usuario", label: "Tipo de usuário" },

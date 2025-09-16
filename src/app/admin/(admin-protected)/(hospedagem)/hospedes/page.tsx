@@ -22,6 +22,7 @@ export default function HospedesPage() {
     const [showEditGuestModal, setShowEditGuestModal] = useState<boolean>(false);
     const [showDeleteGuestModal, setShowDeleteGuestModal] = useState<boolean>(false);
     const [selectedGuestData, setSelectedGuestData] = useState<any>(null);
+    const [searchText, setSearchText] = useState<string>('');
 
     const saveNewGuest = async () => {
 
@@ -137,16 +138,19 @@ export default function HospedesPage() {
                 <CardHeader title="Hospedes" breadcrumb={["Início", "Hospedagem", "Hospedes"]} />
 
                 <SearchSection
+                    searchText={searchText}
+                    setSearchText={setSearchText}
                     dateSection={false}
                     searchPlaceholder="Pesquise por nome"
                     buttons={[
-                        
                         <Button key="filter" variant="full-white" iconLeft={<Filter size={24} />}>Filtrar</Button>,
                         <Button key="new_guest" variant="full" onClick={() => setShowNewBookingModal(true)} iconLeft={<Plus size={20} />}>Novo hóspede</Button>
                     ]}
                 />
 
                 <Table
+                    searchText={searchText}
+                    searchKey="nome"
                     rowItems={guests}
                     headerItems={[
                         { key: "nome", label: "Nome" },

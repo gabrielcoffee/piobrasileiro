@@ -27,6 +27,7 @@ export default function QuartosPage() {
     const [nome, setNome] = useState<string>('');
     const [capacity, setCapacity] = useState<number>(0);
     const [active, setActive] = useState<boolean>(true);
+    const [searchText, setSearchText] = useState<string>('');
 
     const handleWeekChange = (weekStart: Date, weekEnd: Date) => {
         setSelectedWeekStart(weekStart);
@@ -218,6 +219,8 @@ export default function QuartosPage() {
                 <CardHeader title="Quartos" breadcrumb={["Início", "Hospedagem", "Quartos"]} />
 
                 <SearchSection
+                    searchText={searchText}
+                    setSearchText={setSearchText}
                     searchPlaceholder="Pesquise por nome do quarto"
                     dateSection={(
                         <DateSection
@@ -235,6 +238,8 @@ export default function QuartosPage() {
                 />
 
                 <Table
+                    searchText={searchText}
+                    searchKey="numero"
                     headerItems={[
                         { key: "numero", label: "Nome" },
                         ...weekDaysList,

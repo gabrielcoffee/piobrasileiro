@@ -21,6 +21,8 @@ interface TableProps {
     hasSelector?: boolean;
     className?: string;
     onSelectionChange?: (selectedRows: TableRowItem[]) => void;
+    searchText?: string;
+    searchKey?: string;
 }
 
 export interface TableRef {
@@ -35,18 +37,20 @@ const Table = forwardRef<TableRef, TableProps>(({
     itemsPerPage = 8, 
     hasSelector = false,
     className,
-    onSelectionChange
+    onSelectionChange,
+    searchText = '',
+    searchKey = 'nome_completo'
 }, ref) => {    
 
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
     
     // Calculate pagination
+    const defaultRows = rowItems;
     const totalPages = Math.ceil(rowItems.length / itemsPerPage);
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const currentPageItems = rowItems.slice(startIndex, endIndex);
-    
+    const [currentPageItems, setCurrentPageItems] = useState(defaultRows.slice(startIndex, endIndex));
     const currentPageSelectedCount = Array.from(selectedRows)
         .filter(index => index >= startIndex && index < endIndex)
         .length;
@@ -54,6 +58,35 @@ const Table = forwardRef<TableRef, TableProps>(({
     // Selection state
     const [isAllSelected, setIsAllSelected] = useState(currentPageItems.length > 0 && currentPageSelectedCount === currentPageItems.length);
     const [isIndeterminate, setIsIndeterminate] = useState(currentPageSelectedCount > 0 && currentPageSelectedCount < currentPageItems.length);
+
+    useEffect(() => {
+        // Initialize current page items
+        setCurrentPageItems(defaultRows.slice(startIndex, endIndex));
+    }, [rowItems]);
+
+    useEffect(() => {
+        if (searchText) {
+            // Filter rows based on searchText (accent-insensitive)
+            const filteredRows = defaultRows.filter(row => {
+                const value = row[searchKey]?.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') || '';
+                const search = searchText.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                return value.includes(search);
+            });
+
+            // Sort rows alphabetically (accent-insensitive)
+            const sortedRows = filteredRows.sort((a, b) => {
+                const aValue = (a[searchKey]?.toString() || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                const bValue = (b[searchKey]?.toString() || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+                return aValue.localeCompare(bValue);
+            });
+
+            setCurrentPageItems(sortedRows.slice(startIndex, endIndex));
+        } else {
+            console.log('defaultRows', defaultRows);
+            setCurrentPageItems(defaultRows.slice(startIndex, endIndex));
+        }
+
+    }, [searchText, rowItems]);
 
     // Expose these methods to parent
     useImperativeHandle(ref, () => ({
