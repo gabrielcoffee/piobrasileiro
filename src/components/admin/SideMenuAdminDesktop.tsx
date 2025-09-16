@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Home, LucideSalad, Bed, UserRound, LogOut, ChevronDown, ChevronUp, SquareArrowLeft, SquareArrowRight } from 'lucide-react';
 import styles from './styles/SideMenuAdminDesktop.module.css';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { queryApi } from '@/lib/utils';
 
 interface SideMenuAdminDesktopProps {
     set: (isCollapsed: boolean) => void;
@@ -15,7 +16,8 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
     const { logout } = useAuth();
     const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
     const [isCollapsed, setIsCollapsed] = useState(false);
-    
+    const [notificationsCount, setNotificationsCount] = useState(0);
+
     const menuItems = [
         { id: 'home', label: 'Início', icon: Home, href: '/admin/home' },
         { id: 'usuarios', label: 'Usuários', icon: UserRound, href: '/admin/usuarios' },
@@ -61,6 +63,25 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
         }
     };
 
+    const fetchNotifications = async () => {
+
+        const result = await queryApi('GET', '/admin/requests/notifications');
+
+        if (result.success) {
+            setNotificationsCount(result.data);
+
+        } else {
+            setNotificationsCount(0);
+            console.error('Erro ao buscar total de notificações:', result.error);
+        }
+    }
+
+    useEffect(() => {
+        if (pathname.startsWith('/admin/solicitacoes')) {
+            fetchNotifications();
+        }
+    }, [pathname]);
+
     const renderMenuItem = (item: any) => {
         const IconComponent = item.icon;
         const hasSubmenu = item.submenu && item.submenu.length > 0;
@@ -72,7 +93,7 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
             return (
                 <div key={item.id} className={styles.menuItemContainer}>
                     <button
-                        className={`${styles.menuItem} ${isActive ? styles.active : ''}`}
+                        className={`${styles.menuItem} ${isActive && !isExpanded ? styles.activeTopMenu : ''}`}
                         onClick={() => handleMenuClick(item)}
                     >
                         <IconComponent size={24}/>
@@ -92,7 +113,11 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
                                     href={subItem.href}
                                     className={`${styles.submenuItem} ${subItem.href === pathname ? styles.active : ''}`}
                                 >
-                                    <span className={styles.submenuLabel}>{subItem.label}</span>
+                                    <span className={styles.submenuLabel}>
+                                        {subItem.id !== 'solicitacoes' && subItem.label}
+                                        {subItem.id === 'solicitacoes' && 
+                                        <div className={styles.notification}><span>{subItem.label}</span> {notificationsCount > 0 && <div className={styles.notificationCount}>{notificationsCount}</div>}</div>}
+                                    </span>
                                 </Link>
                             ))}
                         </div>

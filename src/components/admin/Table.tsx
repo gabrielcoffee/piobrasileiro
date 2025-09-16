@@ -82,7 +82,6 @@ const Table = forwardRef<TableRef, TableProps>(({
 
             setCurrentPageItems(sortedRows.slice(startIndex, endIndex));
         } else {
-            console.log('defaultRows', defaultRows);
             setCurrentPageItems(defaultRows.slice(startIndex, endIndex));
         }
 

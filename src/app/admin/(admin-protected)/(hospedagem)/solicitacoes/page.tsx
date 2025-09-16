@@ -32,14 +32,13 @@ export default function SolicitacoesPage() {
     const handleDetalhes = (solicitacao: any) => {
         setSelectedSolicitacao(solicitacao);
         setIsDetalhesModalOpen(true);
+        viewSolicitacao(solicitacao.id);
     }
 
     const fetchSolicitacoes = async () => {
         const result = await queryApi('GET', '/admin/requests');
 
         const requests = result.data.requests;
-
-        console.log(requests);
 
         const completeRequests = requests.map((request: any) => {
             const solicitado_em = getDateString(request.criado_em, 'DD/MM/YYYY HH:mm');
@@ -67,6 +66,17 @@ export default function SolicitacoesPage() {
         if (result.error) {
             console.log(result.error);
             return;
+        }
+    }
+
+    const viewSolicitacao = async (id: string) => {
+        const result = await queryApi('PUT', `/admin/requests/${id}`);
+
+        if (result.success) {
+            console.log('Solicitação visualizada com sucesso');
+            fetchSolicitacoes();
+        } else {
+            console.error('Erro ao buscar solicitações:', result.error);
         }
     }
 
