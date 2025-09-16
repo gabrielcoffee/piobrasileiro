@@ -5,7 +5,11 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 
-export function SideMenuAdminDesktop() {
+interface SideMenuAdminDesktopProps {
+    set: (isCollapsed: boolean) => void;
+}
+
+export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
 
     const pathname = usePathname();
     const { logout } = useAuth();
@@ -132,7 +136,11 @@ export function SideMenuAdminDesktop() {
             <nav className={styles.navigation}>
 
 
-                <button className={styles.toggleButton} onClick={() => setIsCollapsed(!isCollapsed)}>
+                <button className={styles.toggleButton} onClick={() => {
+                    const invert = !isCollapsed;
+                    setIsCollapsed(invert);
+                    set(!invert);
+                }}>
                     {isCollapsed ? <SquareArrowLeft size={24} /> : <SquareArrowRight size={24} />}
                 </button>
 

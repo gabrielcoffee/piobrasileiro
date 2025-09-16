@@ -9,8 +9,11 @@ import { SideMenuAdmin } from '../admin/SideMenuAdmin';
 import { SideMenuAdminDesktop } from '../admin/SideMenuAdminDesktop';
 import { usePathname, useRouter } from 'next/navigation';
 
+interface HeaderProps {
+    setSideBarExpanded?: (expanded: boolean) => void;
+}
 
-export function Header() {
+export function Header({ setSideBarExpanded = (expanded: boolean) => void 0}: HeaderProps) {
 
     const { user, logout } = useAuth();
 
@@ -85,7 +88,7 @@ export function Header() {
         <>f
             {/* Desktop Side Menu - Always visible on desktop */}
             {isDesktop && pathname.startsWith('/admin') && (
-                <SideMenuAdminDesktop />
+                <SideMenuAdminDesktop set={setSideBarExpanded} />
             )}
 
             <div className={styles.mobileHeader}>

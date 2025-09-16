@@ -4,15 +4,20 @@ import { Header } from "@/components/general/Header";
 import { Loading } from "@/components/ui/Loading";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useScrollToTop } from "@/lib/useScrollToTop";
 
 export default function ProtectedAdminLayout({ children }: { children: ReactNode}) {
     const { isLoading, isAuthenticated, user } = useAuth();
     const router = useRouter();
-    
-    // Scroll to top on route changes
+    const [sideBarExpanded, setSideBarExpanded] = useState(true);
     useScrollToTop();
+
+
+    const handleSideBarExpanded = (expanded: boolean) => {
+        console.log('expanded', expanded);
+        setSideBarExpanded(expanded);
+    }
 
     useEffect(() => {
         if (!isLoading && !isAuthenticated) {
@@ -35,9 +40,11 @@ export default function ProtectedAdminLayout({ children }: { children: ReactNode
 
     return (
         <>
-            <Header />
+            <Header setSideBarExpanded={handleSideBarExpanded} />
             <div style={{ marginTop: '80px' }}></div>
-            {children}
+            <div style={{ marginLeft: `calc(${sideBarExpanded ? '280px' : '80px'} + 1rem)` }}>
+                {children}
+            </div>
         </>
     )
 }
