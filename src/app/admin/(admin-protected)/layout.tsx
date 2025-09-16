@@ -42,7 +42,7 @@ export default function ProtectedAdminLayout({ children }: { children: ReactNode
         <>
             <Header setSideBarExpanded={handleSideBarExpanded} />
             <div style={{ marginTop: '80px' }}></div>
-            <div style={{ marginLeft: `calc(${sideBarExpanded ? '280px' : '80px'} + 1rem)` }}>
+            <div style={{ marginLeft: `calc(${sideBarExpanded ? '280px' : '80px'} + 1rem)`, transition: 'margin-left 0.3s ease' }}>
                 {children}
             </div>
         </>

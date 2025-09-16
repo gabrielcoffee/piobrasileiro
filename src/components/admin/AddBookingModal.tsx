@@ -130,17 +130,20 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
     const defineRoomOptions = async (rooms: any[]) => {
         const roomsOptions = rooms.map((room: any) => {
 
-            const isOccupied = room.ocupacoes.some((ocupacao: any) => {
-                return (dataChegada.split('T')[0] <= ocupacao.data_saida 
-                && dataSaida.split('T')[0] >= ocupacao.data_chegada)
+            const arrival = dataChegada.split('T')[0];
+            const departure = dataSaida.split('T')[0];
+
+            const overlapCount = room.ocupacoes.filter((ocupacao: any) => {
+                return (arrival <= ocupacao.data_saida && departure >= ocupacao.data_chegada)
                 ||
-                (dataChegada.split('T')[0] >= ocupacao.data_chegada 
-                && dataSaida.split('T')[0] <= ocupacao.data_saida);
-            });
+                    (arrival >= ocupacao.data_chegada && departure <= ocupacao.data_saida);
+            }).length;
+
+            const isOccupied = overlapCount >= room.capacidade;
 
             return {
                 key: room.quarto_id,
-                value: room.numero + ' - ( ' + room.capacidade + ' )',
+                value: `${room.numero} - (${overlapCount}/${room.capacidade})`,
                 warningOnRight: isOccupied ? 'Ocupado neste período' : ''
             }
         });
