@@ -8,7 +8,7 @@ import styles from "./page.module.css";
 export default function HospedagemPage() {
 
     function handleExternalLink() {
-        window.open('https://www.google.com', '_blank');
+        window.open('https://www.piobrasileiro.com/hospedagem/', '_blank');
     }
 
     return (

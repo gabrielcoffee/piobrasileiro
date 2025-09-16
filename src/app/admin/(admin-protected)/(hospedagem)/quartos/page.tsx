@@ -194,10 +194,6 @@ export default function QuartosPage() {
     }, [selectedWeekStart, selectedWeekEnd]);
 
     useEffect(() => {
-        fetchRooms();
-    }, []);
-
-    useEffect(() => {
         if (showNewRoomModal) {
             setNome('');
             setCapacity(0);
@@ -212,6 +208,10 @@ export default function QuartosPage() {
             setActive(selectedRoomData.active);
         }
     }, [showEditRoomModal]);
+
+    useEffect(() => {
+        fetchRooms();
+    }, []);
 
     return (
         <div className={styles.container}>
