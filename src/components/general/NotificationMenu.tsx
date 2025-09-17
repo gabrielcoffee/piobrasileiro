@@ -1,3 +1,5 @@
+"use client";
+
 import { X } from "lucide-react";
 import NotificationCard from "./NotificationCard";
 import styles from "./styles/NotificationMenu.module.css";
