@@ -5,13 +5,17 @@ import { Button } from "@/components/ui/Button";
 import { InputText } from "@/components/ui/InputText";
 import { ArrowLeftIcon, CheckCheck, Lock, X } from "lucide-react";
 import styles from "./page.module.css";
-import { queryApi } from "@/lib/utils";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function ResetPasswordPage() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const { token, fullname, email } = useParams();
+
+    const searchParams = useSearchParams();
+    const token = searchParams.get("token");
+    const nome_completo = searchParams.get("nome_completo");
+    const email = searchParams.get("email");
+
     const router = useRouter();
     const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
 
@@ -24,21 +28,37 @@ export default function ResetPasswordPage() {
     const [passwordRequirements, setPasswordRequirements] = useState(false);
 
     const handleResetPassword = async () => {
-        const result = await queryApi('PUT', `/auth/reset-password`, {
-            token,
-            password,
-            confirmPassword
+
+        if (!passwordRequirements) {
+            console.log('Senha inválida');
+            return;
+        }
+
+        const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/reset-password`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                token,
+                newPassword: confirmPassword
+            })
         });
 
-        if (result.success) {
+        if (result.ok) {
             console.log('Senha redefinida com sucesso');
             router.push('/login');
         } else {
-            console.log('Erro ao redefinir senha:', result.error);
+            console.log('Erro ao redefinir senha');
         }
     }
 
     useEffect(() => {
+
+        console.log(nome_completo);
+        console.log(email);
+        console.log(token);
+
         if (password.length >= 8) {
             setLengthRequirement(true);
         } else {
@@ -63,19 +83,19 @@ export default function ResetPasswordPage() {
             setNumberRequirement(false);
         }
 
-        if (password.includes(fullname as string)) {
+        if (!password.includes(nome_completo as string)) {
             setNameRequirement(true);
         } else {
             setNameRequirement(false);
         }
         
-        if (password.includes(email as string)) {
+        if (!password.includes(email as string)) {
             setEmailRequirement(true);
         } else {
             setEmailRequirement(false);
         }
         
-        if (lengthRequirement && uppercaseRequirement && lowercaseRequirement && numberRequirement && nameRequirement && emailRequirement) {
+        if (lengthRequirement && uppercaseRequirement && lowercaseRequirement && numberRequirement && nameRequirement && emailRequirement && password === confirmPassword) {
             setPasswordRequirements(true);
         } else {
             setPasswordRequirements(false);
@@ -113,7 +133,7 @@ export default function ResetPasswordPage() {
             <InputText
                 type="password"
                 label="Senha:"
-                placeholder="Insira sua senha"
+                placeholder="Insira sua nova senha"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
             />
@@ -121,7 +141,7 @@ export default function ResetPasswordPage() {
             <InputText
                 type="password"
                 label="Confirmar senha:"
-                placeholder="Insira sua senha"
+                placeholder="Confirme sua nova senha"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
             />

@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/Button";
 import { InputText } from "@/components/ui/InputText";
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 import styles from "./styles/ForgotPassword.module.css";
-import { queryApi } from "@/lib/utils";
 import VerifyEmail from "./VerifyEmail";
 
 type ViewType = 'forgotPassword' | 'verifyEmail';
@@ -18,16 +17,22 @@ interface ForgotPasswordProps {
 export default function ForgotPassword({onEnterClick, onBackClick}: ForgotPasswordProps) {
     const [email, setEmail] = useState('');
     const [view, setView] = useState<ViewType>('forgotPassword');
-    const [emailWrong, setEmailWrong] = useState(false);
 
     const handleForgotPassword = async () => {
-        const result = await queryApi('POST', '/auth/forgot-password', { email });
+        const result = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/forgot-password`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email })
+        });
 
-        if (result.success) {
+        if (result.ok) {
+            setView('verifyEmail');
             console.log('Email enviado com sucesso');
         } else {
-            console.log('Erro ao enviar email:', result.error);
-            setEmailWrong(true);
+            setView('verifyEmail');
+            console.log('Erro ao enviar email');
         }
     }
     

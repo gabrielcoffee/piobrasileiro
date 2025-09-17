@@ -29,6 +29,7 @@
 }
 
 .progressContainer {
+    z-index: 30;
     display: flex;
     gap: 4px;
     width: 100%;
@@ -53,9 +54,11 @@
 .button {
     margin-top: 16px;
     margin-bottom: 16px;
+    z-index: 40;
 }
 
 .clickablePanel {
+    z-index: 20;
     width: 100%;
     height: 100%;
     display: flex;
