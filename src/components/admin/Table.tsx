@@ -215,6 +215,12 @@ const Table = forwardRef<TableRef, TableProps>(({
     };
 
     useEffect(() => {
+        if (rowItems.length > itemsPerPage) {
+            setCurrentPage(1);
+        }
+    }, [rowItems, searchText, itemsPerPage]);
+
+    useEffect(() => {
         if (selectedRows.size === 0) {
             setIsAllSelected(false);
         } else {
@@ -236,10 +242,6 @@ const Table = forwardRef<TableRef, TableProps>(({
             </div>
         )
     }
-
-    useEffect(() => {
-        setCurrentPage(1);
-    }, [rowItems, searchText]);
 
     return (
         <div className={`${styles.container} ${className || ''}`}>

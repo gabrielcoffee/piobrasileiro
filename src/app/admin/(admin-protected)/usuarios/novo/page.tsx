@@ -32,9 +32,11 @@ export default function UsuarioPage() {
 
     // Password states
     const [avatar, setAvatar] = useState<File | null>(null);
-
+    const [emailUsedError, setEmailUsedError] = useState<boolean>(false);
+    const [dataNascError, setDataNascError] = useState<boolean>(false);
     const saveUserData = async () => {
         try {
+
             const result = await queryApi('POST', `/admin/users`, {
                 nome_completo: nomeCompleto,
                 data_nasc: dataNasc,
@@ -47,22 +49,24 @@ export default function UsuarioPage() {
                 observacoes: observacoes
             });
 
-            console.log(result.data);
-
-            if (avatar) {
-                await uploadAvatarAdmin(avatar as File, result.data.user.id as string);
-            }
-
-            console.log(result.data);
-
             if (result.success) {
+
+                if (avatar) {
+                    await uploadAvatarAdmin(avatar as File, result.data.user_id as string);
+                }
+
                 console.log('Dados do usuário salvos com sucesso');
                 router.push('/admin/usuarios');
             } else {
-                console.error('Erro ao salvar dados do usuário:', result.error);
+                if (result.error === "email already used") {
+                    setEmailUsedError(true);
+                    console.log('E-mail já utilizado');
+                } else {
+                    console.error('Erro ao salvar dados do usuário:', result.error);
+                }
             }
         } catch (error) {
-            console.error('Erro ao salvar dados do usuário:', error);
+            console.error('Erro ao salvar dados do usuário:', );
         }
     };
 
@@ -102,8 +106,15 @@ export default function UsuarioPage() {
                             <InputDate
                                 label="Data de nascimento"
                                 value={dataNasc}
-                                onChange={(value) => setDataNasc(value)}
+                                onChange={(value) => {
+                                    setDataNasc(value);
+                                    setDataNascError(false);
+                                    if (!value || value === '') {
+                                        setDataNascError(true);
+                                    }
+                                }}
                                 placeholder="Data de nascimento"
+                                error={dataNascError ? "Data de nascimento inválida" : ""}
                             />
                             <DropdownInput
                                 label="Tipo de documento"
@@ -144,11 +155,24 @@ export default function UsuarioPage() {
                                 onChange={(e) => setEmail(e.target.value)}
                                 placeholder="E-mail"
                                 type="email"
+                                error={emailUsedError ? "E-mail já utilizado" : ""}
                             />
                             <InputText
                                 label="Número do documento"
-                                value={numDocumento.length > 11 ? numDocumento.slice(0, 11) : numDocumento}
-                                onChange={(e) => setNumDocumento(e.target.value.length > 11 ? e.target.value.slice(0, 11) : e.target.value)}
+                                value={
+                                    tipoDocumento === 'cpf' ? (
+                                        numDocumento.length > 11 ? numDocumento.slice(0, 11) : numDocumento
+                                    ) : (
+                                        numDocumento.length > 15 ? numDocumento.slice(0, 15) : numDocumento
+                                    )
+                                }
+                                disabled={!tipoDocumento}
+                                onChange={(e) => setNumDocumento(
+                                    tipoDocumento === 'cpf' ? 
+                                    e.target.value.length > 11 ? e.target.value.slice(0, 11) : e.target.value 
+                                    :
+                                    e.target.value.length > 15 ? e.target.value.slice(0, 15) : e.target.value)
+                                }
                                 placeholder="Número do documento"
                             />
                             <InputText
@@ -178,7 +202,7 @@ export default function UsuarioPage() {
                         <Button
                             iconLeft={<Check size={20} />}
                             available={nomeCompleto && dataNasc && genero && funcao && email && numDocumento && tipoDocumento && tipoUsuario ? true : false}
-                            onClick={saveUserData}
+                            onClick={(nomeCompleto && dataNasc && genero && funcao && email && numDocumento && tipoDocumento && tipoUsuario) ? saveUserData : undefined}
                         >
                             Salvar alterações
                         </Button>

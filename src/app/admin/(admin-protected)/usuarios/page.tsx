@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { convertBufferToBase64, getDateString, normalizeDateString, queryApi } from "@/lib/utils";
 import Modal from "@/components/admin/Modal";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function UsuariosPage() {
 
@@ -20,22 +21,71 @@ export default function UsuariosPage() {
     const [canShowExcluirButtons, setCanShowExcluirButtons] = useState(false);
     const [selectedUsers, setSelectedUsers] = useState<any[]>([]);
     const [searchText, setSearchText] = useState<string>('');
-
+    const [showExcluirInfoId, setShowExcluirInfoId] = useState<string | null>(null);
 
     const router = useRouter();
 
-    const acoes = (active: boolean,id: string) => {
-        return (
+    // Close excluir popover on outside click
+    useEffect(() => {
+        if (!showExcluirInfoId) return;
+
+        const handleDocumentClick = (event: MouseEvent) => {
+            const target = event.target as Node;
+
+            const popovers = Array.from(document.querySelectorAll(`.${styles.excluirInfo}`));
+            const actionCells = Array.from(document.querySelectorAll(`.${styles.acoes}`));
+
+            const clickedInsidePopover = popovers.some((el) => el.contains(target));
+            const clickedInsideActions = actionCells.some((el) => el.contains(target));
+
+            if (!clickedInsidePopover && !clickedInsideActions) {
+                setShowExcluirInfoId(null);
+            }
+        };
+
+        document.addEventListener('mousedown', handleDocumentClick);
+        return () => {
+            document.removeEventListener('mousedown', handleDocumentClick);
+        };
+    }, [showExcluirInfoId]);
+
+    // Render helpers
+    const renderActionCell = (active: boolean, id: string) => (
+        <>
             <div className={styles.acoes}>
-                {active ? <Power size={20} style={{cursor: 'pointer'}} onClick={() => toggleActiveUser(id)} /> : <PowerOff size={20} style={{color: 'var(--color-error)', cursor: 'pointer'}} onClick={() => toggleActiveUser(id)} />}
-                <PencilLine size={20} onClick={() => editar(id)} style={{cursor: 'pointer'}} />
-                <Trash2 size={20} onClick={() => excluir(id)} style={{color: 'var(--color-error)', cursor: 'pointer'}} />
+                {active ? (
+                    <PowerOff
+                        size={20}
+                        style={{ cursor: 'pointer' }}
+                        onClick={() => {
+                            setSelectedUsers([{ user_id: id }]);
+                            setIsInativarModalOpen(true);
+                        }}
+                    />
+                ) : (
+                    <Power
+                        size={20}
+                        style={{ color: 'var(--color-error)', cursor: 'pointer' }}
+                        onClick={() => toggleActiveUser(id)}
+                    />
+                )}
+
+                <PencilLine size={20} onClick={() => editar(id)} style={{ cursor: 'pointer' }} />
+                <EllipsisVertical size={20} onClick={() => setShowExcluirInfoId(id)} style={{ cursor: 'pointer' }} />
             </div>
-        );
-    }
+
+            {showExcluirInfoId === id && (
+                <div id={id} className={styles.excluirInfo} onClick={() => excluir(id)} style={{ cursor: 'pointer' }}>
+                    <Trash2 size={20} style={{ color: 'var(--color-error)' }} />
+                    <span>Excluir</span>
+                </div>
+            )}
+        </>
+    );
 
     const excluir = (id: string) => {
         setSelectedUsers([{user_id: id}]);
+        setShowExcluirInfoId(null);
         setIsExcluirModalOpen(true);
     }
 
@@ -50,13 +100,16 @@ export default function UsuariosPage() {
         const users = response.data.map((user: any) => {
             const avatar = user.avatar_image_data ? convertBufferToBase64(user.avatar_image_data) : '/user.png';
             return {
-                ...user,
+                user_id: user.user_id,
+                active: user.active,
+                nome_completo: user.nome_completo,
                 nome_limpo: user.nome_completo.toLowerCase(),
-                nome_completo:  <span className={styles.nomeCompleto}><img src={avatar} alt="Avatar" className={styles.avatar} />{user.nome_completo} </span>,
+                tipo_usuario: user.tipo_usuario,
+                funcao: user.funcao,
                 data_nasc: user.data_nasc ? getDateString(user.data_nasc) : null,
-                avatar: avatar,
-                acao: acoes(user.active, user.user_id)
-            }
+                email: user.email,
+                avatar,
+            };
         }).sort((a: any, b: any) => {
             return a.nome_limpo.localeCompare(b.nome_limpo);
         });
@@ -84,6 +137,8 @@ export default function UsuariosPage() {
     }
 
     const inactivateUsers = async () => {
+
+        console.log(selectedUsers);
 
         const result = await queryApi('POST', '/admin/users/deactivate', {
             userIds: selectedUsers.map((brocoli) => brocoli.user_id)
@@ -153,7 +208,22 @@ export default function UsuariosPage() {
                         { key: "email", label: "Email" },
                         { key: "acao", label: "Ação" },
                     ]}
-                    rowItems={usuarios}
+                    rowItems={usuarios.map((u) => ({
+                        // used for searching but not displayed
+                        nome_limpo: u.nome_limpo,
+                        // display cells
+                        nome_completo: (
+                            <span className={styles.nomeCompleto}>
+                                <img src={u.avatar} alt="Avatar" className={styles.avatar} />
+                                {u.nome_completo}
+                            </span>
+                        ),
+                        tipo_usuario: u.tipo_usuario,
+                        funcao: u.funcao,
+                        data_nasc: u.data_nasc,
+                        email: u.email,
+                        acao: renderActionCell(u.active, u.user_id),
+                    }))}
                     itemsPerPage={8}
                     hasSelector={true}
                     onSelectionChange={(selectedRows) => {

@@ -2,7 +2,7 @@
 import Card from "@/components/desktop/Card";
 import CardHeader from "@/components/desktop/CardHeader";
 import { Check, CheckCheck, SquareArrowLeft, X } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import styles from "./page.module.css";
 import Link from "next/link";
 import { queryApi, uploadAvatar, uploadAvatarAdmin } from "@/lib/utils";
@@ -18,7 +18,7 @@ import { InputTextBox } from "@/components/ui/InputTextBox";
 export default function UsuarioPage() {    
     const { id } = useParams();
     const [usuario, setUsuario] = useState<any>(null);
-
+    const router = useRouter();
     // User data states
     const [nomeCompleto, setNomeCompleto] = useState<string>('');
     const [dataNasc, setDataNasc] = useState<string>('');
@@ -29,6 +29,7 @@ export default function UsuarioPage() {
     const [tipoDocumento, setTipoDocumento] = useState<string>('');
     const [tipoUsuario, setTipoUsuario] = useState<string>('');
     const [observacoes, setObservacoes] = useState<string>('');
+    const [isSaving, setIsSaving] = useState<boolean>(false);
 
     // Password states
     const [currentPassword, setCurrentPassword] = useState<string>('');
@@ -141,8 +142,9 @@ export default function UsuarioPage() {
             });
 
             if (result.success) {
+                setIsSaving(true);
                 console.log('Dados do usuário atualizados com sucesso');
-                fetchUsuario(); // Refresh data
+                router.push('/admin/usuarios');
             } else {
                 console.error('Erro ao atualizar dados do usuário:', result.error);
             }
@@ -281,7 +283,7 @@ export default function UsuarioPage() {
                             available={hasUserDataChanges()}
                             onClick={saveUserData}
                         >
-                            Salvar alterações
+                            {isSaving ? 'Salvando...' : 'Salvar alterações'}
                         </Button>
                     </div>
                 </div>

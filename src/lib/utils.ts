@@ -33,19 +33,10 @@ export async function queryApi(method: string, route: string, body?: any) {
                 message: json.message || null
             };
         } else {
-            // Handle different error statuses
-            let errorMessage = 'Request failed';
-            if (response.status === 401) {
-                errorMessage = 'Unauthorized - please login again';
-            } else if (response.status === 403) {
-                errorMessage = 'Access forbidden';
-            } else if (response.status === 500) {
-                errorMessage = 'Server error';
-            }
 
             return { 
                 success: false, 
-                error: errorMessage, 
+                error: json.error || null, 
                 status: response.status,
                 data: null,
                 message: json.error || null
