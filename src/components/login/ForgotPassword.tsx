@@ -59,7 +59,7 @@ export default function ForgotPassword({onEnterClick, onBackClick}: ForgotPasswo
                         <p className={styles.subtitle}>Recupere-a aqui!</p>
                     </div>
         
-                    <span className={styles.instruction}>Insira seu e-mail e você receberá um link para redefinir sua senha</span>
+                    <span className={styles.instruction}>Insira seu e-mail e você receberá um link para redefinir uma nova senha.</span>
         
                     <InputText
                         type="email"

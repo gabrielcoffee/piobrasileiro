@@ -44,7 +44,7 @@ export default function VerifyEmail({onBackClick, onResendClick}: ForgotPassword
             </div>
 
             <span className={styles.instruction}>
-                Verifique sua carixa de entrada principal e sua caixa de spam. <br/><br/>
+                Verifique sua caixa de entrada principal e sua caixa de spam. <br/><br/>
                 Seu link de recuperação de senha deve chegar em alguns minutos.
             </span>
 
