@@ -43,6 +43,10 @@
     cursor: pointer;
 }
 
+.dayButton:hover {
+    background-color: var(--color-slate-100);
+}
+
 .weekDaysButtons {
     display: flex;
     flex-direction: row;
@@ -62,4 +66,10 @@
     color: white !important;
     border-color: var(--color-primary); 
     background-color: var(--color-primary);
+}
+
+.selected:hover {
+    color: white !important;
+    border-color: var(--color-primary-hover); 
+    background-color: var(--color-primary-hover);
 }

@@ -22,7 +22,8 @@
     outline: none;
     transition: border-color 0.2s ease;
     background-color: var(--color-white);
-    color: var(--color-text);   
+    color: var(--color-text); 
+    height: 40px;  
 }
 
 .input::placeholder {

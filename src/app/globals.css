@@ -2,6 +2,7 @@
 :root {
   /* Colors */
   --color-primary: #267024;
+  --color-primary-hover: #1f5e1c;
   --color-primary-foreground: #EAFCE9;
   --color-slate-100: #f1f5f9;
   --color-slate-300: #94a3b8;
@@ -9,6 +10,7 @@
   --color-slate-600: #475569;
   --color-slate-800: #1e293b;
   --color-white: #ffffff;
+  --color-white-hover: #f1f5f9;
   --color-text: #1e293b;
   --color-text-muted: #64748b;
   --color-border: #E2E8F0;
@@ -19,6 +21,7 @@
   --color-gray-200: #D4D6DD;
   --color-green-bg: #EAFCE9;
   --color-error: #dc2626;
+  --color-error-hover: #b91c1c;
   --color-warning: #CC9907;
   --color-error-dark: #B91C1C;
   --color-error-bg: #FEE2E2;

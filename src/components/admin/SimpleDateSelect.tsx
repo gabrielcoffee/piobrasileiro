@@ -102,7 +102,7 @@ export function SimpleDateSelect({ selectedDate, onDateChange, disabled, label =
                 <Button  
                 disabled={disabled}
                 variant="full-white"
-                style={{ width: '100%', height: '37px', justifyContent: 'flex-start', fontSize: '0.875rem', color: selectedDate ? 'var(--color-text)' : 'var(--color-text-muted)' }}
+                style={{ width: '100%', height: '40px', justifyContent: 'flex-start', fontSize: '0.875rem', color: selectedDate ? 'var(--color-text)' : 'var(--color-text-muted)' }}
                 iconLeft={<Calendar />}
                 onClick={() => !disabled && setShowMiniCalendar(!showMiniCalendar)}
                 className={styles.dateButton}

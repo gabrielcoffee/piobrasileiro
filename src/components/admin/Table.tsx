@@ -85,7 +85,7 @@ const Table = forwardRef<TableRef, TableProps>(({
             setCurrentPageItems(defaultRows.slice(startIndex, endIndex));
         }
 
-    }, [searchText, rowItems]);
+    }, [searchText, rowItems, currentPage, itemsPerPage]);
 
     // Expose these methods to parent
     useImperativeHandle(ref, () => ({
@@ -236,6 +236,10 @@ const Table = forwardRef<TableRef, TableProps>(({
             </div>
         )
     }
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [rowItems, searchText]);
 
     return (
         <div className={`${styles.container} ${className || ''}`}>
