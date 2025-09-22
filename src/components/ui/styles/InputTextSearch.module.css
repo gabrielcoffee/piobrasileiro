@@ -24,6 +24,7 @@
     background-color: var(--color-white);
     color: var(--color-text); 
     height: 40px;  
+    cursor: pointer;
 }
 
 .input::placeholder {
@@ -95,4 +96,15 @@
     color: var(--color-warning);
     margin-left:auto;
 
+}
+/* Position the icon over the input */
+.rightIcon {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    right: 10px;
+    top: -24px;
+    pointer-events: none;
+    z-index: 9000;
 }

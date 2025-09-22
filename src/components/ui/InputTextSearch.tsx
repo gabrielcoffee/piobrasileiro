@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import styles from './styles/InputTextSearch.module.css';
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, ChevronDown } from 'lucide-react';
 
 type Option = {
     key: string;
@@ -78,6 +78,9 @@ export function InputTextSearch({ value, label, error, leftIcon, searchOptions, 
             placeholder={placeholder}
             {...props}
         />
+        <div className={styles.rightIcon}>
+            <ChevronDown size={18} color={'var(--color-text-muted)'} style={{position: 'absolute', top: '50%', transform: 'translateY(-50%)'}} />
+        </div>
         {showOptions && searchOptions && searchOptions.length > 0 &&(
             <div className={styles.searchOptionsContainer}>
                 <div className={styles.searchOptions}>

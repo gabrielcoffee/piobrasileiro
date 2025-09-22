@@ -8,7 +8,7 @@ export default function CalendarioPage() {
     return (
         <div className={styles.container}>
             <Card>
-                <CardHeader title="Calendário de Refeições" breadcrumb={["Início", "Refeições", "Calendário"]} />
+                <CardHeader title="Calendário de refeições" breadcrumb={["Início", "Refeições", "Calendário"]} />
 
                 <Calendar/>
             </Card>

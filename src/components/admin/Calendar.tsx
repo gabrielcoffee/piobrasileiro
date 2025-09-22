@@ -9,7 +9,8 @@ import { queryApi } from '@/lib/utils';
 export function Calendar() {
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [selectedDates, setSelectedDates] = useState<string[]>([]);
-    const [blockDates, setBlockDates] = useState<string[]>([]);
+    const [selectedToBlockDates, setSelectedToBlockDates] = useState<string[]>([]);
+    const [blockedDates, setBlockedDates] = useState<string[]>([]);
 
     // Generate calendar dates for a given month
     const generateCalendarDates = (year: number, month: number) => {
@@ -39,6 +40,11 @@ export function Calendar() {
 
     // Handle date click in calendar
     const handleDateClick = (date: string) => {
+
+        if (date < new Date().toISOString().split('T')[0]) {
+            return;
+        }
+
         if (selectedDates.includes(date)) {
             setSelectedDates(selectedDates.filter(d => d !== date));
         } else {
@@ -56,7 +62,7 @@ export function Calendar() {
         const result = await queryApi('GET', '/admin/blocked-dates');
         if (result.success) {
             const dates = result.data.map((date: any) => date.data.split('T')[0]);
-            setBlockDates(dates);
+            setBlockedDates(dates);
         }
         else {
             console.log('Erro ao buscar datas bloqueadas');
@@ -64,18 +70,19 @@ export function Calendar() {
     }
 
     const handleBlockDates = () => {
-        setBlockDates(selectedDates);
+        setSelectedToBlockDates(selectedDates);
         setSelectedDates([]);
     }
 
     const handleSaveUnblockDates = async () => {
+
         const result = await queryApi('DELETE', '/admin/unblock-dates', {
             datas: selectedDates
         });
 
         if (result.success) {
             console.log('Datas desbloqueadas salvas com sucesso');
-            setBlockDates(blockDates.filter(date => !selectedDates.includes(date)));
+            setBlockedDates(blockedDates.filter(date => !selectedDates.includes(date)));
             setSelectedDates([]);
             fetchBlockedDates();
         }
@@ -86,18 +93,29 @@ export function Calendar() {
 
     const handleSaveBlockDates = async () => {
         const result = await queryApi('POST', '/admin/blocked-dates', {
-            datas: blockDates
+            datas: selectedToBlockDates
         });
 
         if (result.success) {
             console.log('Datas bloqueadas salvas com sucesso');
             fetchBlockedDates();
-            setBlockDates([]);
+            setSelectedToBlockDates([]);
             setSelectedDates([]);
         } else {
             console.log('Erro ao salvar datas bloqueadas');
         }
     };
+    
+    const checkAvailableUnblockDates = () => {
+        return selectedDates.length > 0 && blockedDates.length > 0 && selectedToBlockDates.length === 0 &&
+        // check if there is at least one date selected that is blocked
+        selectedDates.some(date => blockedDates.includes(date));
+    }
+
+    const checkAvailableBlockDates = () => {
+        return selectedDates.length > 0 && blockedDates.length < 35 
+        && selectedDates.some(date => !blockedDates.includes(date));
+    }
 
     // Initialize with current week
     useEffect(() => {
@@ -132,10 +150,10 @@ export function Calendar() {
                             </div>
 
                             <div className={styles.blockDatesContainer}>
-                                <Button style={{ color: 'var(--color-primary)'}} variant="full-white" iconLeft={<Unlock />} onClick={handleSaveUnblockDates}>
+                                <Button available={checkAvailableUnblockDates()} style={{ color: 'var(--color-primary)'}} variant="full-white" iconLeft={<Unlock />} onClick={checkAvailableUnblockDates() ? handleSaveUnblockDates : undefined}>
                                     Liberar datas
                                 </Button>
-                                <Button style={{ color: 'var(--color-error)', borderColor: 'var(--color-error)' }} variant="full-white" iconLeft={<Lock />} onClick={handleBlockDates}>
+                                <Button available={checkAvailableBlockDates()} style={{ color: 'var(--color-error)', borderColor: 'var(--color-error)' }} variant="full-white" iconLeft={<Lock />} onClick={handleBlockDates}>
                                     Bloquear datas
                                 </Button>
                             </div>
@@ -164,9 +182,13 @@ export function Calendar() {
                                             ? styles.adjacentMonth 
                                             : ''
                                     } ${
-                                        blockDates.includes(date.toISOString().split('T')[0]) ? styles.selectedBlockDate : ''
+                                        blockedDates.includes(date.toISOString().split('T')[0]) ? styles.blockedDate : ''
+                                    } ${
+                                        selectedToBlockDates.includes(date.toISOString().split('T')[0]) ? styles.selectedToBlockDate : ''
                                     } ${
                                         selectedDates.includes(date.toISOString().split('T')[0]) ? styles.selectedDate : ''
+                                    } ${
+                                        date.toISOString().split('T')[0] < new Date().toISOString().split('T')[0] ? styles.disabledDate : ''
                                     }
                                     `}
                                     onClick={() => handleDateClick(date.toISOString().split('T')[0])}

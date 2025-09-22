@@ -160,6 +160,7 @@ export default function AddGuestAdminModal({ formData, isEdit = false, guestMeal
                     />
 
                     <SimpleDateSelect
+                        cantBeBeforeToday={true}
                         selectedDate={new Date(date + 'T00:00:00') || new Date()}
                         onDateChange={(date) => setData(date?.toISOString())}
                     />

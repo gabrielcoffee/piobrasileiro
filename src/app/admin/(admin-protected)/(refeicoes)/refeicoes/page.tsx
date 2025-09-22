@@ -23,6 +23,7 @@ export default function ListaDeRefeicoesPage() {
     const { isLoading, setIsLoading } = useAuth();
 
     const [refeicoes, setRefeicoes] = useState([]);
+    const today = new Date();
     const [selectedWeek, setSelectedWeek] = useState<Date>(new Date());
     const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
     const [dayInfo, setDayInfo] = useState<any>(null);
@@ -435,28 +436,22 @@ export default function ListaDeRefeicoesPage() {
         });
     }
 
+    const handleShowBookingModal = () => {
+        if (selectedDate < today.toISOString().split('T')[0]) {
+            setShowNewBookingModal(false);
+            return;
+        }
+        if (selectedDate >= today.toISOString().split('T')[0]) {
+            setShowNewBookingModal(true);
+            return;
+        }
+    }
+
     return (
         <div className={styles.container}>
             <Card>
-                <CardHeader title="Lista de usuários" breadcrumb={["Início", "Refeições"]} />
+                <CardHeader title="Lista de agendamento de refeições" breadcrumb={["Início", "Refeições"]} />
 
-                <SearchSection
-                    searchText={searchText}
-                    setSearchText={setSearchText}
-                    searchPlaceholder="Pesquise por nome"
-                    dateSection={(
-                    <DateSection
-                        selectedWeekStart={selectedWeekStart}
-                        selectedWeekEnd={selectedWeekEnd}
-                        onWeekChange={handleWeekChange}
-                    />
-                    )}
-                    buttons={[
-                        <Button key="report" variant="full-white" iconLeft={<Printer size={20}/>} onClick={() => setShowReportModal(true)}>Gerar Relatório</Button>,
-                        <Button key="new_booking" variant="full" onClick={() => setShowNewBookingModal(true)} iconLeft={<Plus size={20} />}>Novo agendamento</Button>
-                    ]}
-                />
-                
                 <div className={styles.dateHeader}>
                     {dayInfo && (
                     <div className={styles.dayInfoTotal}>
@@ -476,7 +471,7 @@ export default function ListaDeRefeicoesPage() {
                                 <span>almoços</span>
                             </div>
                             <div className={styles.almocoOpcoes}>
-                                <span><strong>{dayInfo.totalAlmocoColegio}</strong> No Colégio PIO</span>
+                                <span><strong>{dayInfo.totalAlmocoColegio} No Colégio PIO</strong></span>
                                 <span><strong>{dayInfo.totalAlmocoLevar}</strong> Para Levar</span>
                             </div>
                             <div className={styles.totalJanta}>
@@ -493,6 +488,23 @@ export default function ListaDeRefeicoesPage() {
                     </div>
                 </div>
 
+                <SearchSection
+                    searchText={searchText}
+                    setSearchText={setSearchText}
+                    searchPlaceholder="Pesquise por nome"
+                    dateSection={(
+                    <DateSection
+                        selectedWeekStart={selectedWeekStart}
+                        selectedWeekEnd={selectedWeekEnd}
+                        onWeekChange={handleWeekChange}
+                    />
+                    )}
+                    buttons={[
+                        <Button key="report" variant="full-white" iconLeft={<Printer size={20}/>} onClick={() => setShowReportModal(true)}>Gerar Relatório</Button>,
+                        <Button available={selectedDate >= today.toISOString().split('T')[0]} key="new_booking" variant="full" onClick={() => {handleShowBookingModal()}} iconLeft={<Plus size={20} />}>Novo agendamento</Button> 
+                    ]}
+                />
+                
                 {isLoading ? <Loading /> : (
                 <>
 

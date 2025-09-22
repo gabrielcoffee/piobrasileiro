@@ -72,6 +72,7 @@ function Button({
     return (
         <button
             className={buttonClassName}
+            onClick={available ? props.onClick : undefined}
             {...props}
         >
             {iconLeft && <div className={styles.icon}>{iconLeft}</div>}
