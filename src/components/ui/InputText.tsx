@@ -29,7 +29,6 @@ export function InputText({ value, label, error, className, leftIcon, numberValu
         <input
             className={`${styles.input} ${className || ''}`}
             style={{ 
-                borderColor: hasError ? 'var(--color-error)' : 'var(--color-border)',
                 color: props.disabled ? 'var(--color-text-muted)' : 'var(--color-text)'
             }}
             type={onlyNumber ? 'number' : props.type ?? 'text'}

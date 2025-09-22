@@ -1,5 +1,6 @@
 .container {
     letter-spacing: -0.04em;
+    background-color: var(--color-slate-100);
 }
 
 .lateralImage {
@@ -15,13 +16,51 @@
         position: fixed;
         top: 0;
         left: 0;
+        bottom: 0;
         z-index: -1;
+    }
+
+    .image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: -1;
+    }
+
+    .imageOverlay {
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        background: linear-gradient(11.76deg, #000000 0.98%, hsla(32, 129%, 31%, 0) 66.26%);
+        z-index: 90;
+        pointer-events: none;
+    }
+
+    .imageText {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        text-align: left;
+        font-size: 3rem;
+        font-weight: 600;
+        color: var(--color-white);
+        z-index: 90;
+        padding: 4rem;
+        line-height: 1.1;
+        letter-spacing: -0.04em;
     }
 
     .contentWrapper {
         width: 50vw;
         height: 100vh;
-        background-color: #fff;
+        background-color: var(--color-slate-100);
 
         position: absolute;
         top: 0;

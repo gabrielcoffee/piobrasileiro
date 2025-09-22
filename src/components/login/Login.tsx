@@ -45,6 +45,15 @@ export default function Login({onForgotPasswordClick, onBackClick}: LoginProps) 
     }
 
     const handleLogin = async (e: React.FormEvent) => {
+        if (email === '') {
+            setEmailWrong(true);
+            return;
+        }
+        if (password === '') {
+            setPasswordWrong(true);
+            return;
+        }
+        
         e.preventDefault();
         const success = await login(email, password);
         if (success) {

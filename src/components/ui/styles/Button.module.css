@@ -60,6 +60,11 @@
     color: var(--color-primary);
 }
 
+.button_text:hover {
+    color: var(--color-primary-hover);
+    background-color: transparent;
+}
+
 .button_left {
     justify-content: flex-start;
 }

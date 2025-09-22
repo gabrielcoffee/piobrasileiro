@@ -17,7 +17,12 @@ export default function LoginPage() {
     return (
         <div className={styles.container}>
 
-            <img className={styles.lateralImage} src="/adminbg.webp" alt="Admin Background" />
+            <div className={styles.lateralImage}>
+                <img className={styles.image} src="/adminbg.webp" alt="Admin Background" />
+                <div className={styles.imageOverlay} />
+                <span className={styles.imageText}>Um pedaço do Brasil<br/>no coração de Roma.</span>
+            </div>
+            
 
             <div className={styles.contentWrapper}>
                 <div className={styles.content}>

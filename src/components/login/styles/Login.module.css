@@ -4,6 +4,7 @@
     margin-left: 24px;
     margin-right: 24px;
     gap: 28px;
+    background-color: var(--color-slate-100);
 }
 
 .backButton {
