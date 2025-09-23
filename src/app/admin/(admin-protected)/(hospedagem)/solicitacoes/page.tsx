@@ -19,14 +19,14 @@ export default function SolicitacoesPage() {
     const acoes = (request: any) => {
         return (
             <div className={styles.acoes}>
-                <Button onClick={() => handleContatar(request.num_telefone)} variant="full-white" iconLeft={<img src="/wpp.png" width={24} alt="Whatsapp" />}>Contatar</Button>
+                <Button onClick={() => handleContatar(request.telefone)} variant="full-white" iconLeft={<img src="/wpp.png" width={24} alt="Whatsapp" />}>Contatar</Button>
                 <Button onClick={() => handleDetalhes(request)} variant="full-white" iconLeft={<Eye size={20} />}>Detalhes</Button>
             </div>
         );
     }
 
-    const handleContatar = (num_telefone: string) => {
-        window.open(`https://wa.me/+55${num_telefone}`, '_blank');
+    const handleContatar = (telefone: string) => {
+        window.open(`https://wa.me/${telefone}`, '_blank');
     }
 
     const handleDetalhes = (solicitacao: any) => {
@@ -96,7 +96,7 @@ export default function SolicitacoesPage() {
                     { key: "num_pessoas", label: "Qtd" },
                     { key: "data_chegada", label: "Data de chegada" },
                     { key: "data_saida", label: "Data de saída" },
-                    { key: "num_telefone", label: "Telefone" },
+                    { key: "telefone", label: "Telefone" },
                     { key: "acao", label: "Ação" },
                 ]}
                 rowItems={solicitacoes}
@@ -111,7 +111,7 @@ export default function SolicitacoesPage() {
         buttons={
             <>
                 <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setIsDetalhesModalOpen(false)}>Fechar</Button>
-                <Button variant="full" iconLeft={<img src="/wpp.png" width={24} alt="Whatsapp" />} onClick={() => handleContatar(selectedSolicitacao.num_telefone)}>Entrar em contato</Button>
+                <Button variant="full" iconLeft={<img src="/wpp.png" width={24} alt="Whatsapp" />} onClick={() => handleContatar(selectedSolicitacao.telefone)}>Entrar em contato</Button>
             </>
         }
         >
@@ -122,7 +122,7 @@ export default function SolicitacoesPage() {
                 </div>
                 <div className={styles.part}>
                     <span className={styles.partTitle}>Número de telefone</span>
-                    <span className={styles.partValue}>{selectedSolicitacao?.num_telefone}</span>
+                    <span className={styles.partValue}>{selectedSolicitacao?.telefone}</span>
                 </div>
                 <div className={styles.part}>
                     <span className={styles.partTitle}>E-mail</span>
