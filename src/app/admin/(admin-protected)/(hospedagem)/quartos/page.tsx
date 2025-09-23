@@ -22,12 +22,16 @@ export default function QuartosPage() {
     const [weekDaysList, setWeekDaysList] = useState<any[]>([]);
     const [showNewRoomModal, setShowNewRoomModal] = useState<boolean>(false);
     const [showEditRoomModal, setShowEditRoomModal] = useState<boolean>(false);
+    const [showDeactivateModal, setShowDeactivateModal] = useState<boolean>(false);
     
     const [selectedRoomData, setSelectedRoomData] = useState<any>(null);
+    const [selectedRoomForDeactivation, setSelectedRoomForDeactivation] = useState<any>(null);
     const [nome, setNome] = useState<string>('');
     const [capacity, setCapacity] = useState<number>(0);
     const [active, setActive] = useState<boolean>(true);
     const [searchText, setSearchText] = useState<string>('');
+    const [ocupadoText, setOcupadoText] = useState<string>('Ocupado');
+    const [disponivelText, setDisponivelText] = useState<string>('Disponível');
 
     const handleWeekChange = (weekStart: Date, weekEnd: Date) => {
         setSelectedWeekStart(weekStart);
@@ -45,6 +49,21 @@ export default function QuartosPage() {
         }
     }
 
+    const deactivateRoom = async () => {
+        if (!selectedRoomForDeactivation) return;
+
+        const result = await queryApi('PUT', `/admin/rooms/toggle-active/${selectedRoomForDeactivation.id}`);
+
+        if (result.success) {
+            console.log('Quarto desativado com sucesso');
+            fetchRooms();
+            setShowDeactivateModal(false);
+            setSelectedRoomForDeactivation(null);
+        } else {
+            console.log('Erro ao desativar quarto', result.error);
+        }
+    }
+
     const editar = (room: any) => {
         setNome(room.numero);
         setCapacity(room.capacidade);
@@ -56,7 +75,22 @@ export default function QuartosPage() {
     const acoes = (room: any) => {
         return (
             <div className={styles.acoes}>
-                {room.active ? <Power size={20} style={{cursor: 'pointer'}} onClick={() => toggleActiveRoom(room.id)} /> : <PowerOff size={20} style={{color: 'var(--color-error)', cursor: 'pointer'}} onClick={() => toggleActiveRoom(room.id)} />}
+                {room.active ? (
+                    <PowerOff 
+                        size={20} 
+                        style={{color: 'var(--color-error)', cursor: 'pointer'}} 
+                        onClick={() => {
+                            setSelectedRoomForDeactivation(room);
+                            setShowDeactivateModal(true);
+                        }} 
+                    />
+                ) : (
+                    <Power 
+                        size={20} 
+                        style={{cursor: 'pointer'}} 
+                        onClick={() => toggleActiveRoom(room.id)} 
+                    />
+                )}
                 <PencilLine size={20} onClick={() => editar(room)} style={{cursor: 'pointer'}} />
             </div>
         );
@@ -118,9 +152,9 @@ export default function QuartosPage() {
                     // Add the day status to the room data
                     roomData[dateString] = 
                         isOccupied ? 
-                        <span className={styles.occupied}><div className={styles.occupiedIcon}/> Ocupado</span>
+                        <span className={styles.occupied}><div className={styles.occupiedIcon}/> {ocupadoText}</span>
                         : 
-                        <span className={styles.available}><div className={styles.availableIcon}/> Disponível</span>;
+                        <span className={styles.available}><div className={styles.availableIcon}/> {disponivelText}</span>;
                 });
     
                 return roomData;
@@ -210,13 +244,21 @@ export default function QuartosPage() {
     }, [showEditRoomModal]);
 
     useEffect(() => {
+        // get the width of the page, if it's less than 1330 then don't show the text "Ocupado" or "Disponível"
+        const width = window.innerWidth;
+        const showText = width > 1330;
+        setOcupadoText(showText ? 'Ocupado' : '');
+        setDisponivelText(showText ? 'Disponível' : '');
+    }, [window.innerWidth]);
+
+    useEffect(() => {
         fetchRooms();
     }, []);
 
     return (
         <div className={styles.container}>
             <Card>
-                <CardHeader title="Quartos" breadcrumb={["Início", "Hospedagem", "Quartos"]} />
+                <CardHeader title="Lista de quartos" breadcrumb={["Início", "Hospedagem", "Quartos"]} />
 
                 <SearchSection
                     searchText={searchText}
@@ -333,6 +375,19 @@ export default function QuartosPage() {
                     </div>
                 </div>
             </Modal>
+
+            <Modal
+            title="Tem certeza que deseja inativar o quarto?"
+            subtitle="O acesso desse quarto ao sistema ficará suspenso até a reativação. Você pode reverter essa ação a qualquer momento."
+            onClose={() => setShowDeactivateModal(false)}
+            isOpen={showDeactivateModal}
+            buttons={
+                <>
+                <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowDeactivateModal(false)}>Cancelar</Button>
+                <Button variant="full" style={{backgroundColor: 'var(--color-error)', border: '1px solid var(--color-error)'}} onClick={deactivateRoom}>Sim, tenho certeza</Button>
+                </>
+            }
+            />
         </div>
     );
 }

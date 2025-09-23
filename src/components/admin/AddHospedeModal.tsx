@@ -9,6 +9,7 @@ import { InputTextSearch } from '../ui/InputTextSearch';
 import { SimpleDateSelect } from './SimpleDateSelect';
 import { Button } from '../ui/Button';
 import { Trash2, UserPlus } from 'lucide-react';
+import { DropdownInput } from '../ui/DropdownInput';
 
 
 interface AddHospedeModalProps {
@@ -32,7 +33,6 @@ export default function AddHospedeModal({ setHospedeData, hospedeData, isEdit = 
     const generoOptions = [
         { key: "m", value: "Masculino" },
         { key: "f", value: "Feminino" },
-        { key: "o", value: "Outro" }
     ]
 
     const documentoOptions = [
@@ -75,20 +75,28 @@ export default function AddHospedeModal({ setHospedeData, hospedeData, isEdit = 
                     onChange={(e) => setNome(e.target.value)}
                 />  
 
-                <InputTextSearch
+                <DropdownInput
                     label="*Gênero"
-                    placeholder="Selecione"
-                    value={generoOptions.find(option => option.key == genero)?.value || ''}
-                    onSelect={(e) => setGenero(e.key)}
-                    searchOptions={generoOptions}
+                    value={genero}
+                    onChange={(value) => setGenero(value)}
+                    options={[
+                        { key: "m", value: "Masculino" },
+                        { key: "f", value: "Feminino" }
+                    ]}
+                    placeholder="Selecione o gênero"
+                    variant="white"
                 />
 
-                <InputTextSearch
+                <DropdownInput
                     label="*Tipo de documento"
-                    placeholder="Selecione"
-                    value={documentoOptions.find(option => option.key == tipoDocumento)?.value || ''}
-                    onSelect={(e) => setTipoDocumento(e.key)}
-                    searchOptions={documentoOptions}
+                    value={tipoDocumento}
+                    onChange={(value) => setTipoDocumento(value)}
+                    options={[
+                        { key: "cpf", value: "CPF" },
+                        { key: "id_internacional", value: "ID Internacional" }
+                    ]}
+                    placeholder="Selecione o tipo de documento"
+                    variant="white"
                 />
 
                 <InputText

@@ -15,9 +15,10 @@ interface DropdownInputProps {
     placeholder?: string;
     onChange?: (key: string) => void;
     disabled?: boolean;
+    variant?: 'white' | 'slate';
 }
 
-export function DropdownInput({ value, label, error, options, placeholder, onChange, disabled }: DropdownInputProps) {
+export function DropdownInput({ value, label, error, options, placeholder, onChange, disabled, variant = 'slate' }: DropdownInputProps) {
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -59,6 +60,9 @@ export function DropdownInput({ value, label, error, options, placeholder, onCha
                 </label>
             )}
             <div 
+                style={{
+                    backgroundColor: variant === 'white' ? 'var(--color-white)' : 'var(--color-slate-100)'
+                }}
                 className={`${styles.dropdown} ${hasError ? styles.dropdownError : ''} ${disabled ? styles.disabled : ''}`}
                 onClick={handleToggle}
             >

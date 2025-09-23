@@ -195,6 +195,10 @@
     background-color: var(--color-slate-100);
 }
 
+.quickAddGuestInput {
+    width: 100%;
+}
+
 .inputGroup2 {
     display: flex;
     align-items: center;

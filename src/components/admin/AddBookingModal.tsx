@@ -202,7 +202,7 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
                         />
 
                         <div className={styles.inputGroup2}>
-                            <InputText className={styles.quickAddGuestInput} placeholder="Adicione um hóspede" value={nomeNewHospede} onChange={(e) => setNomeNewHospede(e.target.value)} />
+                            <InputText className={styles.quickAddGuestInput} placeholder="Adicione novo hóspede" value={nomeNewHospede} onChange={(e) => setNomeNewHospede(e.target.value)} />
                             <UserPlus className={styles.quickAddGuestIcon} size={30} onClick={() => handleQuickAddGuest()} />
                         </div>
                     </div>
