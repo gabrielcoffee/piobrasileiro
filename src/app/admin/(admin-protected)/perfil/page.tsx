@@ -310,6 +310,8 @@ export default function PerfilAdminPage() {
                             Salvar alterações
                         </Button>
                     </div>
+
+                    <span className={styles.Data}>Alterar senha</span>
                     
                     <div className={styles.passwordSection}>
                         
@@ -341,13 +343,15 @@ export default function PerfilAdminPage() {
                                 </ul>
                             </div>
 
-                            <Button
-                                iconLeft={<Check size={20} />}
-                                available={passwordRequirements}
-                                onClick={handlePasswordChange}
-                            >
-                                Salvar senha
-                            </Button>
+                            <div className={styles.passwordSaveButton}>
+                                <Button
+                                    iconLeft={<Check size={20} />}
+                                    available={passwordRequirements}
+                                    onClick={handlePasswordChange}
+                                >
+                                    Salvar senha
+                                </Button>
+                            </div>
 
                         </div>
 

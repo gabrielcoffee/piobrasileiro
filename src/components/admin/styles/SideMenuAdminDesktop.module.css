@@ -41,17 +41,26 @@
     margin: 0 1.5rem;
     color: var(--color-text);
     text-decoration: none;
-    transition: background-color 0.2s ease, color 0.2s ease;
     border-bottom: 1px solid var(--color-border);
     width: 100%;
     background: transparent;
     border: none;
     cursor: pointer;
-    font-size: 1.25rem;
+    font-size: 14px;
     font-weight: 500;
     text-align: left;
     white-space: nowrap;
     overflow: hidden;
+    max-width: 250px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    height: 48px;
+}
+
+.menuLabelContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
 }
 
 .collapsed .menuItem {
@@ -72,7 +81,9 @@
 }
 
 .submenuItem {
-    display: block;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     padding: 0.5rem;
     margin-left: 2rem;
     color: var(--color-text);
@@ -98,8 +109,11 @@
     bottom: 0;
     width: 230px;
     border-top: 1px solid var(--color-border);
-    padding: 1.5rem;
+    padding-top: 2.2rem;
+    padding-bottom: 2.2rem;
+    margin-bottom: 1.5rem;
     transition: width 0.3s ease;
+    color: var(--color-error);
 }
 
 .collapsed .logoutButton {
@@ -157,4 +171,11 @@
     padding: 0.25rem;
     border: 1px solid #F9C738;
     border-radius: 100%;
+}
+
+.menuLabelContainer {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
 }

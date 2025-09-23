@@ -35,7 +35,7 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
                 { id: "quartos", label: "Quartos", href: "/admin/quartos"}
             ]
         },
-        { id: 'logout', label: 'Sair', icon: LogOut, href: '/logout' },
+        { id: 'logout', label: 'Sair da conta', icon: LogOut, href: '/logout' },
     ];
 
     const toggleSubmenu = (menuId: string) => {
@@ -103,10 +103,10 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
                     >
                         <IconComponent size={24}/>
                         {!isCollapsed && (
-                            <>
+                            <div className={styles.menuLabelContainer}>
                                 <span className={styles.menuLabel}>{item.label}</span>
                                 {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-                            </>
+                            </div>
                         )}
                     </button>
                     
@@ -171,7 +171,7 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
                     setIsCollapsed(invert);
                     set(!invert);
                 }}>
-                    {isCollapsed ? <SquareArrowLeft size={24} /> : <SquareArrowRight size={24} />}
+                    {isCollapsed ? <SquareArrowRight size={24} /> : <SquareArrowLeft size={24} />}
                 </button>
 
                 {menuItems.map(renderMenuItem)}
