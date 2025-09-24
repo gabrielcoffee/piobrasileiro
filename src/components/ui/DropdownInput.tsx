@@ -66,7 +66,7 @@ export function DropdownInput({ value, label, error, options, placeholder, onCha
                 className={`${styles.dropdown} ${hasError ? styles.dropdownError : ''} ${disabled ? styles.disabled : ''}`}
                 onClick={handleToggle}
             >
-                <span className={styles.selectedValue}>
+                <span className={`${styles.selectedValue} ${ displayValue ? '' : placeholder ? styles.placeholder : ''}`}>
                     {displayValue || placeholder || 'Selecione uma opção'}
                 </span>
                 <ChevronDown 

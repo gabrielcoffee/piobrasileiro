@@ -35,3 +35,31 @@
     padding: 0.2rem 1rem;
     border-radius: 24px;
 }
+
+.newRequest {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #A5E2A2;
+    background-color: #EAFCE9;
+    height: 61px;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    padding-left: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.newRequestButton {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding-right: 1rem;
+}
+
+.filterModalContent {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}

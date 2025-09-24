@@ -115,7 +115,7 @@ export default function HospedesPage() {
 
                 return {
                     ...guest,
-                    genero: guest.genero === 'm' ? 'Masculino' : 'Feminino',
+                    genero: guest.genero === 'm' ? 'Masculino' : guest.genero === 'f' ? 'Feminino' : '',
                     documento: doc,
                     funcao: guest.funcao,
                     origem: guest.origem,

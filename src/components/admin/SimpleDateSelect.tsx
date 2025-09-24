@@ -4,7 +4,7 @@ import styles from './styles/SimpleDateSelect.module.css';
 import { useState, useEffect } from 'react';
 
 interface SimpleDateSelectProps {
-    selectedDate: Date;
+    selectedDate: Date | null;
     onDateChange?: (date: Date) => void;
     disabled?: boolean;
     label?: string;
@@ -14,7 +14,7 @@ interface SimpleDateSelectProps {
 export function SimpleDateSelect({ selectedDate, onDateChange, disabled, label = '*Data', cantBeBeforeToday = false }: SimpleDateSelectProps) {
     const [showMiniCalendar, setShowMiniCalendar] = useState(false);
     const [currentMonth, setCurrentMonth] = useState(new Date());
-    const [curSelectedDate, setCurSelectedDate] = useState<Date>(selectedDate);
+    const [curSelectedDate, setCurSelectedDate] = useState<Date | null>(selectedDate);
 
     // Generate calendar dates for a given month
     const generateCalendarDates = (year: number, month: number) => {

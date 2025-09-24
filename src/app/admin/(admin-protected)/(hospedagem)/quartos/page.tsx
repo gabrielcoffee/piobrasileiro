@@ -13,6 +13,9 @@ import { queryApi } from '@/lib/utils';
 import { DateSection } from '@/components/admin/DateSection';
 import Modal from '@/components/admin/Modal';
 import { InputText } from '@/components/ui/InputText';
+import { DropdownInput } from '@/components/ui/DropdownInput';
+import { InputDate } from '@/components/ui/InputDate';
+import { SimpleDateSelect } from '@/components/admin/SimpleDateSelect';
 
 export default function QuartosPage() {
 
@@ -23,15 +26,17 @@ export default function QuartosPage() {
     const [showNewRoomModal, setShowNewRoomModal] = useState<boolean>(false);
     const [showEditRoomModal, setShowEditRoomModal] = useState<boolean>(false);
     const [showDeactivateModal, setShowDeactivateModal] = useState<boolean>(false);
-    
+    const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
+
+    const [filterStatus, setFilterStatus] = useState<string>('');
+    const [filterPeriod, setFilterPeriod] = useState<string>('');
+
     const [selectedRoomData, setSelectedRoomData] = useState<any>(null);
     const [selectedRoomForDeactivation, setSelectedRoomForDeactivation] = useState<any>(null);
     const [nome, setNome] = useState<string>('');
     const [capacity, setCapacity] = useState<number>(0);
     const [active, setActive] = useState<boolean>(true);
-    const [searchText, setSearchText] = useState<string>('');
-    const [ocupadoText, setOcupadoText] = useState<string>('Ocupado');
-    const [disponivelText, setDisponivelText] = useState<string>('Disponível');
+    const [searchText, setSearchText] = useState<string>('');   
 
     const handleWeekChange = (weekStart: Date, weekEnd: Date) => {
         setSelectedWeekStart(weekStart);
@@ -152,9 +157,17 @@ export default function QuartosPage() {
                     // Add the day status to the room data
                     roomData[dateString] = 
                         isOccupied ? 
-                        <span className={styles.occupied}><div className={styles.occupiedIcon}/> {ocupadoText}</span>
+                        <span className={styles.occupied}>
+                            <div className={styles.occupiedIcon}/>
+                            <span className={styles.occupiedTextBig}>Ocupado</span>
+                            <span className={styles.occupiedTextSmall}>Ocu...</span>
+                        </span>
                         : 
-                        <span className={styles.available}><div className={styles.availableIcon}/> {disponivelText}</span>;
+                        <span className={styles.available}>
+                            <div className={styles.availableIcon}/>
+                            <span className={styles.availableTextBig}>Disponível</span>
+                            <span className={styles.availableTextSmall}>Dis...</span>
+                        </span>;
                 });
     
                 return roomData;
@@ -244,16 +257,23 @@ export default function QuartosPage() {
     }, [showEditRoomModal]);
 
     useEffect(() => {
-        // get the width of the page, if it's less than 1330 then don't show the text "Ocupado" or "Disponível"
-        const width = window.innerWidth;
-        const showText = width > 1330;
-        setOcupadoText(showText ? 'Ocupado' : '');
-        setDisponivelText(showText ? 'Disponível' : '');
-    }, [window.innerWidth]);
-
-    useEffect(() => {
         fetchRooms();
     }, []);
+
+    const handleOpenFilterModal = () => {
+        setShowFilterModal(true);
+        setFilterStatus('');
+        setFilterPeriod('');
+    }
+
+    const handleFiltrar = () => {
+        if (filterStatus === '' && filterPeriod === '') {
+            return;
+        }
+
+        setShowFilterModal(false);
+        console.log(filterStatus, filterPeriod);
+    }
 
     return (
         <div className={styles.container}>
@@ -273,7 +293,7 @@ export default function QuartosPage() {
                         )}
                     buttons={
                     [
-                    <Button key="filter" variant="full-white" iconLeft={<Filter size={24} />}>Filtrar</Button>,
+                    <Button onClick={() => handleOpenFilterModal()} key="filter" variant="full-white" iconLeft={<Filter size={24} />}>Filtrar</Button>,
                     <Button onClick={() => setShowNewRoomModal(true)} key="new_room" variant="full" iconLeft={<Plus size={20} />}>Novo quarto</Button>
                     ]
                     }
@@ -289,6 +309,10 @@ export default function QuartosPage() {
                     ]}
                     rowItems={quartos}
                     itemsPerPage={8}
+                    filters={[
+                        { key: "status", value: filterStatus },
+                        { key: "period", value: filterPeriod },
+                    ]}
                 />
             </Card>
 
@@ -388,6 +412,38 @@ export default function QuartosPage() {
                 </>
             }
             />
+
+
+            <Modal
+            title="Filtrar"
+            onClose={() => setShowFilterModal(false)}
+            isOpen={showFilterModal}
+            buttons={
+                <>
+                    <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowFilterModal(false)}>Cancelar</Button>
+                    <Button available={filterStatus !== '' || filterPeriod !== ''} variant="full" onClick={() => handleFiltrar()}>Filtrar</Button>
+                </>
+            }
+            >
+                <div className={styles.filterModalContent}>
+                    <DropdownInput
+                        variant="white"
+                        label="Status"
+                        value={filterStatus}
+                        placeholder="Filtre por status"
+                        onChange={(value) => setFilterStatus(value)}
+                        options={[
+                            { key: "disponivel", value: "Disponível" },
+                            { key: "ocupado", value: "Ocupado" }
+                        ]}
+                    />
+                    <SimpleDateSelect
+                        label="Data ou período"
+                        selectedDate={filterPeriod ? new Date(filterPeriod) : null}
+                        onDateChange={(value) => setFilterPeriod(value?.toISOString().split('T')[0])}
+                    />
+                </div>
+            </Modal>
         </div>
     );
 }

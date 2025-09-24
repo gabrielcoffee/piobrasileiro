@@ -12,16 +12,35 @@ import Table from '@/components/admin/Table';
 import { getCurrentWeekInfo, getDateString, queryApi } from '@/lib/utils';
 import Modal from '@/components/admin/Modal';
 import AddBookingModal from '@/components/admin/AddBookingModal';
+import { useRouter } from 'next/navigation';
+import { DropdownInput } from '@/components/ui/DropdownInput';
+import { SimpleDateSelect } from '@/components/admin/SimpleDateSelect';
+import { InputTextSearch } from '@/components/ui/InputTextSearch';
+import { InputText } from '@/components/ui/InputText';
 
 export default function GestaoDeReservasPage() {
+
+    const router = useRouter();
 
     const [selectedWeekStart, setSelectedWeekStart] = useState<Date>(new Date());
     const [selectedWeekEnd, setSelectedWeekEnd] = useState<Date>(new Date());
     const [selectedBookingData, setSelectedBookingData] = useState<any>(null);
+    const [notificationsCount, setNotificationsCount] = useState<number>(0);
+
+    const [anfitriaoOptions, setAnfitriaoOptions] = useState<any[]>([]);
+    const [roomOptions, setRoomOptions] = useState<any[]>([]);
 
     const [showNewBookingModal, setShowNewBookingModal] = useState<boolean>(false);
     const [showEditBookingModal, setShowEditBookingModal] = useState<boolean>(false);
     const [showDeleteBookingModal, setShowDeleteBookingModal] = useState<boolean>(false);
+
+    const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
+    const [filterDate, setFilterDate] = useState<string>('');
+    const [filterNome, setFilterNome] = useState<string>('');
+    const [filterAnfitriao, setFilterAnfitriao] = useState<string>('');
+    const [filterQuarto, setFilterQuarto] = useState<string>('');
+    const [filterStatus, setFilterStatus] = useState<string>('');
+
     const [searchText, setSearchText] = useState<string>('');
 
     const [reservas, setReservas] = useState<any[]>([]);
@@ -39,6 +58,33 @@ export default function GestaoDeReservasPage() {
     const excluir = (reserva: any) => {
         setShowDeleteBookingModal(true);
         setSelectedBookingData(reserva);
+    }
+
+
+    const fetchUserAnfitriaoIdAndNames = async () => {
+        const result = await queryApi('GET', '/admin/users');
+        if (result.success) {
+            const users = result.data.map((user: { user_id: string; nome_completo: string }) => ({
+                key: user.user_id,
+                value: user.nome_completo
+            }));
+            users.sort((a: { value: string }, b: { value: string }) => a.value.localeCompare(b.value));
+            setAnfitriaoOptions(users);
+        }
+    }
+
+    const fetchQuartosIdAndNames = async () => {
+        const result = await queryApi('GET', '/admin/room-occupation');
+
+        if (result.success) {
+            console.log('Quartos encontrados', result.data);
+            const roomOptions = result.data.map((room: any) => ({
+                key: room.quarto_id,
+                value: room.numero,
+            }));
+            roomOptions.sort((a: { value: string }, b: { value: string }) => a.value.localeCompare(b.value));
+            setRoomOptions(roomOptions);
+        }
     }
 
     const handleDeleteBooking = async () => {
@@ -135,6 +181,19 @@ export default function GestaoDeReservasPage() {
         }
     }
 
+    const fetchNotifications = async () => {
+
+        const result = await queryApi('GET', '/admin/requests/notifications');
+
+        if (result.success) {
+            setNotificationsCount(result.data);
+
+        } else {
+            setNotificationsCount(0);
+            console.error('Erro ao buscar total de notificações:', result.error);
+        }
+    }
+
     const fetchReservas = async (startDate: Date, endDate: Date) => {
         const result = await queryApi('POST', '/admin/accommodations/data', {
             startDate: startDate,
@@ -155,6 +214,42 @@ export default function GestaoDeReservasPage() {
         }
     }
 
+    const canFilter = () => {
+        return filterDate !== '' || filterNome !== '' || filterAnfitriao !== '' || filterQuarto !== '' || filterStatus !== '';
+    }
+
+    const handleOpenFilterModal = () => {
+        setFilterDate('');
+        setFilterNome('');
+        setFilterAnfitriao('');
+        setFilterQuarto('');
+        setFilterStatus('');
+
+        // Fetching data for filters
+        fetchUserAnfitriaoIdAndNames();
+        fetchQuartosIdAndNames();
+        setShowFilterModal(true);
+    }
+
+    const handleFiltrar = () => {
+        if (canFilter()) {
+            setShowFilterModal(false);
+            console.log(filterDate, filterNome, filterAnfitriao, filterQuarto, filterStatus);
+        }
+
+        if (filterNome !== '') {
+            setSearchText(filterNome);
+        }
+
+        if (filterDate !== '') {
+            setSelectedWeekStart(new Date(filterDate));
+            setSelectedWeekEnd(new Date(filterDate));
+        }
+
+        if (filterAnfitriao !== '') {
+            setFilterAnfitriao(filterAnfitriao);
+        }
+    }
 
     useEffect(() => {
         if (selectedWeekStart && selectedWeekEnd) {
@@ -168,6 +263,7 @@ export default function GestaoDeReservasPage() {
         setSelectedWeekStart(currentWeekInfo.monday);
         setSelectedWeekEnd(currentWeekInfo.sunday);
         fetchReservas(currentWeekInfo.monday, currentWeekInfo.sunday);
+        fetchNotifications();
     }, []);
 
     return (
@@ -175,12 +271,21 @@ export default function GestaoDeReservasPage() {
             <Card>
                 <CardHeader title="Gestão de Reservas" breadcrumb={["Início", "Hospedagem", "Reservas"]} />
 
+                {notificationsCount > 0 && (
+                <div className={styles.newRequest}>
+                    <span>Você tem {notificationsCount} novas solicitações de hospedagem!</span>
+                    <div className={styles.newRequestButton}>
+                        <Button variant="full-white" onClick={() => {router.push('/admin/solicitacoes')}}>Verificar</Button>
+                    </div>
+                </div>
+                )}
+
                 <SearchSection
                     searchText={searchText}
                     setSearchText={setSearchText}
                     searchPlaceholder="Pesquise por nome"
                     buttons={[
-                        <Button key="filter" variant="full-white" iconLeft={<Filter size={24} />}>Filtrar</Button>,
+                        <Button onClick={() => handleOpenFilterModal()} key="filter" variant="full-white" iconLeft={<Filter size={24} />}>Filtrar</Button>,
                         <Button key="new_booking" variant="full" onClick={() => {setShowNewBookingModal(true); setSelectedBookingData(null);}} iconLeft={<Plus size={20} />}>Novo agendamento</Button>
                     ]}
                     dateSection={(
@@ -257,7 +362,71 @@ export default function GestaoDeReservasPage() {
                 isOpen={showDeleteBookingModal}
             >
             </Modal>
-            
+
+            <Modal
+            title="Filtrar"
+            onClose={() => setShowFilterModal(false)}
+            isOpen={showFilterModal}
+            buttons={
+                <>
+                    <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowFilterModal(false)}>Cancelar</Button>
+                    <Button available={canFilter()} variant="full" onClick={() => handleFiltrar()}>Filtrar</Button>
+                </>
+            }
+            >
+                <div className={styles.filterModalContent}>
+
+                    <InputTextSearch
+                        label="Anfitrião"
+                        value={filterAnfitriao}
+                        placeholder="Filtre por quarto"
+                        onSelect={(option) => setFilterAnfitriao(option.value)}
+                        searchOptions={anfitriaoOptions}
+                    />
+
+                    <InputText
+                        label="Nome"
+                        value={filterNome}
+                        placeholder="Filtre por nome"
+                        onChange={(e) => setFilterNome(e.target.value)}
+                    />
+
+                    <SimpleDateSelect
+                        label="Data"
+                        selectedDate={filterDate ? new Date(filterDate) : null}
+                        onDateChange={(value) => setFilterDate(value?.toISOString().split('T')[0])}
+                    />
+
+                    <DateSection
+                        selectedWeekStart={selectedWeekStart}
+                        selectedWeekEnd={selectedWeekEnd}
+                        onWeekChange={handleWeekChange}
+                    />
+
+                    <InputTextSearch
+                        label="*Quarto"
+                        value={
+                            roomOptions.find((option) => option.key === filterQuarto)?.value || ''
+                        }
+                        onSelect={(option: any) => setFilterQuarto(option.key)}
+                        searchOptions={roomOptions}
+                        placeholder="Selecione"
+                    />
+
+                    <DropdownInput
+                        variant="white"
+                        label="Status"
+                        value={filterStatus}
+                        placeholder="Filtre por status"
+                        onChange={(value) => setFilterStatus(value)}
+                        options={[
+                            { key: "disponivel", value: "Disponível" },
+                            { key: "ocupado", value: "Ocupado" }
+                        ]}
+                    />
+
+                </div>
+            </Modal>
         </div>
     );
 }

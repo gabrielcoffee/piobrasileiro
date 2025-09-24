@@ -78,7 +78,7 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
     }
 
     useEffect(() => {
-        if (pathname.startsWith('/admin/solicitacoes')) {
+        if (pathname.startsWith('/admin/solicitacoes') || pathname.startsWith('/admin/reservas')) {
             fetchNotifications();
         }
     }, [pathname]);
@@ -119,9 +119,16 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
                                     className={`${styles.submenuItem} ${subItem.href === pathname ? styles.active : ''}`}
                                 >
                                     <span className={styles.submenuLabel}>
-                                        {subItem.id !== 'solicitacoes' && subItem.label}
+                                        <span>{subItem.id !== 'solicitacoes' && subItem.label}</span>
                                         {subItem.id === 'solicitacoes' && 
-                                        <div className={styles.notification}><span>{subItem.label}</span> {notificationsCount > 0 && <div className={styles.notificationCount}>{notificationsCount}</div>}</div>}
+                                        <div className={styles.notification}>
+                                            <span>{subItem.label}</span> 
+                                            {notificationsCount > 0 &&
+                                                <div className={styles.notificationCount}>{notificationsCount}
+                                                </div>
+                                            }
+                                        </div>
+                                        }
                                     </span>
                                 </Link>
                             ))}

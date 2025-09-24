@@ -12,6 +12,7 @@ import { convertBufferToBase64, getDateString, normalizeDateString, queryApi } f
 import Modal from "@/components/admin/Modal";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
+import { DropdownInput } from "@/components/ui/DropdownInput";
 
 export default function UsuariosPage() {
 
@@ -22,6 +23,10 @@ export default function UsuariosPage() {
     const [selectedUsers, setSelectedUsers] = useState<any[]>([]);
     const [searchText, setSearchText] = useState<string>('');
     const [showExcluirInfoId, setShowExcluirInfoId] = useState<string | null>(null);
+
+    const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
+    const [filterTipoUsuario, setFilterTipoUsuario] = useState<string>('');
+    const [filters, setFilters] = useState<{ key: string, value: string | boolean | number }[]>([]);
 
     const router = useRouter();
 
@@ -179,6 +184,23 @@ export default function UsuariosPage() {
         router.push(`/admin/usuarios/${id}`);
     }
 
+    const handleOpenFilterModal = () => {
+        setFilterTipoUsuario('');
+        setFilters([]);
+        setShowFilterModal(true);
+    }
+
+    const handleFiltrar = () => {
+        if (filterTipoUsuario === '') {
+            setFilters([]);
+            return;
+        }
+
+        setShowFilterModal(false);
+        setFilterTipoUsuario(filterTipoUsuario);
+        setFilters([{ key: "tipo_usuario", value: filterTipoUsuario }]);
+    }
+
     return (
         <div className={styles.container}>
             <Card>
@@ -190,7 +212,7 @@ export default function UsuariosPage() {
                     searchPlaceholder="Pesquise por nome"
                     dateSection={false}
                     buttons={[
-                        <Button key="filter" variant="full-white" iconLeft={<Filter size={24} />}>Filtrar</Button>,
+                        <Button onClick={() => handleOpenFilterModal()} key="filter" variant="full-white" iconLeft={<Filter size={24} />}>Filtrar</Button>,
                         <Button visible={canShowExcluirButtons} key="powerOff" variant="full-white" style={{color:'var(--color-error)'}} iconLeft={<PowerOff size={24} />} onClick={() => setIsInativarModalOpen(true)}>Inativar</Button>,
                         <Button visible={canShowExcluirButtons} key="trash" variant="full-white" style={{color:'var(--color-error)'}} iconLeft={<Trash2 size={24} />} onClick={() => setIsExcluirModalOpen(true)}>Excluir</Button>,
                         <Button key="plus" variant="full" onClick={() => router.push('/admin/usuarios/novo')} iconLeft={<Plus size={24} />}>Novo usuário</Button>
@@ -198,6 +220,7 @@ export default function UsuariosPage() {
                 />
 
                 <Table
+                    filters={filters}
                     searchText={searchText}
                     searchKey="nome_limpo"
                     headerItems={[
@@ -263,6 +286,31 @@ export default function UsuariosPage() {
                 </>
             }
             />
+
+            <Modal
+            title="Filtrar"
+            onClose={() => setShowFilterModal(false)}
+            isOpen={showFilterModal}
+            buttons={
+                <>
+                <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowFilterModal(false)}>Cancelar</Button>
+                <Button available={filterTipoUsuario !== ''} variant="full" onClick={() => handleFiltrar()}>Filtrar</Button>
+                </>
+            }
+            >
+                <div className={styles.filterModalContent}>
+                    <DropdownInput
+                        label="Tipo de usuário"
+                        value={filterTipoUsuario}
+                        onChange={(value) => setFilterTipoUsuario(value)}
+                        options={[
+                            { key: "admin", value: "Administrador" },
+                            { key: "comum", value: "Comum" }
+                        ]}
+                        placeholder="Selecione o tipo de usuário"
+                    />
+                </div>
+            </Modal>
         </div>
         
     )

@@ -4,7 +4,7 @@ import { ReactNode } from 'react';
 
 interface ModalProps {
     children?: ReactNode;
-    buttons: ReactNode;
+    buttons?: ReactNode;
     title: string;
     subtitle?: string;
     onClose: () => void;

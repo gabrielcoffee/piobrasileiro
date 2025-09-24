@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useImperativeHandle, forwardRef, useEffect } from 'react';
+import React, { useState, useImperativeHandle, forwardRef, useEffect, useMemo } from 'react';
 import styles from './styles/Table.module.css';
 import { ChevronRight } from 'lucide-react';
 
@@ -23,6 +23,7 @@ interface TableProps {
     onSelectionChange?: (selectedRows: TableRowItem[]) => void;
     searchText?: string;
     searchKey?: string;
+    filters?: { key: string, value: string | boolean | number }[];
 }
 
 export interface TableRef {
@@ -39,7 +40,8 @@ const Table = forwardRef<TableRef, TableProps>(({
     className,
     onSelectionChange,
     searchText = '',
-    searchKey = 'nome_completo'
+    searchKey = 'nome_completo',
+    filters = []
 }, ref) => {    
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -55,6 +57,9 @@ const Table = forwardRef<TableRef, TableProps>(({
         .filter(index => index >= startIndex && index < endIndex)
         .length;
 
+    // For filtering:
+    const stableFilters = useMemo(() => filters, [JSON.stringify(filters)]);
+
     // Selection state
     const [isAllSelected, setIsAllSelected] = useState(currentPageItems.length > 0 && currentPageSelectedCount === currentPageItems.length);
     const [isIndeterminate, setIsIndeterminate] = useState(currentPageSelectedCount > 0 && currentPageSelectedCount < currentPageItems.length);
@@ -63,29 +68,80 @@ const Table = forwardRef<TableRef, TableProps>(({
         // Initialize current page items
         setCurrentPageItems(defaultRows.slice(startIndex, endIndex));
     }, [rowItems]);
-
+    
+    // New filter pipeline
     useEffect(() => {
-        if (searchText) {
-            // Filter rows based on searchText (accent-insensitive)
-            const filteredRows = defaultRows.filter(row => {
-                const value = row[searchKey]?.toString().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '') || '';
-                const search = searchText.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                return value.includes(search);
+        let filteredRows = [...rowItems]; // start with prop rows
+    
+        // Step 1: Apply filters
+        if (stableFilters && stableFilters.length > 0) {
+            stableFilters.forEach(({ key, value }) => {
+                filteredRows = filteredRows.filter(row => {
+                    const rowValue = row[key];
+    
+                    // Only allow primitive types for filtering
+                    if (
+                        typeof rowValue !== "string" &&
+                        typeof rowValue !== "number" &&
+                        typeof rowValue !== "boolean"
+                    ) {
+                        return true; // ignore this filter
+                    }
+    
+                    // Normalize string comparison
+                    if (typeof rowValue === "string" && typeof value === "string") {
+                        const normalizedRowValue = rowValue
+                            .toLowerCase()
+                            .normalize("NFD")
+                            .replace(/[\u0300-\u036f]/g, "");
+    
+                        const normalizedFilterValue = value
+                            .toLowerCase()
+                            .normalize("NFD")
+                            .replace(/[\u0300-\u036f]/g, "");
+    
+                        return normalizedRowValue === normalizedFilterValue;
+                    }
+    
+                    // For number/boolean
+                    return rowValue === value;
+                });
             });
-
-            // Sort rows alphabetically (accent-insensitive)
-            const sortedRows = filteredRows.sort((a, b) => {
-                const aValue = (a[searchKey]?.toString() || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                const bValue = (b[searchKey]?.toString() || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-                return aValue.localeCompare(bValue);
-            });
-
-            setCurrentPageItems(sortedRows.slice(startIndex, endIndex));
-        } else {
-            setCurrentPageItems(defaultRows.slice(startIndex, endIndex));
         }
-
-    }, [searchText, rowItems, currentPage, itemsPerPage]);
+    
+        // Step 2: Apply text search
+        if (searchText) {
+            const normalizedSearch = searchText
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "");
+    
+            filteredRows = filteredRows.filter(row => {
+                const value = row[searchKey]?.toString().toLowerCase()
+                    .normalize("NFD")
+                    .replace(/[\u0300-\u036f]/g, "") || "";
+    
+                return value.includes(normalizedSearch);
+            });
+        }
+    
+        // Step 3: Sort alphabetically by searchKey
+        filteredRows.sort((a, b) => {
+            const aValue = (a[searchKey]?.toString() || "")
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "");
+            const bValue = (b[searchKey]?.toString() || "")
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "");
+    
+            return aValue.localeCompare(bValue);
+        });
+    
+        // Step 4: Paginate
+        setCurrentPageItems(filteredRows.slice(startIndex, endIndex));
+    }, [searchText, rowItems, searchKey, currentPage, itemsPerPage, startIndex, endIndex, stableFilters]);
+    
+    
 
     // Expose these methods to parent
     useImperativeHandle(ref, () => ({
