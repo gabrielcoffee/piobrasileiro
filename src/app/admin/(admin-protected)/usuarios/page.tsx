@@ -300,6 +300,7 @@ export default function UsuariosPage() {
             >
                 <div className={styles.filterModalContent}>
                     <DropdownInput
+                        variant="white"
                         label="Tipo de usuário"
                         value={filterTipoUsuario}
                         onChange={(value) => setFilterTipoUsuario(value)}

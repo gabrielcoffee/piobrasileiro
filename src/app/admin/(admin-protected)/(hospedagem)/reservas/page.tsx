@@ -40,6 +40,7 @@ export default function GestaoDeReservasPage() {
     const [filterAnfitriao, setFilterAnfitriao] = useState<string>('');
     const [filterQuarto, setFilterQuarto] = useState<string>('');
     const [filterStatus, setFilterStatus] = useState<string>('');
+    const [filters, setFilters] = useState<{ key: string, value: string | boolean | number }[]>([]);
 
     const [searchText, setSearchText] = useState<string>('');
 
@@ -207,11 +208,39 @@ export default function GestaoDeReservasPage() {
                     data_chegada: getDateString(reserva.data_chegada),
                     data_saida: getDateString(reserva.data_saida),
                     status: getStatusHtml(reserva.status),
+                    status_data: reserva.status,
                     acao: acoes(reserva),
                 }
             });
             setReservas(completeReservas);
         }
+    }
+
+    // Calculate the start of the current week (Monday) - using same logic as utils.ts
+    const getWeekStart = (date: Date): Date => {
+        const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+        const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Days to go back to Monday
+        
+        const monday = new Date(date);
+        monday.setDate(date.getDate() - daysToMonday);
+        return monday;
+    };
+
+    // Calculate the end of the current week (Sunday)
+    const getWeekEnd = (weekStart: Date): Date => {
+        const sunday = new Date(weekStart);
+        sunday.setDate(weekStart.getDate() + 6);
+        return sunday;
+    };
+
+    const handleFilterDateChange = (dateFilter: string) => {
+        // setting the current week start and end based on the date selected
+        const date = new Date(dateFilter);
+        const weekStart = getWeekStart(date);
+        const weekEnd = getWeekEnd(weekStart);
+        setSelectedWeekStart(weekStart);
+        setSelectedWeekEnd(weekEnd);
+        fetchReservas(weekStart, weekEnd);
     }
 
     const canFilter = () => {
@@ -224,8 +253,9 @@ export default function GestaoDeReservasPage() {
         setFilterAnfitriao('');
         setFilterQuarto('');
         setFilterStatus('');
+        setFilters([]);
+        setSearchText('');
 
-        // Fetching data for filters
         fetchUserAnfitriaoIdAndNames();
         fetchQuartosIdAndNames();
         setShowFilterModal(true);
@@ -234,20 +264,22 @@ export default function GestaoDeReservasPage() {
     const handleFiltrar = () => {
         if (canFilter()) {
             setShowFilterModal(false);
-            console.log(filterDate, filterNome, filterAnfitriao, filterQuarto, filterStatus);
-        }
 
-        if (filterNome !== '') {
-            setSearchText(filterNome);
-        }
+            if (filterDate !== '') {
+                handleFilterDateChange(filterDate);
+            }
 
-        if (filterDate !== '') {
-            setSelectedWeekStart(new Date(filterDate));
-            setSelectedWeekEnd(new Date(filterDate));
-        }
+            if (filterNome !== '') {
+                setSearchText(filterNome);
+            }
 
-        if (filterAnfitriao !== '') {
-            setFilterAnfitriao(filterAnfitriao);
+            setFilters([
+                { key: "anfitriao", value: filterAnfitriao },
+                { key: "quarto_id", value: filterQuarto },
+                { key: "status_data", value: filterStatus },
+            ]);
+        } else {
+            setFilters([]);
         }
     }
 
@@ -298,6 +330,7 @@ export default function GestaoDeReservasPage() {
                 />
 
                 <Table
+                    filters={filters}
                     searchText={searchText}
                     searchKey="nome"
                     headerItems={[
@@ -379,7 +412,7 @@ export default function GestaoDeReservasPage() {
                     <InputTextSearch
                         label="Anfitrião"
                         value={filterAnfitriao}
-                        placeholder="Filtre por quarto"
+                        placeholder="Filtre por anfitrião"
                         onSelect={(option) => setFilterAnfitriao(option.value)}
                         searchOptions={anfitriaoOptions}
                     />
@@ -397,33 +430,30 @@ export default function GestaoDeReservasPage() {
                         onDateChange={(value) => setFilterDate(value?.toISOString().split('T')[0])}
                     />
 
-                    <DateSection
-                        selectedWeekStart={selectedWeekStart}
-                        selectedWeekEnd={selectedWeekEnd}
-                        onWeekChange={handleWeekChange}
-                    />
-
                     <InputTextSearch
-                        label="*Quarto"
+                        label="Quarto"
                         value={
                             roomOptions.find((option) => option.key === filterQuarto)?.value || ''
                         }
                         onSelect={(option: any) => setFilterQuarto(option.key)}
                         searchOptions={roomOptions}
-                        placeholder="Selecione"
+                        placeholder="Filtre por quarto"
                     />
-
-                    <DropdownInput
-                        variant="white"
-                        label="Status"
-                        value={filterStatus}
-                        placeholder="Filtre por status"
-                        onChange={(value) => setFilterStatus(value)}
-                        options={[
-                            { key: "disponivel", value: "Disponível" },
-                            { key: "ocupado", value: "Ocupado" }
-                        ]}
-                    />
+                    
+                    <div className={styles.filterStatus}>
+                        <DropdownInput
+                            variant="white"
+                            label="Status"
+                            value={filterStatus}
+                            placeholder="Filtre por status"
+                            onChange={(value) => setFilterStatus(value)}
+                            options={[
+                                { key: "ativa", value: "Ativa" },
+                                { key: "prevista", value: "Prevista" },
+                                { key: "encerrada", value: "Encerrada" }
+                            ]}
+                        />
+                    </div>
 
                 </div>
             </Modal>

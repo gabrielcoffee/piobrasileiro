@@ -58,7 +58,17 @@ const Table = forwardRef<TableRef, TableProps>(({
         .length;
 
     // For filtering:
-    const stableFilters = useMemo(() => filters, [JSON.stringify(filters)]);
+    const stableFilters = useMemo(() => {
+        return filters.filter(f => {
+          // Remove if value is string '' OR boolean false OR number 0
+          if (typeof f.value === "string" && f.value.trim() === "") return false;
+          if (typeof f.value === "boolean" && f.value === false) return false;
+          if (typeof f.value === "number" && f.value === 0) return false;
+      
+          return true; // keep everything else
+        });
+      }, [JSON.stringify(filters)]);
+      
 
     // Selection state
     const [isAllSelected, setIsAllSelected] = useState(currentPageItems.length > 0 && currentPageSelectedCount === currentPageItems.length);
@@ -72,6 +82,9 @@ const Table = forwardRef<TableRef, TableProps>(({
     // New filter pipeline
     useEffect(() => {
         let filteredRows = [...rowItems]; // start with prop rows
+
+        console.log('stableFilters', stableFilters);
+        console.log('rowItems', rowItems);
     
         // Step 1: Apply filters
         if (stableFilters && stableFilters.length > 0) {
