@@ -125,29 +125,20 @@ export function normalizeDateString(date: any): string {
     return date;
 };
 
+export function getDateStringFromYYYYMMDD(date: string): string {
+    const [year, month, day] = date.split('-').map(Number);
+    const selectedDate = new Date(year, month - 1, day);
+    return selectedDate.toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    });
+}
+
 export function getDateString(date: any, format: string = 'DD/MM/YYYY'): string {
-    if (!date) return '';
-
-    // Normalize to a local Date at 00:00
-    let selectedDate: Date;
-
-    if (date instanceof Date) {
-        selectedDate = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-    } else if (typeof date === 'string') {
-        if (date.includes('T')) {
-            const d = new Date(date); // parse ISO
-            selectedDate = new Date(d.getFullYear(), d.getMonth(), d.getDate());
-        } else if (/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-            const [y, m, d] = date.split('-').map(Number);
-            selectedDate = new Date(y, m - 1, d);
-        } else {
-            return ''; // unsupported format
-        }
-    } else {
-        return '';
-    }
 
     if (format === 'DD/MM/YYYY HH:mm') {
+        const selectedDate = new Date(date);
         return selectedDate.toLocaleDateString('pt-BR', {
             day: '2-digit',
             month: '2-digit',
@@ -155,14 +146,28 @@ export function getDateString(date: any, format: string = 'DD/MM/YYYY'): string 
             hour: '2-digit',
             minute: '2-digit'
         });
-    }
+    } else {
 
-    return selectedDate.toLocaleDateString('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-    });
-}
+        if (date.includes('T')) {
+            const selectedDate = new Date(date);
+            return selectedDate.toLocaleDateString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric' 
+            });
+        }
+
+        // Parse YYYY-MM-DD as local date to avoid timezone issues
+        const [year, month, day] = date.split('-').map(Number);
+        const selectedDate = new Date(year, month - 1, day);
+
+        return selectedDate.toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric' 
+        });
+    }
+};
 
 
 export function convertBufferToBase64(buffer: Buffer) {

@@ -9,7 +9,7 @@ import { DateSection } from '@/components/admin/DateSection';
 import { Filter, PencilLine, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import Table from '@/components/admin/Table';
-import { getCurrentWeekInfo, getDateString, queryApi } from '@/lib/utils';
+import { getCurrentWeekInfo, getDateString, getDateStringFromYYYYMMDD, queryApi } from '@/lib/utils';
 import Modal from '@/components/admin/Modal';
 import AddBookingModal from '@/components/admin/AddBookingModal';
 import { useRouter } from 'next/navigation';
@@ -218,10 +218,11 @@ export default function GestaoDeReservasPage() {
 
         if (result.success) {
             const completeReservas = result.data.map((reserva: any) => {
+
                 return {
                     ...reserva,
-                    data_chegada: getDateString(reserva.data_chegada),
-                    data_saida: getDateString(reserva.data_saida),
+                    data_chegada: getDateStringFromYYYYMMDD(reserva.data_chegada.split('T')[0]),
+                    data_saida: getDateStringFromYYYYMMDD(reserva.data_saida.split('T')[0]),
                     status: getStatusHtml(reserva.status),
                     status_data: reserva.status,
                     acao: acoes(reserva),
