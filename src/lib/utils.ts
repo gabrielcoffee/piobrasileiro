@@ -147,7 +147,9 @@ export function getDateString(date: any, format: string = 'DD/MM/YYYY'): string 
             });
         }
 
-        const selectedDate = new Date(date + 'T00:00:00');
+        // Parse YYYY-MM-DD as local date to avoid timezone issues
+        const [year, month, day] = date.split('-').map(Number);
+        const selectedDate = new Date(year, month - 1, day);
 
         return selectedDate.toLocaleDateString('pt-BR', {
             day: '2-digit',
