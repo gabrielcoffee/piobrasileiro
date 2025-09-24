@@ -46,9 +46,24 @@ export default function GestaoDeReservasPage() {
 
     const [reservas, setReservas] = useState<any[]>([]);
 
+    // Local date helpers
+    const normalizeToLocalMidnight = (date: Date): Date => {
+        const dt = new Date(date);
+        dt.setHours(0, 0, 0, 0);
+        return dt;
+    };
+
+    const parseYMDToLocalDate = (ymd: string | undefined): Date | null => {
+        if (!ymd) return null;
+        const [y, m, d] = ymd.split('-').map(Number);
+        const dt = new Date(y, (m || 1) - 1, d || 1);
+        dt.setHours(0, 0, 0, 0);
+        return dt;
+    };
+
     const handleWeekChange = (weekStart: Date, weekEnd: Date) => {
-        setSelectedWeekStart(weekStart);
-        setSelectedWeekEnd(weekEnd);
+        setSelectedWeekStart(normalizeToLocalMidnight(weekStart));
+        setSelectedWeekEnd(normalizeToLocalMidnight(weekEnd));
     }
 
     const editar = (reserva: any) => {
@@ -216,26 +231,28 @@ export default function GestaoDeReservasPage() {
         }
     }
 
-    // Calculate the start of the current week (Monday) - using same logic as utils.ts
+    // Calculate the start of the current week (Monday) - normalized to local midnight
     const getWeekStart = (date: Date): Date => {
         const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
         const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Days to go back to Monday
         
-        const monday = new Date(date);
-        monday.setDate(date.getDate() - daysToMonday);
+        const monday = normalizeToLocalMidnight(date);
+        monday.setDate(monday.getDate() - daysToMonday);
+        monday.setHours(0, 0, 0, 0);
         return monday;
     };
 
-    // Calculate the end of the current week (Sunday)
+    // Calculate the end of the current week (Sunday) - normalized to local midnight
     const getWeekEnd = (weekStart: Date): Date => {
-        const sunday = new Date(weekStart);
-        sunday.setDate(weekStart.getDate() + 6);
+        const sunday = normalizeToLocalMidnight(weekStart);
+        sunday.setDate(sunday.getDate() + 6);
+        sunday.setHours(0, 0, 0, 0);
         return sunday;
     };
 
     const handleFilterDateChange = (dateFilter: string) => {
-        // setting the current week start and end based on the date selected
-        const date = new Date(dateFilter);
+        // setting the current week start and end based on the date selected (YYYY-MM-DD)
+        const date = parseYMDToLocalDate(dateFilter) || new Date();
         const weekStart = getWeekStart(date);
         const weekEnd = getWeekEnd(weekStart);
         setSelectedWeekStart(weekStart);
@@ -292,9 +309,11 @@ export default function GestaoDeReservasPage() {
      
     useEffect(() => {
         const currentWeekInfo = getCurrentWeekInfo();
-        setSelectedWeekStart(currentWeekInfo.monday);
-        setSelectedWeekEnd(currentWeekInfo.sunday);
-        fetchReservas(currentWeekInfo.monday, currentWeekInfo.sunday);
+        const monday = normalizeToLocalMidnight(currentWeekInfo.monday);
+        const sunday = normalizeToLocalMidnight(currentWeekInfo.sunday);
+        setSelectedWeekStart(monday);
+        setSelectedWeekEnd(sunday);
+        fetchReservas(monday, sunday);
         fetchNotifications();
     }, []);
 

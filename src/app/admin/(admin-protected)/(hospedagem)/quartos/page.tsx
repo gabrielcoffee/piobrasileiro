@@ -30,6 +30,7 @@ export default function QuartosPage() {
 
     const [filterStatus, setFilterStatus] = useState<string>('');
     const [filterPeriod, setFilterPeriod] = useState<string>('');
+    const [filters, setFilters] = useState<{ key: string, value: string | boolean | number }[]>([]);
 
     const [selectedRoomData, setSelectedRoomData] = useState<any>(null);
     const [selectedRoomForDeactivation, setSelectedRoomForDeactivation] = useState<any>(null);
@@ -38,9 +39,31 @@ export default function QuartosPage() {
     const [active, setActive] = useState<boolean>(true);
     const [searchText, setSearchText] = useState<string>('');   
 
+    // Helpers for local-date normalization and formatting
+    const formatLocalYMD = (date: Date): string => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
+
+    const parseYMDToLocalDate = (ymd: string | undefined): Date | null => {
+        if (!ymd) return null;
+        const [y, m, d] = ymd.split('-').map(Number);
+        const dt = new Date(y, (m || 1) - 1, d || 1);
+        dt.setHours(0, 0, 0, 0);
+        return dt;
+    }
+
+    const normalizeToLocalMidnight = (date: Date): Date => {
+        const dt = new Date(date);
+        dt.setHours(0, 0, 0, 0);
+        return dt;
+    }
+
     const handleWeekChange = (weekStart: Date, weekEnd: Date) => {
-        setSelectedWeekStart(weekStart);
-        setSelectedWeekEnd(weekEnd);
+        setSelectedWeekStart(normalizeToLocalMidnight(weekStart));
+        setSelectedWeekEnd(normalizeToLocalMidnight(weekEnd));
     }
 
     const toggleActiveRoom = async (id: string) => {
@@ -103,10 +126,11 @@ export default function QuartosPage() {
 
     const getWeekDates = () => {
         const weekDates = [];
-        const startDate = new Date(selectedWeekStart);
+        const startDate = normalizeToLocalMidnight(new Date(selectedWeekStart));
         for (let i = 0; i < 7; i++) {
             const date = new Date(startDate);
             date.setDate(startDate.getDate() + i);
+            date.setHours(0, 0, 0, 0);
             weekDates.push(date);
         }
         return weekDates;
@@ -117,7 +141,7 @@ export default function QuartosPage() {
 
         const headerDaysList: any[] = weekDaysList.map((day) => {
             return {
-                key: day.toISOString().split('T')[0],
+                key: formatLocalYMD(day),
                 label: day.toLocaleDateString('pt-BR', { weekday: 'short' }).charAt(0).toUpperCase() +
                         day.toLocaleDateString('pt-BR', { weekday: 'short' }).slice(1) + ' ' +
                         day.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' }),
@@ -146,15 +170,22 @@ export default function QuartosPage() {
     
                 // Add each day of the week as a property
                 weekDates.forEach((date) => {
-                    const dateString = date.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+                    const dateAtMidnight = normalizeToLocalMidnight(date);
+                    const dateString = formatLocalYMD(dateAtMidnight); // Local YYYY-MM-DD
 
                     const dataChegada = occupation?.ocupacoes[0]?.data_chegada;
                     const dataSaida = occupation?.ocupacoes[0]?.data_saida;
                     
-                    // Check if this room is occupied on this date (checking if the date is in between ocupacoes.data_chegada and ocupacoes.data_saida)
-                    const isOccupied = dateString >= dataChegada && dateString <= dataSaida;
+                    // Check if this room is occupied on this date using normalized local dates
+                    const chegadaDate = parseYMDToLocalDate(dataChegada);
+                    const saidaDate = parseYMDToLocalDate(dataSaida);
+                    const isOccupied = !!(chegadaDate && saidaDate &&
+                        dateAtMidnight.getTime() >= chegadaDate.getTime() &&
+                        dateAtMidnight.getTime() <= saidaDate.getTime());
     
                     // Add the day status to the room data
+                    roomData['is_occupied_' + dateString] = isOccupied;
+
                     roomData[dateString] = 
                         isOccupied ? 
                         <span className={styles.occupied}>
@@ -177,7 +208,6 @@ export default function QuartosPage() {
             quartos.sort((a: any, b: any) => a.numero.localeCompare(b.numero));
             
             setQuartos(quartos);
-            console.log(quartos);
         } else {
             console.log('Erro ao buscar quartos', result.error);
         }
@@ -232,6 +262,62 @@ export default function QuartosPage() {
         }
     }
 
+    // Calculate the start of the current week (Monday) - normalized to local midnight
+    const getWeekStart = (date: Date): Date => {
+        const dayOfWeek = date.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+        const daysToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Days to go back to Monday
+        
+        const monday = normalizeToLocalMidnight(date);
+        monday.setDate(monday.getDate() - daysToMonday);
+        monday.setHours(0, 0, 0, 0);
+        return monday;
+    };
+
+    // Calculate the end of the current week (Sunday) - normalized to local midnight
+    const getWeekEnd = (weekStart: Date): Date => {
+        const sunday = normalizeToLocalMidnight(weekStart);
+        sunday.setDate(sunday.getDate() + 6);
+        sunday.setHours(0, 0, 0, 0);
+        return sunday;
+    };
+
+    const handleFilterDateChange = (dateFilter: string) => {
+        // setting the current week start and end based on the date selected (YYYY-MM-DD)
+        const date = parseYMDToLocalDate(dateFilter) || new Date();
+        const weekStart = getWeekStart(date);
+        const weekEnd = getWeekEnd(weekStart);
+        setSelectedWeekStart(weekStart);
+        setSelectedWeekEnd(weekEnd);
+    }
+
+    const canFilter = () => {
+        return filterStatus !== '' && filterPeriod !== '';
+    }
+
+    const handleOpenFilterModal = () => {
+        setFilterStatus('');
+        setFilterPeriod('');
+        setFilters([]);
+        setShowFilterModal(true);
+    }
+
+    const handleFiltrar = () => {
+        if (canFilter()) {
+            setShowFilterModal(false);
+
+            if (filterPeriod !== '') {
+                handleFilterDateChange(filterPeriod);
+            }
+
+            const statusValue = filterStatus === 'ocupado' ? true : false;
+
+            setFilters([{ key: "is_occupied_" + filterPeriod, value: statusValue }]);
+
+        } else {
+            setFilters([]);
+        }
+    }
+
     useEffect(() => {
         getWeekListAsTableHeader();
 
@@ -260,21 +346,6 @@ export default function QuartosPage() {
         fetchRooms();
     }, []);
 
-    const handleOpenFilterModal = () => {
-        setShowFilterModal(true);
-        setFilterStatus('');
-        setFilterPeriod('');
-    }
-
-    const handleFiltrar = () => {
-        if (filterStatus === '' && filterPeriod === '') {
-            return;
-        }
-
-        setShowFilterModal(false);
-        console.log(filterStatus, filterPeriod);
-    }
-
     return (
         <div className={styles.container}>
             <Card>
@@ -300,6 +371,7 @@ export default function QuartosPage() {
                 />
 
                 <Table
+                    filters={filters}
                     searchText={searchText}
                     searchKey="numero"
                     headerItems={[
@@ -309,10 +381,6 @@ export default function QuartosPage() {
                     ]}
                     rowItems={quartos}
                     itemsPerPage={8}
-                    filters={[
-                        { key: "status", value: filterStatus },
-                        { key: "period", value: filterPeriod },
-                    ]}
                 />
             </Card>
 
@@ -421,7 +489,7 @@ export default function QuartosPage() {
             buttons={
                 <>
                     <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowFilterModal(false)}>Cancelar</Button>
-                    <Button available={filterStatus !== '' || filterPeriod !== ''} variant="full" onClick={() => handleFiltrar()}>Filtrar</Button>
+                    <Button available={canFilter()} variant="full" onClick={() => handleFiltrar()}>Filtrar</Button>
                 </>
             }
             >
@@ -438,6 +506,7 @@ export default function QuartosPage() {
                         ]}
                     />
                     <SimpleDateSelect
+                        cantBeBeforeToday={true}
                         label="Data ou período"
                         selectedDate={filterPeriod ? new Date(filterPeriod) : null}
                         onDateChange={(value) => setFilterPeriod(value?.toISOString().split('T')[0])}

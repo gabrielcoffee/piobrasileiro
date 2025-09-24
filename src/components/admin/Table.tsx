@@ -62,9 +62,6 @@ const Table = forwardRef<TableRef, TableProps>(({
         return filters.filter(f => {
           // Remove if value is string '' OR boolean false OR number 0
           if (typeof f.value === "string" && f.value.trim() === "") return false;
-          if (typeof f.value === "boolean" && f.value === false) return false;
-          if (typeof f.value === "number" && f.value === 0) return false;
-      
           return true; // keep everything else
         });
       }, [JSON.stringify(filters)]);
@@ -82,9 +79,6 @@ const Table = forwardRef<TableRef, TableProps>(({
     // New filter pipeline
     useEffect(() => {
         let filteredRows = [...rowItems]; // start with prop rows
-
-        console.log('stableFilters', stableFilters);
-        console.log('rowItems', rowItems);
     
         // Step 1: Apply filters
         if (stableFilters && stableFilters.length > 0) {
@@ -116,6 +110,7 @@ const Table = forwardRef<TableRef, TableProps>(({
                         return normalizedRowValue === normalizedFilterValue;
                     }
     
+                    console.log('rowValue', rowValue, 'value', value);
                     // For number/boolean
                     return rowValue === value;
                 });
