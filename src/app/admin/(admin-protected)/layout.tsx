@@ -15,7 +15,6 @@ export default function ProtectedAdminLayout({ children }: { children: ReactNode
 
 
     const handleSideBarExpanded = (expanded: boolean) => {
-        console.log('expanded', expanded);
         setSideBarExpanded(expanded);
     }
 
