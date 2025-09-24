@@ -321,7 +321,10 @@ export default function QuartosPage() {
     useEffect(() => {
         getWeekListAsTableHeader();
 
-        if (!(selectedWeekEnd < new Date())) {
+        const today = new Date();
+        const currentWeekStart = getWeekStart(today);
+
+        if (!(selectedWeekEnd < currentWeekStart)) {
             fetchRooms();
         }
     }, [selectedWeekStart, selectedWeekEnd]);
