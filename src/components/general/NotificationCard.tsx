@@ -11,7 +11,7 @@ interface NotificationCardProps {
 
 export default function NotificationCard({ date, time, title, message, read }: NotificationCardProps) {
     return (
-        <div className={styles.notificationCard}>
+        <div className={`${styles.notificationCard} ${read ? styles.contentRead : styles.contentNew}`}>
             <Bell 
                 size={28} 
                 className={`${styles.bellIcon} ${read ? styles.bellIconRead : styles.bellIconNew}`}

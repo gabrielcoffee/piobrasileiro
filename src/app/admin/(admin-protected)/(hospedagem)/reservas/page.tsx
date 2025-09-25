@@ -325,7 +325,7 @@ export default function GestaoDeReservasPage() {
 
                 {notificationsCount > 0 && (
                 <div className={styles.newRequest}>
-                    <span>Você tem {notificationsCount} novas solicitações de hospedagem!</span>
+                    <span>{notificationsCount > 1 ? `Você tem ${notificationsCount} novas solicitações de hospedagem!` : `Você tem ${notificationsCount} nova solicitação de hospedagem!`}</span>
                     <div className={styles.newRequestButton}>
                         <Button variant="full-white" onClick={() => {router.push('/admin/solicitacoes')}}>Verificar</Button>
                     </div>

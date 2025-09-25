@@ -81,57 +81,6 @@ export default function NotificationMenu({ isOpen, onClose }: NotificationMenuPr
         setNotifications(fakeNotifications);
     }, [])
 
-    const notificationsMock = [
-        {
-            id: 1,
-            date: "6/ABR",
-            time: "00:01",
-            title: "Você já pode agendar suas refeições da semana 14.",
-            message: "Faça as marcações até às 19h de hoje. Não se esqueça de incluir seus convidados, se houverem.",
-            read: false,
-        },
-        {
-            id: 2,
-            date: "30/MAR",
-            time: "19:00",
-            title: "Agenda da semana 13 fechada",
-            message: "Confira aqui suas marcações.",
-            read: true,
-        },
-        {
-            id: 3,
-            date: "30/MAR",
-            time: "18:30",
-            title: "Você tem 30 minutos para finalizar suas marcações.",
-            message: "Faça as marcações até às 19h de hoje. Não se esqueça de incluir seus convidados, se houverem.",
-            read: true,
-        },
-        {
-            id: 4,  
-            date: "30/MAR",
-            time: "00:01",
-            title: "Você já pode agendar suas refeições da semana 13.",
-            message: "Faça as marcações até às 19h de hoje. Não se esqueça de incluir seus convidados, se houverem.",
-            read: true,
-        },
-        {
-            id: 5,
-            date: "23/MAR",
-            time: "19:00",
-            title: "Agenda da semana 12 fechada.",
-            message: "Confira aqui suas marcações.",
-            read: true,
-        },
-        {
-            id: 6,
-            date: "23/MAR",
-            time: "18:30",
-            title: "Você tem 30 minutos para finalizar suas marcações.",
-            message: "Faça as marcações até às 19h de hoje. Não se esqueça de incluir seus convidados, se houverem.",
-            read: true,
-        },
-    ];
-
     return (
         <>
             <div 

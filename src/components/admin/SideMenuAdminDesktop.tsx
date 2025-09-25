@@ -70,22 +70,29 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
 
         if (result.success) {
             setNotificationsCount(result.data);
-
         } else {
             setNotificationsCount(0);
-            console.error('Erro ao buscar total de notificações:', result.error);
         }
     }
+
+    // make timer to fetch notifications count every 10 seconds
+    useEffect(() => {
+        const timer = setInterval(() => {
+            fetchNotifications();
+            console.log('fetching notifications count');
+        }, 10000);
+        return () => clearInterval(timer);
+    }, []);
+    
+    useEffect(() => {
+        fetchNotifications();
+    }, []);
 
     useEffect(() => {
         if (pathname.startsWith('/admin/solicitacoes') || pathname.startsWith('/admin/reservas')) {
             fetchNotifications();
         }
     }, [pathname]);
-
-    useEffect(() => {
-        fetchNotifications();
-    }, []);
 
     const renderMenuItem = (item: any) => {
         const IconComponent = item.icon;

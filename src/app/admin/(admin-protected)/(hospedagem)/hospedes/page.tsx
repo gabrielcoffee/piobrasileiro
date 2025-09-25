@@ -143,7 +143,6 @@ export default function HospedesPage() {
                     dateSection={false}
                     searchPlaceholder="Pesquise por nome"
                     buttons={[
-                        <Button key="filter" variant="full-white" iconLeft={<Filter size={24} />}>Filtrar</Button>,
                         <Button key="new_guest" variant="full" onClick={() => setShowNewBookingModal(true)} iconLeft={<Plus size={20} />}>Novo hóspede</Button>
                     ]}
                 />

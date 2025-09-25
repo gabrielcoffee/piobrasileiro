@@ -1,14 +1,10 @@
 .notificationCard {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 1rem;
   padding: 1.25rem 1.5rem;
   background-color: var(--color-white);
   transition: background-color 0.2s ease;
-}
-
-.notificationCard:hover {
-  background-color: var(--color-slate-50);
 }
 
 .bellIcon {
@@ -51,3 +47,13 @@
   color: var(--color-text);
   font-weight: 400;
 } 
+
+.contentRead {
+  color: var(--color-text-muted);
+  background-color: var(--color-slate-100);
+}
+
+.contentNew {
+  color: var(--color-text);
+  background-color: var(--color-white);
+}

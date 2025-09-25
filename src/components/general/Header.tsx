@@ -8,6 +8,19 @@ import { useAuth } from '@/contexts/AuthContext';
 import { SideMenuAdmin } from '../admin/SideMenuAdmin';
 import { SideMenuAdminDesktop } from '../admin/SideMenuAdminDesktop';
 import { usePathname, useRouter } from 'next/navigation';
+import { queryApi } from '@/lib/utils';
+import NotificationMenuAdmin from './NotificationMenuAdminDesktop';
+import NotificationMenuAdminDesktop from './NotificationMenuAdminDesktop';
+import Link from 'next/link';
+
+interface Notification {
+    id: number;
+    date: string;
+    time: string;
+    title: string;
+    message: string;
+    read: boolean;
+}
 
 interface HeaderProps {
     setSideBarExpanded?: (expanded: boolean) => void;
@@ -19,11 +32,34 @@ export function Header({ setSideBarExpanded = (expanded: boolean) => void 0}: He
 
     const [avatar, setAvatar] = useState('');
     const [isDesktop, setIsDesktop] = useState(false);
+    const [showNotificationMenu, setShowNotificationMenu] = useState(false);
+    const [desktopShowNotificationMenu, setDesktopShowNotificationMenu] = useState(false);
 
     const [sideMenuOpen, setSideMenuOpen] = useState(false);
-    const [notificationMenuOpen, setNotificationMenuOpen] = useState(false);
     const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
     const pathname = usePathname();
+
+    const [notificationsCount, setNotificationsCount] = useState(0);
+
+    const fetchNotificationsCount = async () => {
+        const result = await queryApi('GET', '/admin/requests/notifications');
+        if (result.success) {
+            setNotificationsCount(result.data);
+        }
+    }
+
+    // make timer to fetch notifications count every 10 seconds
+    useEffect(() => {
+        const timer = setInterval(() => {
+            fetchNotificationsCount();
+            console.log('fetching notifications count');
+        }, 10000);
+        return () => clearInterval(timer);
+    }, []);
+    
+    useEffect(() => {
+        fetchNotificationsCount();
+    }, []);
 
     useEffect(() => {
         if (user?.avatar) {
@@ -43,6 +79,25 @@ export function Header({ setSideBarExpanded = (expanded: boolean) => void 0}: He
         
         return () => window.removeEventListener('resize', checkScreenSize);
     }, []);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as Element;
+            
+            // Close notification menu if clicking outside
+            if (desktopShowNotificationMenu && !target.closest('.notification-container')) {
+                setDesktopShowNotificationMenu(false);
+            }
+            
+            // Close profile dropdown if clicking outside
+            if (profileDropdownOpen && !target.closest('.profileDropdown')) {
+                setProfileDropdownOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, [desktopShowNotificationMenu, profileDropdownOpen]);
     
     const toggleSideMenu = () => {
         setSideMenuOpen(!sideMenuOpen);
@@ -50,14 +105,6 @@ export function Header({ setSideBarExpanded = (expanded: boolean) => void 0}: He
 
     const closeSideMenu = () => {
         setSideMenuOpen(false);
-    };
-
-    const toggleNotificationMenu = () => {
-        setNotificationMenuOpen(!notificationMenuOpen);
-    };
-
-    const closeNotificationMenu = () => {
-        setNotificationMenuOpen(false);
     };
 
     const toggleProfileDropdown = () => {
@@ -84,8 +131,12 @@ export function Header({ setSideBarExpanded = (expanded: boolean) => void 0}: He
         closeProfileDropdown();
     };
 
+    const toggleDesktopNotificationMenu = () => {
+        setDesktopShowNotificationMenu(!desktopShowNotificationMenu);
+    };
+
     return (
-        <>f
+        <>
             {/* Desktop Side Menu - Always visible on desktop */}
             {isDesktop && pathname.startsWith('/admin') && (
                 <SideMenuAdminDesktop set={setSideBarExpanded} />
@@ -97,7 +148,7 @@ export function Header({ setSideBarExpanded = (expanded: boolean) => void 0}: He
                 <Menu size={24} />
                 </button>
                 
-                <button className={styles.notificationButton} onClick={toggleNotificationMenu}>
+                <button className={styles.notificationButton} onClick={() => setShowNotificationMenu(true)}>
                 <Bell size={24} />
                 </button>
             </header>
@@ -109,8 +160,9 @@ export function Header({ setSideBarExpanded = (expanded: boolean) => void 0}: He
                 <SideMenu isOpen={sideMenuOpen} onClose={closeSideMenu} />
             ) : null}
             
-
-            <NotificationMenu isOpen={notificationMenuOpen} onClose={closeNotificationMenu} />
+            {!isDesktop && !pathname.startsWith('/admin') ? (
+                <NotificationMenu isOpen={showNotificationMenu} onClose={() => setShowNotificationMenu(false)} />
+            ) : null}
 
             </div>
             <div className={styles.desktopHeader}>
@@ -120,11 +172,22 @@ export function Header({ setSideBarExpanded = (expanded: boolean) => void 0}: He
                 </div>
 
                 <div className={styles.rightSide}>
-                    <button className={styles.notificationButton}>
-                        <Bell size={20} />
-                    </button>
+                    <div className="notification-container">
+                        <button className={styles.notificationButton} onClick={() => toggleDesktopNotificationMenu()}>
+                            <Bell size={20} />
+                            {notificationsCount > 0 &&
+                                <div className={styles.notificationCount}>{notificationsCount}</div>
+                            }
 
-                    <div className={styles.profileDropdown}>
+                            <Link href="/admin/solicitacoes">
+                                {desktopShowNotificationMenu && (
+                                    <NotificationMenuAdminDesktop />
+                                )}
+                            </Link>
+                        </button>
+                    </div>
+
+                    <div className={`${styles.profileDropdown} profileDropdown`}>
                         <button className={styles.profileButton} onClick={toggleProfileDropdown}>
                             <img
                                 src={avatar ? `data:image/jpeg;base64,${avatar}` : "/user.png"}
