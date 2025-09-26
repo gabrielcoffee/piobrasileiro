@@ -179,7 +179,7 @@ export default function HospedesPage() {
                     onClose={() => setShowNewBookingModal(false)}
                     buttons={
                         <>
-                            <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowNewBookingModal(false)}>Cancelar</Button>
+                            <Button variant="soft-red" onClick={() => setShowNewBookingModal(false)}>Cancelar</Button>
                             <Button 
                             iconLeft={<Check size={20} />} 
                             variant="full" 
@@ -205,7 +205,7 @@ export default function HospedesPage() {
                     onClose={() => setShowEditGuestModal(false)}
                     buttons={
                         <>
-                            <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowEditGuestModal(false)}>Cancelar</Button>
+                            <Button variant="soft-red" onClick={() => setShowEditGuestModal(false)}>Cancelar</Button>
                             <Button 
                             iconLeft={<Check size={20} />} 
                             variant="full" 
@@ -233,7 +233,7 @@ export default function HospedesPage() {
                     onClose={() => setShowDeleteGuestModal(false)}
                     buttons={
                         <>
-                            <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowDeleteGuestModal(false)}>Cancelar</Button>
+                            <Button variant="soft-red" onClick={() => setShowDeleteGuestModal(false)}>Cancelar</Button>
                             <Button iconLeft={<Check size={20} />} variant="full" style={{backgroundColor: 'var(--color-error)', border: '1px solid var(--color-error)'}} onClick={() => handleDeleteGuest()}>Sim tenho certeza</Button>
                         </>
                     }

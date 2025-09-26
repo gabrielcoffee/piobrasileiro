@@ -5,13 +5,14 @@ import { ReactNode } from 'react';
 interface ModalProps {
     children?: ReactNode;
     buttons?: ReactNode;
+    buttonsLeft?: ReactNode;
     title: string;
     subtitle?: string;
     onClose: () => void;
     isOpen: boolean;
 }
 
-export default function Modal({ children, buttons, title, subtitle, onClose, isOpen }: ModalProps) {
+export default function Modal({ children, buttons, buttonsLeft, title, subtitle, onClose, isOpen }: ModalProps) {
     if (!isOpen) {
         return null;
     }
@@ -35,7 +36,14 @@ export default function Modal({ children, buttons, title, subtitle, onClose, isO
                 </div>
 
                 <div className={styles.footer}>
-                    {buttons}
+
+                    <div className={styles.footerButtons}>
+                        {buttonsLeft}
+                    </div>
+
+                    <div className={styles.footerButtons}>
+                        {buttons}
+                    </div>
                 </div>
             </div>
 

@@ -541,7 +541,7 @@ export default function ListaDeRefeicoesPage() {
                     title="Gerar Relatório"
                     buttons={
                         <>
-                            <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowReportModal(false)}>Cancelar</Button>
+                            <Button variant="soft-red" onClick={() => setShowReportModal(false)}>Cancelar</Button>
                             <Button iconLeft={<Printer size={20} />} variant="full" onClick={handleGenerateReport}>Gerar</Button>
                         </>
                     }
@@ -571,7 +571,7 @@ export default function ListaDeRefeicoesPage() {
                     onClose={() => setShowGuestBookingModal(false)}
                     title="Novo agendamento convidado"
                     buttons={<>
-                        <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowGuestBookingModal(false)}>Cancelar</Button>
+                        <Button variant="soft-red" onClick={() => setShowGuestBookingModal(false)}>Cancelar</Button>
                         <Button available={guestFormData?.nome && guestFormData?.funcao && guestFormData?.origem && guestFormData?.data && (guestFormData?.almoco_colegio || guestFormData?.janta_colegio) ? true : false} variant="full" iconLeft={<Check size={20} />} onClick={() => handleGuestBookingSave()}>Salvar</Button>
                     </>}
                 >
@@ -587,7 +587,7 @@ export default function ListaDeRefeicoesPage() {
                     onClose={() => setShowGuestBookingEditModal(false)}
                     title="Editar agendamento convidado"
                     buttons={<>
-                        <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowGuestBookingEditModal(false)}>Cancelar</Button>
+                        <Button variant="soft-red" onClick={() => setShowGuestBookingEditModal(false)}>Cancelar</Button>
                         <Button onClick={() => handleGuestBookingEdit()} available={guestFormData?.nome && guestFormData?.funcao && guestFormData?.origem && guestFormData?.data ? true : false} variant="full" iconLeft={<Check size={20} />}>Salvar</Button>
                     </>}
                 >
@@ -607,7 +607,7 @@ export default function ListaDeRefeicoesPage() {
                     title="Novo agendamento morador"
                     buttons={
                         <>
-                            <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowResidentBookingModal(false)}>Cancelar</Button>
+                            <Button variant="soft-red" onClick={() => setShowResidentBookingModal(false)}>Cancelar</Button>
                             <Button available={checkResidentAvaliability()} variant="full" iconLeft={<Check size={20} />} onClick={() => handleResidentBookingSave()}>Salvar</Button>
                         </>
                     }
@@ -624,7 +624,7 @@ export default function ListaDeRefeicoesPage() {
                     onClose={() => setShowResidentBookingEditModal(false)}
                     title="Editar agendamento morador"
                     buttons={<>
-                        <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowResidentBookingEditModal(false)}>Cancelar</Button>
+                        <Button variant="soft-red" onClick={() => setShowResidentBookingEditModal(false)}>Cancelar</Button>
                         <Button onClick={() => handleResidentBookingEdit()} available={residentFormData?.almoco_colegio || residentFormData?.janta_colegio ? true : false} variant="full" iconLeft={<Check size={20} />}>Salvar</Button>
                     </>}
                 >

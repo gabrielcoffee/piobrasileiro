@@ -79,7 +79,6 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
     useEffect(() => {
         const timer = setInterval(() => {
             fetchNotifications();
-            console.log('fetching notifications count');
         }, 10000);
         return () => clearInterval(timer);
     }, []);

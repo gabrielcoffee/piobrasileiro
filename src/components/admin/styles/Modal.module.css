@@ -59,8 +59,14 @@
 
 .footer {
     display: flex;
-    gap: 1rem;
+    flex-direction: row;
     width: 100%;
-    max-width: 70%;
-    margin-left: auto;
+    gap: 6em;
+}
+
+.footerButtons {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    width: 100%;
 }

@@ -108,7 +108,7 @@ export function SimpleDateSelect({ selectedDate, onDateChange, disabled, label =
                 className={styles.dateButton}
                 >
                     <span className={styles.dateButtonText}>
-                        {curSelectedDate ? curSelectedDate?.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'Selecione uma data'}
+                        {selectedDate === null ? 'Selecione uma data' : curSelectedDate ? curSelectedDate?.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'Selecione uma data'}
                     </span>
                 </Button>
             </div>

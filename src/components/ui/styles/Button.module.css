@@ -32,7 +32,7 @@
 }
 
 .not_available {
-    opacity: 0.5;
+    opacity: 0.4;
 }
 
 .button_full_white {
@@ -43,6 +43,16 @@
 
 .button_full_white:hover {
     background-color: var(--color-white-hover);
+}
+
+.button_soft_red {
+    background-color: var(--color-white);
+    color: var(--color-error);
+    border: 1px solid var(--color-error-border);
+}
+
+.button_soft_red:hover {
+    background-color: var(--color-slate-100);
 }
 
 .button_outline {

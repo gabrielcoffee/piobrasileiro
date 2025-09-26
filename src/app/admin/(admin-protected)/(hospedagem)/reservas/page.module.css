@@ -70,3 +70,16 @@
     gap: 1rem;
     margin-bottom: 3rem;
 }
+
+.filterModalButtons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.filterModalButtonsLeft {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+} 

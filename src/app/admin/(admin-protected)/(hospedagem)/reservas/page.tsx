@@ -265,7 +265,7 @@ export default function GestaoDeReservasPage() {
         return filterDate !== '' || filterNome !== '' || filterAnfitriao !== '' || filterQuarto !== '' || filterStatus !== '';
     }
 
-    const handleOpenFilterModal = () => {
+    const clearFilters = () => {
         setFilterDate('');
         setFilterNome('');
         setFilterAnfitriao('');
@@ -273,7 +273,9 @@ export default function GestaoDeReservasPage() {
         setFilterStatus('');
         setFilters([]);
         setSearchText('');
+    }
 
+    const handleOpenFilterModal = () => {
         fetchUserAnfitriaoIdAndNames();
         fetchQuartosIdAndNames();
         setShowFilterModal(true);
@@ -337,7 +339,22 @@ export default function GestaoDeReservasPage() {
                     setSearchText={setSearchText}
                     searchPlaceholder="Pesquise por nome"
                     buttons={[
-                        <Button onClick={() => handleOpenFilterModal()} key="filter" variant="full-white" iconLeft={<Filter size={24} />}>Filtrar</Button>,
+                        filters.length > 0 ? (
+                            <Button 
+                            onClick={() => handleOpenFilterModal()} 
+                            key="filter" variant="full-white" 
+                            style={{backgroundColor: 'var(--color-primary-foreground)', border: '1px solid var(--color-primary)'}} 
+                            iconLeft={<Filter size={24} />}>
+                                Alterar filtros
+                            </Button>
+                        ) : (
+                            <Button 
+                            onClick={() => handleOpenFilterModal()} 
+                            key="filter" variant="full-white" 
+                            iconLeft={<Filter size={24} />}>
+                                Filtrar
+                            </Button>
+                        ),
                         <Button key="new_booking" variant="full" onClick={() => {setShowNewBookingModal(true); setSelectedBookingData(null);}} iconLeft={<Plus size={20} />}>Novo agendamento</Button>
                     ]}
                     dateSection={(
@@ -371,7 +388,7 @@ export default function GestaoDeReservasPage() {
                 title="Nova reserva"
                 buttons={
                     <>
-                        <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowNewBookingModal(false)}>Cancelar</Button>
+                        <Button variant="soft-red" onClick={() => setShowNewBookingModal(false)}>Cancelar</Button>
                         <Button available={selectedBookingData?.anfitriao_id && selectedBookingData?.hospede_id && selectedBookingData?.data_chegada && selectedBookingData?.data_saida && selectedBookingData?.quarto_id ? true : false} variant="full" onClick={() => handleSaveNewBooking()}>Salvar</Button>
                     </>
                 }
@@ -388,7 +405,7 @@ export default function GestaoDeReservasPage() {
                 title="Editar reserva"
                 buttons={
                     <>
-                        <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowEditBookingModal(false)}>Cancelar</Button>
+                        <Button variant="soft-red" onClick={() => setShowEditBookingModal(false)}>Cancelar</Button>
                         <Button available={selectedBookingData?.anfitriao_id && selectedBookingData?.hospede_id && selectedBookingData?.data_chegada && selectedBookingData?.data_saida && selectedBookingData?.quarto_id ? true : false} variant="full" onClick={() => handleEditBooking()}>Salvar</Button>
                     </>
                 }
@@ -407,7 +424,7 @@ export default function GestaoDeReservasPage() {
                 subtitle="Esta ação é irreversível e resultará na exclusão permanente de todo o histórico desta reserva."
                 buttons={
                     <>
-                        <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowDeleteBookingModal(false)}>Cancelar</Button>
+                        <Button variant="soft-red" onClick={() => setShowDeleteBookingModal(false)}>Cancelar</Button>
                         <Button variant="full" style={{backgroundColor: 'var(--color-error)', border: '1px solid var(--color-error)'}} onClick={() => handleDeleteBooking()}>Sim tenho certeza</Button>
                     </>
                 }
@@ -420,9 +437,12 @@ export default function GestaoDeReservasPage() {
             title="Filtrar"
             onClose={() => setShowFilterModal(false)}
             isOpen={showFilterModal}
+            buttonsLeft={
+                <Button available={canFilter()} variant="soft-red" onClick={() => clearFilters()}>Limpar filtros</Button>
+            }
             buttons={
                 <>
-                    <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowFilterModal(false)}>Cancelar</Button>
+                    <Button variant="soft-red" onClick={() => setShowFilterModal(false)}>Cancelar</Button>
                     <Button available={canFilter()} variant="full" onClick={() => handleFiltrar()}>Filtrar</Button>
                 </>
             }

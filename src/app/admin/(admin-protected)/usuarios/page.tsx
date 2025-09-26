@@ -185,13 +185,11 @@ export default function UsuariosPage() {
     }
 
     const handleOpenFilterModal = () => {
-        setFilterTipoUsuario('');
-        setFilters([]);
         setShowFilterModal(true);
     }
 
     const handleFiltrar = () => {
-        if (filterTipoUsuario === '') {
+        if (!canFilter()) {
             setFilters([]);
             return;
         }
@@ -199,6 +197,16 @@ export default function UsuariosPage() {
         setShowFilterModal(false);
         setFilterTipoUsuario(filterTipoUsuario);
         setFilters([{ key: "tipo_usuario", value: filterTipoUsuario }]);
+    }
+
+    const clearFilters = () => {
+        setFilterTipoUsuario('');
+        setSearchText('');
+        setFilters([]);
+    }
+
+    const canFilter = () => {
+        return filterTipoUsuario !== '';
     }
 
     return (
@@ -212,7 +220,22 @@ export default function UsuariosPage() {
                     searchPlaceholder="Pesquise por nome"
                     dateSection={false}
                     buttons={[
-                        <Button onClick={() => handleOpenFilterModal()} key="filter" variant="full-white" iconLeft={<Filter size={24} />}>Filtrar</Button>,
+                        filters.length > 0 ? (
+                            <Button 
+                            onClick={() => handleOpenFilterModal()} 
+                            key="filter" variant="full-white" 
+                            style={{backgroundColor: 'var(--color-primary-foreground)', border: '1px solid var(--color-primary)'}} 
+                            iconLeft={<Filter size={24} />}>
+                                Alterar filtros
+                            </Button>
+                        ) : (
+                            <Button 
+                            onClick={() => handleOpenFilterModal()} 
+                            key="filter" variant="full-white" 
+                            iconLeft={<Filter size={24} />}>
+                                Filtrar
+                            </Button>
+                        ),
                         <Button visible={canShowExcluirButtons} key="powerOff" variant="full-white" style={{color:'var(--color-error)'}} iconLeft={<PowerOff size={24} />} onClick={() => setIsInativarModalOpen(true)}>Inativar</Button>,
                         <Button visible={canShowExcluirButtons} key="trash" variant="full-white" style={{color:'var(--color-error)'}} iconLeft={<Trash2 size={24} />} onClick={() => setIsExcluirModalOpen(true)}>Excluir</Button>,
                         <Button key="plus" variant="full" onClick={() => router.push('/admin/usuarios/novo')} iconLeft={<Plus size={24} />}>Novo usuário</Button>
@@ -268,7 +291,7 @@ export default function UsuariosPage() {
             isOpen={isExcluirModalOpen}
             buttons={
                 <>
-                <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setIsExcluirModalOpen(false)}>Cancelar</Button>
+                <Button variant="soft-red" onClick={() => setIsExcluirModalOpen(false)}>Cancelar</Button>
                 <Button variant="full" style={{backgroundColor: 'var(--color-error)', border: '1px solid var(--color-error)'}} onClick={deleteUsers}>Sim, tenho certeza</Button>
                 </>
             }
@@ -281,7 +304,7 @@ export default function UsuariosPage() {
             isOpen={isInativarModalOpen}
             buttons={
                 <>
-                <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setIsInativarModalOpen(false)}>Cancelar</Button>
+                <Button variant="soft-red" onClick={() => setIsInativarModalOpen(false)}>Cancelar</Button>
                 <Button variant="full" style={{backgroundColor: 'var(--color-error)', border: '1px solid var(--color-error)'}} onClick={inactivateUsers}>Sim, tenho certeza</Button>
                 </>
             }
@@ -291,9 +314,12 @@ export default function UsuariosPage() {
             title="Filtrar"
             onClose={() => setShowFilterModal(false)}
             isOpen={showFilterModal}
+            buttonsLeft={
+                <Button available={canFilter()} variant="soft-red" onClick={() => clearFilters()}>Limpar filtros</Button>
+            }
             buttons={
                 <>
-                <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowFilterModal(false)}>Cancelar</Button>
+                <Button variant="soft-red" onClick={() => setShowFilterModal(false)}>Cancelar</Button>
                 <Button available={filterTipoUsuario !== ''} variant="full" onClick={() => handleFiltrar()}>Filtrar</Button>
                 </>
             }

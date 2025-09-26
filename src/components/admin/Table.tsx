@@ -109,8 +109,6 @@ const Table = forwardRef<TableRef, TableProps>(({
     
                         return normalizedRowValue === normalizedFilterValue;
                     }
-    
-                    console.log('rowValue', rowValue, 'value', value);
                     // For number/boolean
                     return rowValue === value;
                 });

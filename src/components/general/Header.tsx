@@ -52,7 +52,6 @@ export function Header({ setSideBarExpanded = (expanded: boolean) => void 0}: He
     useEffect(() => {
         const timer = setInterval(() => {
             fetchNotificationsCount();
-            console.log('fetching notifications count');
         }, 10000);
         return () => clearInterval(timer);
     }, []);

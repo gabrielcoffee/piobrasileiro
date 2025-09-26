@@ -110,7 +110,7 @@ export default function SolicitacoesPage() {
         isOpen={isDetalhesModalOpen}
         buttons={
             <>
-                <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setIsDetalhesModalOpen(false)}>Fechar</Button>
+                <Button variant="soft-red" onClick={() => setIsDetalhesModalOpen(false)}>Fechar</Button>
                 <Button variant="full" iconLeft={<img src="/wpp.png" width={24} alt="Whatsapp" />} onClick={() => handleContatar(selectedSolicitacao.telefone)}>Entrar em contato</Button>
             </>
         }

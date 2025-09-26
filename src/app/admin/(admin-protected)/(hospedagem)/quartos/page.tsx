@@ -294,10 +294,14 @@ export default function QuartosPage() {
         return filterStatus !== '' && filterPeriod !== '';
     }
 
-    const handleOpenFilterModal = () => {
+    const clearFilters = () => {
         setFilterStatus('');
         setFilterPeriod('');
         setFilters([]);
+        setSearchText('');
+    }
+
+    const handleOpenFilterModal = () => {
         setShowFilterModal(true);
     }
 
@@ -367,7 +371,22 @@ export default function QuartosPage() {
                         )}
                     buttons={
                     [
-                    <Button onClick={() => handleOpenFilterModal()} key="filter" variant="full-white" iconLeft={<Filter size={24} />}>Filtrar</Button>,
+                    filters.length > 0 ? (
+                        <Button 
+                        onClick={() => handleOpenFilterModal()} 
+                        key="filter" variant="full-white" 
+                        style={{backgroundColor: 'var(--color-primary-foreground)', border: '1px solid var(--color-primary)'}} 
+                        iconLeft={<Filter size={24} />}>
+                            Alterar filtros
+                        </Button>
+                    ) : (
+                        <Button 
+                        onClick={() => handleOpenFilterModal()} 
+                        key="filter" variant="full-white" 
+                        iconLeft={<Filter size={24} />}>
+                            Filtrar
+                        </Button>
+                    ),
                     <Button onClick={() => setShowNewRoomModal(true)} key="new_room" variant="full" iconLeft={<Plus size={20} />}>Novo quarto</Button>
                     ]
                     }
@@ -391,7 +410,7 @@ export default function QuartosPage() {
                 title="Cadastrar novo quarto"
                 buttons={
                     <>
-                        <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowNewRoomModal(false)}>Cancelar</Button>
+                        <Button variant="soft-red" onClick={() => setShowNewRoomModal(false)}>Cancelar</Button>
                         <Button variant="full" onClick={() => saveNewRoom()}>Cadastrar</Button>
                     </>
                 }
@@ -433,7 +452,7 @@ export default function QuartosPage() {
                 title="Editar quarto"
                 buttons={
                     <>
-                        <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowEditRoomModal(false)}>Cancelar</Button>
+                        <Button variant="soft-red" onClick={() => setShowEditRoomModal(false)}>Cancelar</Button>
                         <Button variant="full" onClick={() => saveEditRoom()}>Salvar</Button>
                     </>
                 }
@@ -478,7 +497,7 @@ export default function QuartosPage() {
             isOpen={showDeactivateModal}
             buttons={
                 <>
-                <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowDeactivateModal(false)}>Cancelar</Button>
+                <Button variant="soft-red" onClick={() => setShowDeactivateModal(false)}>Cancelar</Button>
                 <Button variant="full" style={{backgroundColor: 'var(--color-error)', border: '1px solid var(--color-error)'}} onClick={deactivateRoom}>Sim, tenho certeza</Button>
                 </>
             }
@@ -489,9 +508,12 @@ export default function QuartosPage() {
             title="Filtrar"
             onClose={() => setShowFilterModal(false)}
             isOpen={showFilterModal}
+            buttonsLeft={
+                <Button available={canFilter()} variant="soft-red" onClick={() => clearFilters()}>Limpar filtros</Button>
+            }
             buttons={
                 <>
-                    <Button variant="full-white" style={{color: 'var(--color-error)', borderColor: 'var(--color-error)'}} onClick={() => setShowFilterModal(false)}>Cancelar</Button>
+                    <Button variant="soft-red" onClick={() => setShowFilterModal(false)}>Cancelar</Button>
                     <Button available={canFilter()} variant="full" onClick={() => handleFiltrar()}>Filtrar</Button>
                 </>
             }
