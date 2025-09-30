@@ -135,7 +135,7 @@ export default function HospedesPage() {
     return (
         <div className={styles.container}>
             <Card>
-                <CardHeader title="Hospedes" breadcrumb={["Início", "Hospedagem", "Hospedes"]} />
+                <CardHeader title="Hóspedes" breadcrumb={["Início", "Hospedagem", "Hóspedes"]} />
 
                 <SearchSection
                     searchText={searchText}

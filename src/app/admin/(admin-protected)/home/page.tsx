@@ -149,7 +149,7 @@ export default function HomePage() {
                             <div className={styles.dashboardRow}>
                                 <MiniCard color="yellow" value={dashboardData?.totalMoradores} title="Moradores" />
                                 <MiniCard color="yellow" value={dashboardData?.weekTotals?.convidadosCount} title="Visitantes" />
-                                <MiniCard color="yellow" value={dashboardData?.hospedesCount} title="Hospedes" />
+                                <MiniCard color="yellow" value={dashboardData?.hospedesCount} title="Hóspedes" />
                             </div>
                         </>
                     ) : (
@@ -163,7 +163,7 @@ export default function HomePage() {
                             <div className={styles.dashboardRow}>
                                 <MiniCard color="yellow" value={dashboardData?.totalMoradores} title="Moradores" />
                                 <MiniCard color="yellow" value={dashboardData?.dailyStats?.find((data: any) => data.day === selectedDate)?.convidadosCount} title="Visitantes" />
-                                <MiniCard color="yellow" value={dashboardData?.dailyStats?.find((data: any) => data.day === selectedDate)?.hospedesCount} title="Hospedes" />
+                                <MiniCard color="yellow" value={dashboardData?.dailyStats?.find((data: any) => data.day === selectedDate)?.hospedesCount} title="Hóspedes" />
                             </div>
                         </>
                     )}
