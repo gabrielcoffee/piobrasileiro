@@ -98,42 +98,20 @@ export default function ListaDeRefeicoesPage() {
     const getDayInfo = useCallback((date?: string) => {
         const selectedDay = date || selectedDate;
         const dateMeals = refeicoes.filter((refeicao: any) => refeicao.data === selectedDay);
-
-        const totalAlmoco = dateMeals.filter((refeicao: any) => refeicao.almoco === 'No Colégio Pio' || refeicao.almoco === 'Para Levar').length || 0 ;
-        const totalAlmocoLevar = dateMeals.filter((refeicao: any) => refeicao.almoco === 'Para Levar').length || 0 ;
-        const totalAlmocoColegio = dateMeals.filter((refeicao: any) => refeicao.almoco === 'No Colégio Pio').length || 0 ;
-        const totalJanta = dateMeals.filter((refeicao: any) => refeicao.jantar === 'No Colégio Pio').length || 0 ;
-
+    
+        const totalAlmoco = dateMeals.filter((r: any) => r.almoco === 'No Colégio Pio' || r.almoco === 'Para Levar').length;
+        const totalAlmocoLevar = dateMeals.filter((r: any) => r.almoco === 'Para Levar').length;
+        const totalAlmocoColegio = dateMeals.filter((r: any) => r.almoco === 'No Colégio Pio').length;
+        const totalJanta = dateMeals.filter((r: any) => r.jantar === 'No Colégio Pio').length;
+    
         return {
-            totalAlmoco : totalAlmoco,
-            totalAlmocoLevar : totalAlmocoLevar,
-            totalAlmocoColegio : totalAlmocoColegio,
-            totalJanta : totalJanta,
+            totalAlmoco,
+            totalAlmocoLevar,
+            totalAlmocoColegio,
+            totalJanta,
             totalRefeicoes: totalAlmoco + totalJanta,
-        }
-    }, [refeicoes, selectedDate])
-
-    // Update dayInfo when refeicoes or selectedDate changes
-    useEffect(() => {
-        setDayInfo(getDayInfo());
-    }, [getDayInfo]);
-
-    useEffect(() => {
-        if (selectedWeekStart && selectedWeekEnd) {
-            fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
-        }
-    }, [selectedWeekStart, selectedWeekEnd]);
-
-    // Initialize with current week
-    useEffect(() => {
-        const now = new Date();
-        const currentWeekInfo = getCurrentWeekInfo();
-        setSelectedWeekStart(currentWeekInfo.monday);
-        setSelectedWeekEnd(currentWeekInfo.sunday);
-        setSelectedWeek(now);
-        setSelectedDate(now.toISOString().split('T')[0]);
-        fetchRefeicoes(currentWeekInfo.monday, currentWeekInfo.sunday);
-    }, []);
+        };
+    }, [refeicoes, selectedDate]);
 
     function getAlmocoText(almoco_colegio: boolean, almoco_levar: boolean) {
         if (almoco_colegio) {
@@ -172,41 +150,31 @@ export default function ListaDeRefeicoesPage() {
         return 'Comum';
     }
 
-    const fetchRefeicoes = async (startDate: Date, endDate: Date) => {
-        const result = await queryApi('POST', '/admin/meals/data', {
-            startDate: startDate,
-            endDate: endDate,
-        });
-
+    const fetchRefeicoes = useCallback(async (startDate: Date, endDate: Date) => {
+        const result = await queryApi('POST', '/admin/meals/data', { startDate, endDate });
+    
         if (result.success) {
-
-            // Map the meals to be shown on the table
             const meals = result.data.meals.map((meal: any) => {
                 const avatar = meal.avatar_image_data ? convertBufferToBase64(meal.avatar_image_data) : '/user.png';
-
                 return {
                     ...meal,
                     rawData: meal,
                     nome_limpo: meal.nome.toLowerCase(),
-                    nome: <span className={styles.nomeCompleto}><img src={avatar} alt="Avatar" className={styles.avatar} />{meal.nome} </span>,
+                    nome: <span className={styles.nomeCompleto}><img src={avatar} alt="Avatar" className={styles.avatar} />{meal.nome}</span>,
                     almoco: getAlmocoText(meal.almoco_colegio, meal.almoco_levar),
                     tipo_usuario: getTipoUsuarioText(meal),
                     jantar: meal.janta_colegio ? 'No Colégio Pio' : <X style={{color: 'var(--color-error)'}} />,
                     data: meal.data.split('T')[0],
                     acao: acoes(meal),
-                }
-          
-            }).sort((a: any, b: any) => {
-                return a.nome_limpo.localeCompare(b.nome_limpo);
-            });
-
-
-
+                };
+            }).sort((a: any, b: any) => a.nome_limpo.localeCompare(b.nome_limpo));
+    
             setRefeicoes(meals);
         } else {
             console.log('Erro ao buscar refeicoes');
         }
-    }
+    }, [getAlmocoText, getTipoUsuarioText]);
+    
 
     // Handle week change from DateSection
     const handleWeekChange = (weekStart: Date, weekEnd: Date) => {
@@ -446,6 +414,29 @@ export default function ListaDeRefeicoesPage() {
             return;
         }
     }
+
+    // Initialize with current week
+    useEffect(() => {
+        const now = new Date();
+        const currentWeekInfo = getCurrentWeekInfo();
+        setSelectedWeekStart(currentWeekInfo.monday);
+        setSelectedWeekEnd(currentWeekInfo.sunday);
+        setSelectedWeek(now);
+        setSelectedDate(now.toISOString().split('T')[0]);
+    }, []);
+
+    // Update dayInfo when refeicoes or selectedDate changes
+    useEffect(() => {
+        if (refeicoes.length > 0) {
+            setDayInfo(getDayInfo());
+        }
+    }, [getDayInfo]);
+
+    useEffect(() => {
+        if (selectedWeekStart && selectedWeekEnd) {
+            fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
+        }
+    }, [selectedWeekStart, selectedWeekEnd]);
 
     return (
         <div className={styles.container}>

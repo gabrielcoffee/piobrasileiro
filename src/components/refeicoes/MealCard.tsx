@@ -32,7 +32,7 @@ export default function MealCard({
     onRemoveGuest,
     onGuestAdded,
     style,
-    blocked = false
+    blocked,
 }: MealCardProps) {
     const [lunchConfirmed, setLunchConfirmed] = useState(lunch);
     const [dinnerConfirmed, setDinnerConfirmed] = useState(dinner);

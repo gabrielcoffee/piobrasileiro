@@ -37,26 +37,17 @@ export default function RefeicoesPage() {
 
     const hasChangesRef = useRef(hasChanges);
     const mealsListRef = useRef(mealsList);
-    // Sync refs with state
-    useEffect(() => {
-        hasChangesRef.current = hasChanges;
-    }, [hasChanges]);
-
-    useEffect(() => {
-        mealsListRef.current = mealsList;
-    }, [mealsList]);
 
     const fetchWeekMeals = async () => {
         const result = await queryApi('GET', '/user/weekmeals');
 
         if (result.success) {
+            setBlockedDates(result.data.blockedDates);
+
             if (result.data.userMeals && result.data.userMeals.length > 0) {
-                console.log('Refeições encontradas:', result.data.userMeals);
                 setMeals(result.data.userMeals);
-                setBlockedDates(result.data.blockedDates);
             } else {
-                setMeals([]); 
-                setBlockedDates([]);
+                setMeals([]);
             }
         } else {
             console.error('Erro ao buscar refeições:', result.error);
@@ -283,6 +274,14 @@ export default function RefeicoesPage() {
         }
     }, [hasChanges, mealsList]);
     */
+       // Sync refs with state
+    useEffect(() => {
+        hasChangesRef.current = hasChanges;
+    }, [hasChanges]);
+
+    useEffect(() => {
+        mealsListRef.current = mealsList;
+    }, [mealsList]);
 
     useEffect(() => {
         fetchWeekMeals();
