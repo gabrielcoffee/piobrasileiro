@@ -75,9 +75,17 @@ export default function ListaDeRefeicoesPage() {
         });
 
         if (result.success) {
+
             const { weekInfo, notesInfo } = result.data;
-            console.log(weekInfo);
-            generateReportPDFLib('print', weekInfo, notesInfo);
+
+            const notesInfoNoBreaks = notesInfo.map((n: any) => {
+                return {
+                    name: n.name,
+                    note: n.note.replace(/\n/g, ' ').trim()
+                }
+            })
+
+            generateReportPDFLib('print', weekInfo, notesInfoNoBreaks);
         } else {
             console.error('Erro ao buscar dados:', result.error);
         }
