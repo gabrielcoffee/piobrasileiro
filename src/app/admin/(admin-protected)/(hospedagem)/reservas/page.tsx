@@ -17,6 +17,7 @@ import { DropdownInput } from '@/components/ui/DropdownInput';
 import { SimpleDateSelect } from '@/components/admin/SimpleDateSelect';
 import { InputTextSearch } from '@/components/ui/InputTextSearch';
 import { InputText } from '@/components/ui/InputText';
+import { Toast } from '@/components/general/Toast';
 
 export default function GestaoDeReservasPage() {
 
@@ -26,7 +27,7 @@ export default function GestaoDeReservasPage() {
     const [selectedWeekEnd, setSelectedWeekEnd] = useState<Date>(new Date());
     const [selectedBookingData, setSelectedBookingData] = useState<any>(null);
     const [notificationsCount, setNotificationsCount] = useState<number>(0);
-
+    const [showSuccessToast, setShowSuccessToast] = useState<boolean>(false);   
     const [anfitriaoOptions, setAnfitriaoOptions] = useState<any[]>([]);
     const [roomOptions, setRoomOptions] = useState<any[]>([]);
 
@@ -157,6 +158,8 @@ export default function GestaoDeReservasPage() {
             console.log('Não há dados para salvar 2');
             return;
         }
+
+        setShowSuccessToast(true);
 
         const result = await queryApi('POST', '/admin/accommodations', {
             anfitriao_id: selectedBookingData.anfitriao_id,
@@ -465,7 +468,7 @@ export default function GestaoDeReservasPage() {
 
                     <SimpleDateSelect
                         label="Data"
-                        selectedDate={filterDate ? new Date(filterDate) : null}
+                        selectedDate={filterDate ? new Date(filterDate + 'T00:00:00') : null}
                         onDateChange={(value) => setFilterDate(value?.toISOString().split('T')[0])}
                     />
 
@@ -496,6 +499,14 @@ export default function GestaoDeReservasPage() {
 
                 </div>
             </Modal>
+
+            {showSuccessToast && (
+                <Toast 
+                    message="Hóspede registrado com sucesso!" 
+                    type="success"
+                    onClose={() => setShowSuccessToast(false)}
+                />
+            )}
         </div>
     );
 }
