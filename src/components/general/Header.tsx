@@ -171,6 +171,8 @@ export function Header({ setSideBarExpanded = (expanded: boolean) => void 0}: He
                 </div>
 
                 <div className={styles.rightSide}>
+
+                    {/* NOTIFICATIONS */}
                     <div className="notification-container">
                         <button className={styles.notificationButton} onClick={() => toggleDesktopNotificationMenu()}>
                             <Bell size={20} />
@@ -186,6 +188,7 @@ export function Header({ setSideBarExpanded = (expanded: boolean) => void 0}: He
                         </button>
                     </div>
 
+                    {/* PROFILE */}
                     <div className={`${styles.profileDropdown} profileDropdown`}>
                         <button className={styles.profileButton} onClick={toggleProfileDropdown}>
                             <img

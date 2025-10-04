@@ -34,19 +34,29 @@ export default function UsuarioPage() {
     const [avatar, setAvatar] = useState<File | null>(null);
     const [emailUsedError, setEmailUsedError] = useState<boolean>(false);
     const [dataNascError, setDataNascError] = useState<boolean>(false);
-    const saveUserData = async () => {
-        try {
 
+    function isEmailValid(email: string) {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    }
+
+    const saveUserData = async () => {
+
+        if (!(nomeCompleto && isEmailValid(email))) {
+            return;
+        }
+
+        try {
             const result = await queryApi('POST', `/admin/users`, {
                 nome_completo: nomeCompleto,
-                data_nasc: dataNasc,
-                genero: genero,
-                funcao: funcao,
+                data_nasc: dataNasc ? dataNasc : null,
+                genero: genero ? genero : null,
+                funcao: funcao ? funcao : null,
                 email: email,
-                num_documento: numDocumento,
-                tipo_documento: tipoDocumento,
-                tipo_usuario: tipoUsuario,
-                observacoes: observacoes
+                num_documento: numDocumento ? numDocumento : null,
+                tipo_documento: tipoDocumento ? tipoDocumento : null,
+                tipo_usuario: tipoUsuario ? tipoUsuario : null,
+                observacoes: observacoes ? observacoes : null
             });
 
             if (result.success) {
@@ -152,7 +162,10 @@ export default function UsuarioPage() {
                             <InputText
                                 label="E-mail"
                                 value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                onChange={(e) => {
+                                    setEmailUsedError(false);
+                                    setEmail(e.target.value)
+                                }}
                                 placeholder="E-mail"
                                 type="email"
                                 error={emailUsedError ? "E-mail já utilizado" : ""}
@@ -201,10 +214,10 @@ export default function UsuarioPage() {
                     <div className={styles.userDataSaveButton}>
                         <Button
                             iconLeft={<Check size={20} />}
-                            available={nomeCompleto && dataNasc && genero && funcao && email && numDocumento && tipoDocumento && tipoUsuario ? true : false}
-                            onClick={(nomeCompleto && dataNasc && genero && funcao && email && numDocumento && tipoDocumento && tipoUsuario) ? saveUserData : undefined}
+                            available={nomeCompleto && isEmailValid(email) ? true : false}
+                            onClick={saveUserData}
                         >
-                            Salvar alterações
+                            Salvar
                         </Button>
                     </div>
                 </div>

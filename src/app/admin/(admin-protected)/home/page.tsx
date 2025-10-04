@@ -174,7 +174,7 @@ export default function HomePage() {
                         <MiniCard color="white" value={dashboardData?.weekTotals?.totalMeals} title="Total de refeições da semana" 
                         button={<Button onClick={() => handleGenerateReport()} variant="full-white" iconLeft={<Printer/>}>Gerar relatório</Button>} />
                         <MiniCard color="white" value={dashboardData?.availableRooms} title="Quartos disponíveis na semana"
-                        button={<Button href="/admin/reservas" variant="full-white" iconRight={<Plus/>}>Nova reserva</Button>} />
+                        button={<Button href="/admin/reservas" variant="full-white" iconLeft={<Plus/>}>Nova reserva</Button>} />
                     </div>
                 </div>
             </Card>
