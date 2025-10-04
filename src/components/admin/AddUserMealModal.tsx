@@ -23,9 +23,10 @@ interface AddUserMealModalProps {
     isEdit?: boolean;
     userMealData?: any;
     date?: string;
+    hospedeName?: string;
 }
 
-export default function AddUserMealModal({ formData, isEdit = false, userMealData = null, date = '' }: AddUserMealModalProps) {
+export default function AddUserMealModal({ formData, isEdit = false, userMealData = null, date = '', hospedeName = '' }: AddUserMealModalProps) {
     // Form states
     const [userOptions, setUserOptions] = useState<Option[]>([]);
     const [user, setUser] = useState('');
@@ -85,8 +86,8 @@ export default function AddUserMealModal({ formData, isEdit = false, userMealDat
                         value={userOptions.find((option) => option.key === user)?.value || ''}
                         onSelect={(option: Option) => setUser(option.key)}
                         searchOptions={userOptions}
-                        placeholder="Selecione um usuário"
-                        disabled={isEdit}
+                        placeholder={hospedeName === '' ? "Selecione um usuário" : hospedeName}
+                        disabled={isEdit || hospedeName !== ''}
                         style={{ opacity: isEdit ? 0.5 : 1 }}
                     />
 

@@ -316,7 +316,6 @@ export default function GestaoDeReservasPage() {
         const sunday = normalizeToLocalMidnight(currentWeekInfo.sunday);
         setSelectedWeekStart(monday);
         setSelectedWeekEnd(sunday);
-        fetchReservas(monday, sunday);
         fetchNotifications();
     }, []);
 

@@ -33,8 +33,12 @@ export default function ListaDeRefeicoesPage() {
     const [showNewBookingModal, setShowNewBookingModal] = useState<boolean>(false);
     const [showGuestBookingModal, setShowGuestBookingModal] = useState<boolean>(false);
     const [showResidentBookingModal, setShowResidentBookingModal] = useState<boolean>(false);
+    const [showHospedeBookingModal, setShowHospedeBookingModal] = useState<boolean>(false);
     const [showGuestBookingEditModal, setShowGuestBookingEditModal] = useState<boolean>(false);
     const [showResidentBookingEditModal, setShowResidentBookingEditModal] = useState<boolean>(false);
+    const [showHospedeBookingEditModal, setShowHospedeBookingEditModal] = useState<boolean>(false);
+    const [hospedeFormData, setHospedeFormData] = useState<any>(null);
+    const [selectedHospedeMealData, setSelectedHospedeMealData] = useState<any>(null);
     const [selectedGuestMealData, setSelectedGuestMealData] = useState<any>(null);
     const [selectedResidentMealData, setSelectedResidentMealData] = useState<any>(null);
     const [guestFormData, setGuestFormData] = useState<any>(null);
@@ -310,6 +314,28 @@ export default function ListaDeRefeicoesPage() {
         fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
     }
 
+    const handleHospedeBookingEdit = async () => {
+
+        if (!hospedeFormData) {
+            return;
+        }
+
+        const result = await queryApi('PUT', `/admin/meals/${selectedHospedeMealData.id}`, {
+            almoco_colegio: hospedeFormData.almoco_colegio,
+            almoco_levar: hospedeFormData.almoco_levar,
+            janta_colegio: hospedeFormData.janta_colegio,
+        });
+
+        if (result.success) {
+            console.log('Hospede editado com sucesso');
+            fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
+            setShowHospedeBookingEditModal(false);
+        } else {
+            console.log('Erro ao editar hospede');
+
+        }
+    }
+
     const editar = (meal: any) => {
 
         if (meal.tipo_pessoa === 'convidado') {
@@ -318,6 +344,9 @@ export default function ListaDeRefeicoesPage() {
         } else if (meal.tipo_pessoa === 'usuario') {
             setSelectedResidentMealData(meal);
             setShowResidentBookingEditModal(true);
+        } else if (meal.tipo_pessoa === 'hospede') {
+            setSelectedHospedeMealData(meal);
+            setShowHospedeBookingEditModal(true);
         }
     }
 
@@ -383,19 +412,16 @@ export default function ListaDeRefeicoesPage() {
     }
 
     const acoes = (meal: any) => {
-        if (meal.tipo_pessoa === 'hospede') {
-            return (
-                <div className={styles.acoes}>
-                    <PencilLine size={20} style={{color: 'var(--color-slate-300)', cursor: 'not-allowed'}} />
-                </div>
-            )
-        }
         return (
             <div className={styles.acoes}>
                 <PencilLine size={20} onClick={() => editar(meal)} style={{color: 'var(--color-primary)', cursor: 'pointer'}} />
             </div>
         )
     }
+
+    const handleHospedeFormData = useCallback((formData: any) => {
+        setHospedeFormData(formData);
+    }, []);
 
     const handleGuestFormData = useCallback((formData: any) => {
         setGuestFormData(formData);
@@ -533,6 +559,8 @@ export default function ListaDeRefeicoesPage() {
                     hasSelector={true}
                 />
 
+
+                {/* MODAL DO RELATÓRIO */}
                 <Modal
                     isOpen={showReportModal}
                     onClose={() => setShowReportModal(false)}
@@ -632,6 +660,25 @@ export default function ListaDeRefeicoesPage() {
                         isEdit={true}
                         userMealData={selectedResidentMealData}
                         formData={handleResidentFormData}
+                    />
+                </Modal>
+
+                {/* EDITAR REFEICAO HOSPEDE */}
+                <Modal
+                    isOpen={showHospedeBookingEditModal}
+                    onClose={() => setShowHospedeBookingEditModal(false)}
+                    title="Editar agendamento hóspede"
+                    buttons={<>
+                        <Button variant="soft-red" onClick={() => setShowHospedeBookingEditModal(false)}>Cancelar</Button>
+                        <Button onClick={() => handleHospedeBookingEdit()} variant="full" iconLeft={<Check size={20} />}>Salvar</Button>
+                    </>}
+                >
+                    <AddUserMealModal
+                        hospedeName={selectedHospedeMealData?.nome || ''}
+                        date={new Date(selectedDate + 'T00:00:00').toISOString()}
+                        isEdit={true}
+                        userMealData={selectedHospedeMealData}
+                        formData={handleHospedeFormData}
                     />
                 </Modal>
                 </>)}
