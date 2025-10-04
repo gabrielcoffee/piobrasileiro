@@ -354,7 +354,7 @@ export default function GestaoDeReservasPage() {
                                 Filtrar
                             </Button>
                         ),
-                        <Button key="new_booking" variant="full" onClick={() => {setShowNewBookingModal(true); setSelectedBookingData(null);}} iconLeft={<Plus size={20} />}>Novo agendamento</Button>
+                        <Button key="new_booking" variant="full" onClick={() => {setShowNewBookingModal(true); setSelectedBookingData(null);}} iconLeft={<Plus size={20} />}>Nova reserva</Button>
                     ]}
                     dateSection={(
                         <DateSection

@@ -13,6 +13,7 @@ import { DropdownInput } from "@/components/ui/DropdownInput";
 import { Button } from "@/components/ui/Button";
 import ProfileImage from "@/components/profile/ProfileImage";
 import { InputTextBox } from "@/components/ui/InputTextBox";
+import { InputDate } from "@/components/ui/InputDate";
 
 
 export default function UsuarioPage() {    
@@ -30,6 +31,7 @@ export default function UsuarioPage() {
     const [tipoUsuario, setTipoUsuario] = useState<string>('');
     const [observacoes, setObservacoes] = useState<string>('');
     const [isSaving, setIsSaving] = useState<boolean>(false);
+    const [dataNascError, setDataNascError] = useState<boolean>(false);
 
     // Password states
     const [currentPassword, setCurrentPassword] = useState<string>('');
@@ -45,10 +47,6 @@ export default function UsuarioPage() {
     const [emailRequirement, setEmailRequirement] = useState<boolean>(false);
     const [passwordRequirements, setPasswordRequirements] = useState<boolean>(false);
     const [passwordChanged, setPasswordChanged] = useState<boolean>(false);
-
-    useEffect(() => {
-        fetchUsuario();
-    }, []);
 
     useEffect(() => {
         if (newPassword.length < 8) {
@@ -131,14 +129,14 @@ export default function UsuarioPage() {
         try {
             const result = await queryApi('PUT', `/admin/users/${id}`, {
                 nome_completo: nomeCompleto,
-                data_nasc: dataNasc,
-                genero: genero,
-                funcao: funcao,
+                data_nasc: dataNasc ? dataNasc : null,
+                genero: genero ? genero : null,
+                funcao: funcao ? funcao : null,
                 email: email,
-                num_documento: numDocumento,
-                tipo_documento: tipoDocumento,
-                tipo_usuario: tipoUsuario,
-                observacoes: observacoes
+                num_documento: numDocumento ? numDocumento : null,
+                tipo_documento: tipoDocumento ? tipoDocumento : null,
+                tipo_usuario: tipoUsuario ? tipoUsuario : null,
+                observacoes: observacoes ? observacoes : null
             });
 
             if (result.success) {
@@ -176,6 +174,10 @@ export default function UsuarioPage() {
         setAvatar(newAvatar || null);
     }
 
+    useEffect(() => {
+        fetchUsuario();
+    }, []);
+
     return (
         <div>
             <Card>
@@ -206,12 +208,18 @@ export default function UsuarioPage() {
                                 onChange={(e) => setNomeCompleto(e.target.value)}
                                 placeholder="Nome completo"
                             />
-                            <InputText
+                            <InputDate
                                 label="Data de nascimento"
                                 value={dataNasc}
-                                onChange={(e) => setDataNasc(e.target.value)}
+                                onChange={(value) => {
+                                    setDataNasc(value);
+                                    setDataNascError(false);
+                                    if (!value || value === '') {
+                                        setDataNascError(true);
+                                    }
+                                }}
                                 placeholder="Data de nascimento"
-                                type="date"
+                                error={dataNascError ? "Data de nascimento inválida" : ""}
                             />
                             <DropdownInput
                                 label="Tipo de documento"

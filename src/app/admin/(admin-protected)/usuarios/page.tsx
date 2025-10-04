@@ -70,7 +70,7 @@ export default function UsuariosPage() {
                 ) : (
                     <Power
                         size={20}
-                        style={{ color: 'var(--color-error)', cursor: 'pointer' }}
+                        style={{ cursor: 'pointer' }}
                         onClick={() => toggleActiveUser(id)}
                     />
                 )}
@@ -103,7 +103,7 @@ export default function UsuariosPage() {
         }
 
         const users = response.data.map((user: any) => {
-            const avatar = user.avatar_image_data ? convertBufferToBase64(user.avatar_image_data) : '/user.png';
+            const avatar = user.avatar_image_data ? convertBufferToBase64(user.avatar_image_data) : null;
             return {
                 user_id: user.user_id,
                 active: user.active,
@@ -158,6 +158,17 @@ export default function UsuariosPage() {
             setIsInativarModalOpen(false);
             setCanShowExcluirButtons(false);
         }
+    }
+
+    const getInitials = (nome: string) => {
+        const firstName = nome.split(' ')[0];
+        const lastName = nome.split(' ')[1];
+
+        if (lastName) {
+            return firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
+        }
+
+        return firstName.charAt(0).toUpperCase();
     }
 
     const toggleActiveUser = async (id: string) => {
@@ -260,7 +271,12 @@ export default function UsuariosPage() {
                         // display cells
                         nome_completo: (
                             <span className={styles.nomeCompleto}>
-                                <img src={u.avatar} alt="Avatar" className={styles.avatar} />
+                                {u.avatar !== null ? (
+                                    <img src={u.avatar} alt="Avatar" className={styles.avatar} />
+                                ) : (
+                                    
+                                    <span className={styles.avatarInitials}>{getInitials(u.nome_completo)}</span>
+                                )}
                                 {u.nome_completo}
                             </span>
                         ),

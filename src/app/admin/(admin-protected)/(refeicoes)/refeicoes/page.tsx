@@ -525,7 +525,7 @@ export default function ListaDeRefeicoesPage() {
                     />
                     )}
                     buttons={[
-                        <Button key="report" variant="full-white" iconLeft={<Printer size={20}/>} onClick={() => setShowReportModal(true)}>Gerar Relatório</Button>,
+                        <Button key="report" variant="full-white" iconLeft={<Printer size={20}/>} onClick={() => setShowReportModal(true)}>Gerar relatório</Button>,
                         <Button available={selectedDate >= today.toISOString().split('T')[0]} key="new_booking" variant="full" onClick={() => {handleShowBookingModal()}} iconLeft={<Plus size={20} />}>Novo agendamento</Button> 
                     ]}
                 />
