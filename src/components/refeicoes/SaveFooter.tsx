@@ -2,6 +2,7 @@ import { useState } from 'react';
 import styles from './styles/SaveFooter.module.css';
 import { CircleX, CircleCheck, CheckCheck } from 'lucide-react';
 import { Button } from '../ui/Button';
+import { useRouter } from 'next/navigation';
 
 interface SaveFooterProps {
     onMarkAllMeals: (markAsTrue: boolean) => void;
@@ -12,12 +13,15 @@ interface SaveFooterProps {
 export default function SaveFooter({ onMarkAllMeals, onSaveAndSend, hasChanges }: SaveFooterProps) {
     const [haveSelected, setHaveSelected] = useState(true);
 
+    const router = useRouter();
+
     const handleMarkAllClick = () => {
         setHaveSelected(!haveSelected);
         onMarkAllMeals?.(haveSelected);
     };
 
-    const handleSaveAndSendClick = () => {
+    const handleSaveAndSendClick = () => {  
+        router.push('/home');
         onSaveAndSend?.();
     };
 
