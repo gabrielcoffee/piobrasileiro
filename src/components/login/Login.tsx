@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { InputText } from "@/components/ui/InputText";
 import { InputPassword } from "@/components/ui/InputPassword";
-import { Checkbox } from "@/components/ui/Checkbox";
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 import styles from "./styles/Login.module.css";
 import { useAuth } from "@/contexts/AuthContext";
@@ -104,12 +103,10 @@ export default function Login({onForgotPasswordClick, onBackClick}: LoginProps) 
                 error={passwordWrong ? "Senha incorreta" : ""}
             />
 
-            <Checkbox
-                id="rememberMe"
-                label="Lembrar meus dados"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-            />
+            <div className={styles.checkboxButton}>
+                <input onChange={() => setRememberMe(!rememberMe)} checked={rememberMe} type="checkbox" id="lembrar"/>
+                <label htmlFor="lembrar">Lembrar meus dados</label>
+            </div>
 
             <div className={styles.buttonContainer}>
                 <Button available={(email && password) ? true : false} variant="full" onClick={handleLogin} iconRight={<ArrowRightIcon/>}>

@@ -139,14 +139,13 @@ export default function UsuariosPage() {
         fetchUsuarios();
         setIsExcluirModalOpen(false);
         setCanShowExcluirButtons(false);
+        setSelectedUsers([]);
     }
 
     const inactivateUsers = async () => {
 
-        console.log(selectedUsers);
-
         const result = await queryApi('POST', '/admin/users/deactivate', {
-            userIds: selectedUsers.map((brocoli) => brocoli.user_id)
+            userIds: selectedUsers.map((user) => user.user_id)
         });
 
         if (!result.success) {
@@ -267,6 +266,7 @@ export default function UsuariosPage() {
                     ]}
                     rowItems={usuarios.map((u) => ({
                         // used for searching but not displayed
+                        user_id: u.user_id,
                         nome_limpo: u.nome_limpo,
                         // display cells
                         nome_completo: (

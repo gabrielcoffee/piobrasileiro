@@ -58,3 +58,15 @@
     flex-direction: column;
     gap: 16px;
 }
+
+.checkboxButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    input {
+        width: 1.25rem;
+        height: 1.25rem;
+        accent-color: var(--color-primary);
+        color: white;
+    }
+}
