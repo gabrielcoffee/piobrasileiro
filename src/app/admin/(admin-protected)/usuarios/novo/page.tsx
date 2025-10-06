@@ -61,8 +61,14 @@ export default function UsuarioPage() {
 
             if (result.success) {
 
+                console.log(result.data);
+
+                const userId = result.data.user.id;
+
+                console.log(userId);
+
                 if (avatar) {
-                    await uploadAvatarAdmin(avatar as File, result.data.user_id as string);
+                    await uploadAvatarAdmin(avatar as File, userId as string);
                 }
 
                 console.log('Dados do usuário salvos com sucesso');

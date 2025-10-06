@@ -11,7 +11,8 @@ export default function ImageSelector({
     onImageChange
 }: ImageSelectorProps) {
     
-    // Function to resize image to 500x500 pixels
+    // Process image: center-crop to square. If larger than 500x500, downscale to 500x500.
+    // If smaller, crop to square without upscaling.
     const resizeImage = (file: File): Promise<string> => {
         return new Promise((resolve) => {
             const canvas = document.createElement('canvas');
@@ -19,29 +20,28 @@ export default function ImageSelector({
             const img = new Image();
             
             img.onload = () => {
-                // Set canvas dimensions to 500x500
-                canvas.width = 500;
-                canvas.height = 500;
-                
-                if (ctx) {
-                    // Calculate scaling to maintain aspect ratio
-                    const scale = Math.max(500 / img.width, 500 / img.height);
-                    const scaledWidth = img.width * scale;
-                    const scaledHeight = img.height * scale;
-                    
-                    // Calculate position to center the image
-                    const x = (500 - scaledWidth) / 2;
-                    const y = (500 - scaledHeight) / 2;
-                    
-                    // Draw the resized image centered on canvas
-                    ctx.drawImage(img, x, y, scaledWidth, scaledHeight);
-                    
-                    // Convert to base64 with reduced quality for smaller size
-                    const fullDataUrl = canvas.toDataURL('image/jpeg', 0.8);
-                    // Extract only the base64 part (remove "data:image/jpeg;base64," prefix)
-                    const base64Data = fullDataUrl.split(',')[1];
-                    resolve(base64Data);
-                }
+                if (!ctx) return;
+
+                const sourceWidth = img.width;
+                const sourceHeight = img.height;
+
+                // Determine square crop on source (center crop)
+                const side = Math.min(sourceWidth, sourceHeight);
+                const sx = (sourceWidth - side) / 2;
+                const sy = (sourceHeight - side) / 2;
+
+                // Determine output size: 500 if image is larger than 500 on both sides, otherwise keep side (no upscaling)
+                const outputSize = side > 500 ? 500 : side;
+
+                canvas.width = outputSize;
+                canvas.height = outputSize;
+
+                // Draw cropped square; scale down to 500 if needed
+                ctx.drawImage(img, sx, sy, side, side, 0, 0, outputSize, outputSize);
+
+                const fullDataUrl = canvas.toDataURL('image/jpeg', 0.8);
+                const base64Data = fullDataUrl.split(',')[1];
+                resolve(base64Data);
             };
             
             img.src = URL.createObjectURL(file);

@@ -72,6 +72,13 @@ export default function ListaDeRefeicoesPage() {
         if (refeicoes.length === 0) {
             return;
         }
+        
+
+        const hasDays = reportDays?.monday || reportDays?.tuesday || reportDays?.wednesday || reportDays?.thursday || reportDays?.friday || reportDays?.saturday || reportDays?.sunday;
+
+        if (!hasDays) {
+            return;
+        }
 
         const result = await queryApi('POST', '/admin/report', {
             startDate: selectedWeekStart,
@@ -576,7 +583,11 @@ export default function ListaDeRefeicoesPage() {
                     buttons={
                         <>
                             <Button variant="soft-red" onClick={() => setShowReportModal(false)}>Cancelar</Button>
-                            <Button iconLeft={<Printer size={20} />} variant="full" onClick={handleGenerateReport}>Gerar</Button>
+                            <Button available={
+                                reportDays?.monday || reportDays?.tuesday || reportDays?.wednesday ||
+                                 reportDays?.thursday || reportDays?.friday || reportDays?.saturday ||
+                                  reportDays?.sunday}
+                             iconLeft={<Printer size={20} />} variant="full" onClick={handleGenerateReport}>Gerar</Button>
                         </>
                     }
                 >

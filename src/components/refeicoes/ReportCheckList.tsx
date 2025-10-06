@@ -16,15 +16,15 @@ type ReportCheckListProps = {
 
 export default function ReportCheckList({ onChange }: ReportCheckListProps) {
 
-    const [allWeek, setAllWeek] = useState(true);
+    const [allWeek, setAllWeek] = useState(false);
 
-    const [monday, setMonday] = useState(true);
-    const [tuesday, setTuesday] = useState(true);
-    const [wednesday, setWednesday] = useState(true);
-    const [thursday, setThursday] = useState(true);
-    const [friday, setFriday] = useState(true);
-    const [saturday, setSaturday] = useState(true);
-    const [sunday, setSunday] = useState(true);
+    const [monday, setMonday] = useState(false);
+    const [tuesday, setTuesday] = useState(false);
+    const [wednesday, setWednesday] = useState(false);
+    const [thursday, setThursday] = useState(false);
+    const [friday, setFriday] = useState(false);
+    const [saturday, setSaturday] = useState(false);
+    const [sunday, setSunday] = useState(false);
 
     useEffect(() => {
         onChange?.({

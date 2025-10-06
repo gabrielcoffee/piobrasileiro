@@ -200,9 +200,7 @@ export async function uploadAvatar(imageFile: File) {
         return;
     }
 
-    // Set canvas size to 500x500
-    canvas.width = 500;
-    canvas.height = 500;
+    // We'll set canvas size after we know the crop/output size
 
     // Create image object
     const img = new Image();
@@ -215,8 +213,20 @@ export async function uploadAvatar(imageFile: File) {
             img.src = URL.createObjectURL(imageFile);
         });
 
-        // Draw and resize image to canvas
-        ctx.drawImage(img, 0, 0, 500, 500);
+        // Center-crop to square and avoid stretching
+        const sourceWidth = img.width;
+        const sourceHeight = img.height;
+        const side = Math.min(sourceWidth, sourceHeight);
+        const sx = (sourceWidth - side) / 2;
+        const sy = (sourceHeight - side) / 2;
+
+        // If image is larger than 500, downscale to 500. If smaller, keep original side (no upscaling)
+        const outputSize = side > 500 ? 500 : side;
+        canvas.width = outputSize;
+        canvas.height = outputSize;
+
+        // Draw cropped square to canvas
+        ctx.drawImage(img, sx, sy, side, side, 0, 0, outputSize, outputSize);
 
         // Convert to JPEG blob
         const blob = await new Promise<Blob>((resolve) => {
@@ -280,9 +290,7 @@ export async function uploadAvatarAdmin(imageFile: File, userId: string) {
         return;
     }
 
-    // Set canvas size to 500x500
-    canvas.width = 500;
-    canvas.height = 500;
+    // We'll set canvas size after we know the crop/output size
 
     // Create image object
     const img = new Image();
@@ -295,8 +303,20 @@ export async function uploadAvatarAdmin(imageFile: File, userId: string) {
             img.src = URL.createObjectURL(imageFile);
         });
 
-        // Draw and resize image to canvas
-        ctx.drawImage(img, 0, 0, 500, 500);
+        // Center-crop to square and avoid stretching
+        const sourceWidth = img.width;
+        const sourceHeight = img.height;
+        const side = Math.min(sourceWidth, sourceHeight);
+        const sx = (sourceWidth - side) / 2;
+        const sy = (sourceHeight - side) / 2;
+
+        // If image is larger than 500, downscale to 500. If smaller, keep original side (no upscaling)
+        const outputSize = side > 500 ? 500 : side;
+        canvas.width = outputSize;
+        canvas.height = outputSize;
+
+        // Draw cropped square to canvas
+        ctx.drawImage(img, sx, sy, side, side, 0, 0, outputSize, outputSize);
 
         // Convert to JPEG blob
         const blob = await new Promise<Blob>((resolve) => {
