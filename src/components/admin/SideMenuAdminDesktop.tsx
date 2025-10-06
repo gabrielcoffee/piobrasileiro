@@ -35,7 +35,7 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
                 { id: "quartos", label: "Quartos", href: "/admin/quartos"}
             ]
         },
-        { id: 'logout', label: 'Sair da conta', icon: LogOut, href: '/logout' },
+        { id: 'logout', label: 'Sair da conta', icon: LogOut, href: '/' },
     ];
 
     const toggleSubmenu = (menuId: string) => {

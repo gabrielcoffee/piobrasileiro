@@ -179,3 +179,15 @@
     flex-direction: row;
     justify-content: space-between;
 }
+
+.menuItem:hover {
+    background-color: var(--color-slate-100);
+    color: var(--color-text);
+}
+
+.menuItem:hover.active {
+    background-color: var(--color-primary);
+    border-radius: 0.5rem;
+    color: white;
+    font-weight: 800 !important;
+}

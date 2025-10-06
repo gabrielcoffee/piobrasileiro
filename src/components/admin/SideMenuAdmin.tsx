@@ -33,7 +33,7 @@ export function SideMenuAdmin({ isOpen, onClose }: SideMenuProps) {
                 { id: "quartos", label: "Quartos", href: "/admin/quartos"}
             ]
         },
-        { id: 'logout', label: 'Sair', icon: LogOut, href: '/logout' },
+        { id: 'logout', label: 'Sair', icon: LogOut, href: '/' },
     ];
 
     const toggleSubmenu = (menuId: string) => {

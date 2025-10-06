@@ -19,7 +19,7 @@ export function SideMenu({ isOpen, onClose }: SideMenuProps) {
         { id: 'refeicoes', label: 'Refeições', icon: LucideSalad, href: '/refeicoes' },
         { id: 'hospedagem', label: 'Hospedagem', icon: Bed, href: '/hospedagem' },
         { id: 'perfil', label: 'Perfil', icon: UserRound, href: '/perfil' },
-        { id: 'logout', label: 'Sair', icon: LogOut, href: '/logout' },
+        { id: 'logout', label: 'Sair', icon: LogOut, href: '/' },
     ];
 
 

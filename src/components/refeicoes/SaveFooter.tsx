@@ -21,7 +21,6 @@ export default function SaveFooter({ onMarkAllMeals, onSaveAndSend, hasChanges }
     };
 
     const handleSaveAndSendClick = () => {  
-        router.push('/home');
         onSaveAndSend?.();
     };
 

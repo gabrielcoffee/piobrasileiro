@@ -10,6 +10,7 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import SaveFooter from "@/components/refeicoes/SaveFooter";
 import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Toast } from "@/components/general/Toast";
 
 interface MealDay {
     date: string;           // "2025-08-18" (formato do banco)
@@ -31,6 +32,8 @@ export default function RefeicoesPage() {
     const [guestMeals, setGuestMeals] = useState<any[] | null>(null);
     const [guestMealList, setGuestMealList] = useState<any[][]>([]);
     const [blockedDates, setBlockedDates] = useState<string[]>([]);
+    const [showSuccessToast, setShowSuccessToast] = useState(false);
+    const [showConvidadoRemovidoSuccessToast, setShowConvidadoRemovidoSuccessToast] = useState(false);
 
     const [mealsList, setMealsList] = useState<MealDay[]>([]);
     const [hasChanges, setHasChanges] = useState(false);
@@ -182,6 +185,7 @@ export default function RefeicoesPage() {
             const result = await queryApi('POST', '/user/weekmeals', { meals: mealsToSave });
 
             if (result.success) {
+                setShowSuccessToast(true);
                 console.log('Refeições salvas com sucesso');
             } else {
                 console.error('Erro ao salvar refeições:', result.error);
@@ -193,6 +197,7 @@ export default function RefeicoesPage() {
 
     // Updated saveMeals for auto-save (calls doSave and resets hasChanges)
     const saveMeals = useCallback(async () => {
+        setShowSuccessToast(true);
         await doSave(mealsList);
         setHasChanges(false);
     }, [mealsList]);
@@ -251,6 +256,9 @@ export default function RefeicoesPage() {
                 setGuestMeals(prevGuestMeals => 
                     prevGuestMeals ? prevGuestMeals.filter((meal: any) => meal.id !== guestMealId) : null
                 );
+
+                setShowConvidadoRemovidoSuccessToast(true);
+
                 console.log('Convidado removido com sucesso');
             } else {
                 console.error('Erro ao remover convidado:', result.error);
@@ -340,6 +348,13 @@ export default function RefeicoesPage() {
         </div>
 
         <SaveFooter hasChanges={hasChanges} onMarkAllMeals={markAllMeals} onSaveAndSend={saveMeals} />
+
+        {showSuccessToast && (
+            <Toast message="Refeições salvas com sucesso" type="success" onClose={() => setShowSuccessToast(false)} />
+        )}
+        {showConvidadoRemovidoSuccessToast && (
+            <Toast message="Convidado removido com sucesso" type="success" onClose={() => setShowConvidadoRemovidoSuccessToast(false)} />
+        )}
         </>
     );
 }
