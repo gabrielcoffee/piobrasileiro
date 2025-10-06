@@ -153,7 +153,14 @@ export default function ListaDeRefeicoesPage() {
                     <Info size={18} style={{color: 'var(--color-primary)', cursor: 'help'}} className={styles.infoIcon}/>
                     <div className={styles.convidadoInfo}>
                         <span><strong>Anfitrião: </strong>{meal.anfitriao_nome}</span>
-                        <span><strong>Observações sobre a refeição: </strong>{meal.observacoes.length > 100 ? meal.observacoes.slice(0, 100) + '...' : meal.observacoes || 'Nenhuma observação'}</span>
+                        <span>
+                        <strong>Observações sobre a refeição: </strong>
+                        {meal.observacoes && meal.observacoes.length > 0
+                            ? (meal.observacoes.length > 100
+                                ? meal.observacoes.slice(0, 100) + '...'
+                                : meal.observacoes)
+                            : 'Nenhuma observação'}
+                        </span>
                     </div>
                 </div>
             </div>
