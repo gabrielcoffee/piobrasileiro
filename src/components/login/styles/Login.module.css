@@ -12,6 +12,12 @@
     margin-top: 3rem;
 }
 
+@media (min-width: 768px) {
+    .backButton {
+        display: none;
+    }
+}
+
 .logoContainer {
     display: flex;
     justify-content: left;
@@ -21,6 +27,12 @@
     width: 6rem;
     height: 6rem;
     align-self: center;
+}
+
+@media (min-width: 768px) {
+    .logo {
+        display: none;
+    }
 }
 
 .titleSubtitle {
@@ -41,6 +53,15 @@
     font-weight: 500;
 }
 
+@media (min-width: 768px) {
+    .title {
+        font-size: 2rem;
+    }
+    .subtitle {
+        font-size: 2rem;
+    }
+}
+
 .instruction {
     font-weight: bold;
 }
@@ -51,6 +72,7 @@
     color: var(--color-primary);
     border: none;
     font-size: 1rem;
+    margin-bottom: 2rem;
 }
 
 .buttonContainer {

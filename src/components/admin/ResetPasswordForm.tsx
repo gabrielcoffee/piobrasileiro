@@ -124,7 +124,18 @@ export default function ResetPasswordForm() {
 
             <div className={styles.titleSubtitle}>
                 <h1 className={styles.title}>Redefina sua senha</h1>
+                <h2 className={styles.subtitle}>Crie uma nova senha de acesso.</h2>
             </div>
+
+            <span><strong>Sua senha deve conter:</strong></span>
+            <ul className={styles.passwordRequirementsList}>
+                <li>{lengthRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 8 caracteres </li>
+                <li>{uppercaseRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 1 letra maiúscula </li>
+                <li>{lowercaseRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 1 letra minúscula </li>
+                <li>{numberRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 1 número </li>
+                <li>{nameRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Não deve conter seu nome </li>
+                <li>{emailRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Não deve conter seu email </li>
+            </ul>
 
             <InputText
                 type="password"
@@ -149,16 +160,6 @@ export default function ResetPasswordForm() {
                     Redefinir senha
                 </Button>
             </div>
-
-            <span><strong>Sua senha deve conter:</strong></span>
-            <ul className={styles.passwordRequirementsList}>
-                <li>{lengthRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 8 caracteres </li>
-                <li>{uppercaseRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 1 letra maiúscula </li>
-                <li>{lowercaseRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 1 letra minúscula </li>
-                <li>{numberRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 1 número </li>
-                <li>{nameRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Não deve conter seu nome </li>
-                <li>{emailRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Não deve conter seu email </li>
-            </ul>
         </div>
         </div>
     )

@@ -4,12 +4,14 @@ import { Button } from "@/components/ui/Button";
 import Title from "@/components/ui/Title"; 
 import { useState, useEffect, useRef } from "react";
 import styles from "./styles/Splash.module.css";
+import { useRouter } from "next/navigation";
 
 interface SplashProps {
-    onEnterClick: () => void;
+    onEnterClick?: () => void;
 }
 
 export default function Splash({onEnterClick}: SplashProps) {
+    const router = useRouter();
     const [textIndex, setTextIndex] = useState(0);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
     const touchStartXRef = useRef<number | null>(null);
@@ -70,7 +72,7 @@ export default function Splash({onEnterClick}: SplashProps) {
     return (
         <div className={styles.container}>
             <div onClick={handleNextText} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd} onWheel={onWheel} className={styles.clickablePanel}>
-                <img className={styles.backgroundImage} src={"/lines.png"} alt="background" />
+                <img className={styles.backgroundImage} src={"/lines_desktop.png"} alt="background" />
                 <img className={styles.logo} src={"/brasao.png"} alt="brasao" />
             </div>
 
@@ -86,7 +88,7 @@ export default function Splash({onEnterClick}: SplashProps) {
                     {texts[textIndex]}
                 </Title>
 
-                <Button variant="full" onClick={onEnterClick} className={styles.button} iconRight={<ArrowRightIcon/>}>
+                <Button variant="full" onClick={onEnterClick ? onEnterClick : () => {router.push('/login');}} className={styles.button} iconRight={<ArrowRightIcon/>}>
                     Entrar
                 </Button>
             </div>

@@ -33,23 +33,48 @@ export default function LoginPage() {
 
     return (
         <div className={styles.container}>
-            {view === 'splash' && (
-                <Splash onEnterClick={() => handleViewChange('login')}/>
-            )}
+            <div className={styles.mobileContainer}>
+                {view === 'splash' && (
+                    <Splash onEnterClick={() => handleViewChange('login')}/>
+                )}
 
-            {view === 'login' && (
-                <Login 
-                    onForgotPasswordClick={() => handleViewChange('forgotPassword')}
-                    onBackClick={() => handleViewChange('splash')}
-                />
-            )}
-            
-            {view === 'forgotPassword' && (
-                <ForgotPassword 
-                    onEnterClick={() => handleViewChange('login')}
-                    onBackClick={() => handleViewChange('login')}
-                />
-            )}            
+                {view === 'login' && (
+                    <Login 
+                        onForgotPasswordClick={() => handleViewChange('forgotPassword')}
+                        onBackClick={() => handleViewChange('splash')}
+                    />
+                )}
+                
+                {view === 'forgotPassword' && (
+                    <ForgotPassword 
+                        onEnterClick={() => handleViewChange('login')}
+                        onBackClick={() => handleViewChange('login')}
+                    />
+                )}
+            </div>
+            <div className={styles.desktopContainer}>
+                <div className={styles.lateralImage}>
+                    <Splash onEnterClick={() => handleViewChange('login')}/>
+                </div>
+
+                <div className={styles.contentWrapper}>
+                    <div className={styles.content}>
+                        {(view === 'login' || view === 'splash') && (
+                            <Login 
+                                onForgotPasswordClick={() => handleViewChange('forgotPassword')}
+                                onBackClick={() => handleViewChange('login')}
+                            />
+                        )}
+                        
+                        {view === 'forgotPassword' && (
+                            <ForgotPassword 
+                                onEnterClick={() => handleViewChange('login')}
+                                onBackClick={() => handleViewChange('login')}
+                            />
+                        )}  
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }
