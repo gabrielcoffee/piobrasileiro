@@ -280,7 +280,14 @@ const Table = forwardRef<TableRef, TableProps>(({
         if (rowItems.length > itemsPerPage) {
             setCurrentPage(1);
         }
-    }, [rowItems, searchText, itemsPerPage]);
+    }, [rowItems.length, searchText, itemsPerPage]);
+
+    useEffect(() => {
+        const newTotalPages = Math.ceil(rowItems.length / itemsPerPage);
+        if (currentPage > newTotalPages && newTotalPages > 0) {
+            setCurrentPage(newTotalPages);
+        }
+    }, [rowItems.length, currentPage, itemsPerPage]);
 
     useEffect(() => {
         if (selectedRows.size === 0) {
