@@ -93,7 +93,7 @@ export default function AddUserMealModal({ formData, isEdit = false, userMealDat
 
                     <SimpleDateSelect
                         cantBeBeforeToday={true}
-                        selectedDate={new Date(date) || undefined}
+                        selectedDate={new Date(date.split('T')[0] + 'T00:00:00') || undefined}
                         onDateChange={(date) => setData(date?.toISOString())}
                         disabled={isEdit}
                     />

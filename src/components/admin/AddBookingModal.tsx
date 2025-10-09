@@ -210,14 +210,14 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
                     <SimpleDateSelect
                         label="*Data de chegada"
                         cantBeBeforeToday={true}
-                        selectedDate={dataChegada ? new Date(dataChegada) : new Date()}
+                        selectedDate={dataChegada ? new Date(dataChegada.split('T')[0] + 'T00:00:00') : new Date()}
                         onDateChange={(date) => setDataChegada(date?.toISOString())}
                     />
 
                     <SimpleDateSelect
                         label="*Data de saída"
                         cantBeBeforeToday={true}
-                        selectedDate={dataSaida ? new Date(dataSaida) : new Date()}
+                        selectedDate={dataSaida ? new Date(dataSaida.split('T')[0] + 'T00:00:00') : new Date()}
                         onDateChange={(date) => setDataSaida(date?.toISOString())}
                     />
 

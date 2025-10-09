@@ -5,7 +5,7 @@ import styles from './page.module.css';
 import Card from '@/components/desktop/Card';
 import CardHeader from '@/components/desktop/CardHeader';
 import Table from '@/components/admin/Table';
-import { getDateString, queryApi } from '@/lib/utils';
+import { getDateStringAndTime, getDateString, queryApi } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { Eye } from 'lucide-react';
 import Modal from '@/components/admin/Modal';
@@ -41,7 +41,7 @@ export default function SolicitacoesPage() {
         const requests = result.data.requests;
 
         const completeRequests = requests.map((request: any) => {
-            const solicitado_em = getDateString(request.criado_em, 'DD/MM/YYYY HH:mm');
+            const solicitado_em = getDateStringAndTime(request.criado_em);  
             const data_chegada = getDateString(request.data_chegada);
             const data_saida = getDateString(request.data_saida);
 

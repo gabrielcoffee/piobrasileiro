@@ -115,53 +115,30 @@ export function getCurrentWeekInfoRegular() {
     }
 }
 
-export function normalizeDateString(date: any): string {
-    if (date instanceof Date) {
-        return date.toISOString().split('T')[0];
-    }
-    if (typeof date === 'string' && date.includes('T')) {
-        return new Date(date).toISOString().split('T')[0];
-    }
-    return date;
-};
+export function getDateString(date: string): string {
+    const dateObject = new Date(date.split('T')[0] + 'T00:00:00');
 
-export function getDateStringFromYYYYMMDD(date: string): string {
-    const [year, month, day] = date.split('-').map(Number);
-    const selectedDate = new Date(year, month - 1, day);
-    return selectedDate.toLocaleDateString('pt-BR', {
+    return dateObject.toLocaleDateString('pt-BR', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric'
     });
 }
 
-export function getDateString(date: any, format: 'DD/MM/YYYY' | 'DD/MM/YYYY HH:mm' = 'DD/MM/YYYY'): string {
-    let selectedDate: Date;
+export function getDateStringAndTime(date: any): string {
 
-    if (typeof date === 'string' && date.includes('T')) {
-        selectedDate = new Date(date);
-    } else if (typeof date === 'string' && date.includes('-')) {
-        const [year, month, day] = date.split('-').map(Number);
-        selectedDate = new Date(year, month - 1, day);
-    } else {
-        selectedDate = new Date(date);
-    }
+    const dateObject = new Date(date);
+   
+    const dateString = dateObject.toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+    }) + ', ' + dateObject.toLocaleTimeString('pt-BR', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
 
-    if (format === 'DD/MM/YYYY HH:mm') {
-        return selectedDate.toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    } else {
-        return selectedDate.toLocaleDateString('pt-BR', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric'
-        });
-    }
+    return dateString;
 };
 
 

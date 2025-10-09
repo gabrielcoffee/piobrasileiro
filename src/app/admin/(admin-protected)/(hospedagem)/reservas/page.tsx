@@ -9,7 +9,7 @@ import { DateSection } from '@/components/admin/DateSection';
 import { Filter, PencilLine, Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import Table from '@/components/admin/Table';
-import { getCurrentWeekInfo, getDateString, getDateStringFromYYYYMMDD, queryApi } from '@/lib/utils';
+import { getCurrentWeekInfo, getDateString, getDateStringAndTime, queryApi } from '@/lib/utils';
 import Modal from '@/components/admin/Modal';
 import AddBookingModal from '@/components/admin/AddBookingModal';
 import { useRouter } from 'next/navigation';
@@ -69,6 +69,8 @@ export default function GestaoDeReservasPage() {
 
     const editar = (reserva: any) => {
         setShowEditBookingModal(true);
+
+        console.log('reserva', reserva);
         setSelectedBookingData(reserva);
     }
 
@@ -224,8 +226,8 @@ export default function GestaoDeReservasPage() {
 
                 return {
                     ...reserva,
-                    data_chegada: getDateStringFromYYYYMMDD(reserva.data_chegada.split('T')[0]),
-                    data_saida: getDateStringFromYYYYMMDD(reserva.data_saida.split('T')[0]),
+                    data_chegada: getDateString(reserva.data_chegada.split('T')[0]),
+                    data_saida: getDateString(reserva.data_saida.split('T')[0]),
                     status: getStatusHtml(reserva.status),
                     status_data: reserva.status,
                     acao: acoes(reserva),
@@ -468,7 +470,7 @@ export default function GestaoDeReservasPage() {
 
                     <SimpleDateSelect
                         label="Data"
-                        selectedDate={filterDate ? new Date(filterDate + 'T00:00:00') : null}
+                        selectedDate={filterDate ? new Date(filterDate.split('T')[0] + 'T00:00:00') : null}
                         onDateChange={(value) => setFilterDate(value?.toISOString().split('T')[0])}
                     />
 

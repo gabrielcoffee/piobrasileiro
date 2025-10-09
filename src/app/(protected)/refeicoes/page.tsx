@@ -5,7 +5,7 @@ import styles from "./page.module.css";
 import { MealDaysSection } from "@/components/refeicoes/MealDaysSection";
 import DaySelector from "@/components/refeicoes/DaySelector";
 import MealCard from "@/components/refeicoes/MealCard";
-import { queryApi, normalizeDateString, getCurrentWeekInfoRegular } from "@/lib/utils";
+import { queryApi, getCurrentWeekInfoRegular } from "@/lib/utils";
 import { useEffect, useState, useCallback, useRef } from "react";
 import SaveFooter from "@/components/refeicoes/SaveFooter";
 import { ArrowLeft } from "lucide-react";
@@ -105,7 +105,7 @@ export default function RefeicoesPage() {
 
             // Procura por refeicoes que possuem a mesma data no banco (meals)
             const existingMeal = meals?.find((meal: any) => {
-                const normalizedMealDate = normalizeDateString(meal.data);
+                const normalizedMealDate = meal.data.split('T')[0];
                 return normalizedMealDate === dateStr;
             });
 
@@ -153,7 +153,7 @@ export default function RefeicoesPage() {
 
         guestMeals?.forEach((guestMeal: any) => {
             // Normaliza a data do guestMeal
-            const normalizedGuestDate = normalizeDateString(guestMeal.data);
+            const normalizedGuestDate = guestMeal.data.split('T')[0];
             
             // Encontra qual dia da semana corresponde a esta data
             weekInfo.weekDates.forEach((date, dayIndex) => {

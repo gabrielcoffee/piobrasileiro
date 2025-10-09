@@ -533,7 +533,7 @@ export default function QuartosPage() {
                     <SimpleDateSelect
                         cantBeBeforeToday={true}
                         label="Data ou período"
-                        selectedDate={filterPeriod ? new Date(filterPeriod) : null}
+                        selectedDate={filterPeriod ? new Date(filterPeriod.split('T')[0] + 'T00:00:00') : null}
                         onDateChange={(value) => setFilterPeriod(value?.toISOString().split('T')[0])}
                     />
                 </div>
