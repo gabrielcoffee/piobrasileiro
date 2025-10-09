@@ -135,10 +135,19 @@ export function getDateStringFromYYYYMMDD(date: string): string {
     });
 }
 
-export function getDateString(date: any, format: string = 'DD/MM/YYYY'): string {
+export function getDateString(date: any, format: 'DD/MM/YYYY' | 'DD/MM/YYYY HH:mm' = 'DD/MM/YYYY'): string {
+    let selectedDate: Date;
+
+    if (typeof date === 'string' && date.includes('T')) {
+        selectedDate = new Date(date);
+    } else if (typeof date === 'string' && date.includes('-')) {
+        const [year, month, day] = date.split('-').map(Number);
+        selectedDate = new Date(year, month - 1, day);
+    } else {
+        selectedDate = new Date(date);
+    }
 
     if (format === 'DD/MM/YYYY HH:mm') {
-        const selectedDate = new Date(date);
         return selectedDate.toLocaleDateString('pt-BR', {
             day: '2-digit',
             month: '2-digit',
@@ -147,24 +156,10 @@ export function getDateString(date: any, format: string = 'DD/MM/YYYY'): string 
             minute: '2-digit'
         });
     } else {
-
-        if (date.includes('T')) {
-            const selectedDate = new Date(date);
-            return selectedDate.toLocaleDateString('pt-BR', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric' 
-            });
-        }
-
-        // Parse YYYY-MM-DD as local date to avoid timezone issues
-        const [year, month, day] = date.split('-').map(Number);
-        const selectedDate = new Date(year, month - 1, day);
-
         return selectedDate.toLocaleDateString('pt-BR', {
             day: '2-digit',
             month: '2-digit',
-            year: 'numeric' 
+            year: 'numeric'
         });
     }
 };
