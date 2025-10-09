@@ -27,8 +27,7 @@ export default function SaveFooter({ onMarkAllMeals, onSaveAndSend, hasChanges }
     return (
         <div className={styles.container}>
             <Button 
-                variant="outline" 
-                style={{ color: haveSelected ? "var(--color-primary)" : "var(--color-error)", borderColor: haveSelected ? "var(--color-primary)" : "var(--color-error)" }}
+                variant={haveSelected ? "outline" : "soft-red"}
                 iconLeft={haveSelected ? <CheckCheck size={20} /> : <CircleX size={20} />}
                 onClick={handleMarkAllClick}
                 >

@@ -200,6 +200,7 @@ export default function RefeicoesPage() {
         setShowSuccessToast(true);
         await doSave(mealsList);
         setHasChanges(false);
+        router.push('/home');
     }, [mealsList]);
 
     // Atualiza uma refeição específica

@@ -4,6 +4,7 @@ import styles from './styles/MealCard.module.css';
 import { Button } from '../ui/Button';
 import GuestModal from './GuestModal';
 import ConvidadosList from './ConvidadosList';
+import { isDateSaturdaySunday } from '@/lib/utils';
 
 interface MealCardProps {
     id?: string;
@@ -94,7 +95,7 @@ export default function MealCard({
                 {/* Lunch Section */}
                 <div className={styles.mealSection}>
                     <div className={styles.mealHeader}>
-                        <h3 className={styles.mealTitle}>Almoço (11h - 14h)</h3>
+                        <h3 className={styles.mealTitle}>Almoço (13h - 14h)</h3>
                         <div className={styles.toggleContainer}>
                             <span className={styles.toggleText}>
                                 {lunchConfirmed ? 'SIM' : 'NÃO'}
@@ -153,7 +154,15 @@ export default function MealCard({
                 {/* Dinner Section */}
                 <div className={styles.mealSection}>
                     <div className={styles.mealHeader}>
-                        <h3 className={styles.mealTitle}>Jantar (17h - 20h)</h3>
+                        <h3 className={styles.mealTitle}>
+                            Jantar {
+                            dayName.includes('SÁBADO') || dayName.includes('DOMINGO') ?
+                                '(19h - 20h)' 
+                            :
+                                '(19h30 - 20h30)'
+                            }
+                        </h3>
+
                         <div className={styles.toggleContainer}>
                             <span className={styles.toggleText}>
                                 {dinnerConfirmed ? 'SIM' : 'NÃO'}

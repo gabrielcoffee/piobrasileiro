@@ -44,13 +44,13 @@ export default function DaySelector({ mealsList, onDaySelect, onMarkAllMeals = (
 
     // Dias da semana em ordem (segunda a domingo)
     const daysOfWeek = [
-        { num: 0, name: "SEG", dayOfWeek: 1 },
-        { num: 1, name: "TER", dayOfWeek: 2 },
-        { num: 2, name: "QUA", dayOfWeek: 3 },
-        { num: 3, name: "QUI", dayOfWeek: 4 },
-        { num: 4, name: "SEX", dayOfWeek: 5 },
-        { num: 5, name: "SAB", dayOfWeek: 6 },
-        { num: 6, name: "DOM", dayOfWeek: 0 },
+        { num: 0, name: "SEGUNDA", dayOfWeek: 1 },
+        { num: 1, name: "TERÇA", dayOfWeek: 2 },
+        { num: 2, name: "QUARTA", dayOfWeek: 3 },
+        { num: 3, name: "QUINTA", dayOfWeek: 4 },
+        { num: 4, name: "SEXTA", dayOfWeek: 5 },
+        { num: 5, name: "SÁBADO", dayOfWeek: 6 },
+        { num: 6, name: "DOMINGO", dayOfWeek: 0 },
     ]
 
     const handleDayClick = (dayIndex: number) => {

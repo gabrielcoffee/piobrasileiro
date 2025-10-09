@@ -46,13 +46,16 @@ place all the class names first
 
 .daysContainer {
     display: flex;
+    gap: 0.5rem;
     flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
 }
 
 .dayButton {
     padding: 0.5rem 0.7rem;
+    font-size: 0.75rem;
     background-color: var(--color-white);
     border-radius: 5px;
     border: 1px solid var(--color-border);

@@ -32,11 +32,16 @@ function Button({
     if (!visible) return null;
 
     const getVariantStyle = (variant: ButtonVariant) => {
-        if (variant === 'outline') return styles.button_outline;
-        if (variant === 'text') return styles.button_text;
-        if (variant === 'full-white') return styles.button_full_white;
-        if (variant === 'soft-red') return styles.button_soft_red;
-        else return styles.button
+        if (variant === 'soft-red') 
+            return styles.button_soft_red
+        else if (variant === 'outline') 
+            return styles.button_outline
+        else if (variant === 'text') 
+            return styles.button_text;
+        else if (variant === 'full-white') 
+            return styles.button_full_white;
+        else
+            return styles.button;
     }
 
     const getAlignStyle = (align: ButtonAlign) => {

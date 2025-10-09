@@ -336,3 +336,8 @@ export async function uploadAvatarAdmin(imageFile: File, userId: string) {
         console.error('Error processing image:', error);
     }
 }
+
+export function isDateSaturdaySunday(date: Date) {
+    console.log(date.getDay());
+    return date.getDay() === 6 || date.getDay() === 0;
+}

@@ -196,7 +196,7 @@ export default function AddGuestAdminModal({ formData, isEdit = false, guestMeal
                 {/* Almoço Section */}
                 <div className={styles.mealSection}>
                     <div className={styles.mealHeader}>
-                        <h3 className={styles.mealTitle}>Almoço (11h - 14h)</h3>
+                        <h3 className={styles.mealTitle}>Almoço (13h - 14h)</h3>
                         <div className={styles.toggleContainer}>
                             <span className={styles.toggleText}>
                                 {lunchConfirmed ? 'SIM' : 'NÃO'}
@@ -242,7 +242,7 @@ export default function AddGuestAdminModal({ formData, isEdit = false, guestMeal
 
                 {/* Jantar Section */}
                     <div className={styles.mealHeader}>
-                        <h3 className={styles.mealTitle}>Jantar (17h - 20h)</h3>
+                        <h3 className={styles.mealTitle}>Jantar (19h30 - 20h30)</h3>
                         <div className={styles.toggleContainer}>
                             <span className={styles.toggleText}>
                                 {dinnerConfirmed ? 'SIM' : 'NÃO'}

@@ -102,7 +102,7 @@ export default function AddUserMealModal({ formData, isEdit = false, userMealDat
                 {/* Almoço Section */}
                 <div className={styles.mealSection}>
                     <div className={styles.mealHeader}>
-                        <h3 className={styles.mealTitle}>Almoço (11h - 14h)</h3>
+                        <h3 className={styles.mealTitle}>Almoço (13h - 14h)</h3>
                         <div className={styles.toggleContainer}>
                             <span className={styles.toggleText}>
                                 {almoco_colegio ? 'SIM' : 'NÃO'}
@@ -148,7 +148,7 @@ export default function AddUserMealModal({ formData, isEdit = false, userMealDat
 
                 {/* Jantar Section */}
                     <div className={styles.mealHeader}>
-                        <h3 className={styles.mealTitle}>Jantar (17h - 20h)</h3>
+                        <h3 className={styles.mealTitle}>Jantar (19h30 - 20h30)</h3>
                         <div className={styles.toggleContainer}>
                             <span className={styles.toggleText}>
                                 {janta_colegio ? 'SIM' : 'NÃO'}
