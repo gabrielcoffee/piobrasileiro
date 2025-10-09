@@ -156,12 +156,21 @@ export default function GestaoDeReservasPage() {
             console.log('Não há dados para salvar');
             return;
         }
-        if (!selectedBookingData.anfitriao_id || !selectedBookingData.hospede_id || !selectedBookingData.data_chegada || !selectedBookingData.data_saida || !selectedBookingData.quarto_id) {
+        if (!selectedBookingData.anfitriao_id || (!selectedBookingData.hospede_id && !selectedBookingData.novo_hospede_nome) || !selectedBookingData.data_chegada || !selectedBookingData.data_saida || !selectedBookingData.quarto_id) {
             console.log('Não há dados para salvar 2');
             return;
         }
 
-        setShowSuccessToast(true);
+        if (!selectedBookingData.hospede_id && selectedBookingData.novo_hospede_nome) {
+
+            const result = await queryApi('POST', '/admin/guests/quick', {
+                nome: selectedBookingData.novo_hospede_nome,
+            });
+
+            if (result.success) {
+                selectedBookingData.hospede_id = result.data.id;
+            }
+        }
 
         const result = await queryApi('POST', '/admin/accommodations', {
             anfitriao_id: selectedBookingData.anfitriao_id,
@@ -178,6 +187,7 @@ export default function GestaoDeReservasPage() {
             console.log('Reserva salva com sucesso');
             fetchReservas(selectedWeekStart, selectedWeekEnd);
             setShowNewBookingModal(false);
+            setShowSuccessToast(true);
         } else {
             console.log('Erro ao salvar reserva', result.error);
         }
@@ -393,7 +403,7 @@ export default function GestaoDeReservasPage() {
                 buttons={
                     <>
                         <Button variant="soft-red" onClick={() => setShowNewBookingModal(false)}>Cancelar</Button>
-                        <Button available={selectedBookingData?.anfitriao_id && selectedBookingData?.hospede_id && selectedBookingData?.data_chegada && selectedBookingData?.data_saida && selectedBookingData?.quarto_id ? true : false} variant="full" onClick={() => handleSaveNewBooking()}>Salvar</Button>
+                        <Button available={selectedBookingData?.anfitriao_id && (selectedBookingData?.hospede_id || selectedBookingData?.novo_hospede_nome) && selectedBookingData?.data_chegada && selectedBookingData?.data_saida && selectedBookingData?.quarto_id ? true : false} variant="full" onClick={() => handleSaveNewBooking()}>Salvar</Button>
                     </>
                 }
                 onClose={() => setShowNewBookingModal(false)}

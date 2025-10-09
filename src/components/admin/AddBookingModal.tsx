@@ -21,6 +21,7 @@ interface AddBookingModalProps {
         id: string;
         anfitriao_id: string;
         hospede_id: string;
+        novo_hospede_nome?: string;
         data_chegada: string;
         data_saida: string;
         quarto_id: string;
@@ -33,12 +34,14 @@ interface AddBookingModalProps {
         id: string;
         anfitriao_id: string;
         hospede_id: string;
+        novo_hospede_nome?: string;
         data_chegada: string;
         data_saida: string;
         quarto_id: string;
         almoco: boolean;
         janta: boolean;
         observacoes: string;
+
     };
 }
 
@@ -56,14 +59,16 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
     const [janta, setJanta] = useState(false);
     const [observacoes, setObservacoes] = useState('');
     const [bookingId, setBookingId] = useState('');
-    const [nomeNewHospede, setNomeNewHospede] = useState('');
     const [roomData, setRoomData] = useState<any[]>([]);
+    const [newHospedeName, setNewHospedeName] = useState('');
+    
     useEffect(() => {
         if (bookingDataChange) {
             bookingDataChange({
                 id: bookingId,
                 anfitriao_id: anfitriao,
                 hospede_id: hospede,
+                novo_hospede_nome: newHospedeName,
                 data_chegada: dataChegada,
                 data_saida: dataSaida,
                 quarto_id: quarto,
@@ -73,25 +78,6 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
             });
         }
     }, [anfitriao, hospede, quarto, dataChegada, dataSaida, almoco, janta, observacoes, bookingDataChange]);
-
-    const handleQuickAddGuest = async () => {
-        if (!nomeNewHospede) {
-            console.log('Nome do hóspede é obrigatório');
-            return;
-        }
-
-        const result = await queryApi('POST', '/admin/guests/quick', {
-            nome: nomeNewHospede
-        });
-
-        if (result.success) {
-            setNomeNewHospede('');
-            setHospede(result.data.id);
-            fetchHospedesIdAndNames();
-        }
-
-    }
-
 
     const fetchUserAnfitriaoIdAndNames = async () => {
         const result = await queryApi('GET', '/admin/users');
@@ -193,18 +179,30 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
                     />
 
                     <div className={styles.inputGroupHospede}>
-                        <InputTextSearch
-                            label="*Nome do hóspede"
-                            value={hospedeOptions.find((option) => option.key === hospede)?.value || ''}
-                            onSelect={(option: Option) => setHospede(option.key)}
-                            searchOptions={hospedeOptions}
-                            placeholder="Selecione"
-                        />
+                        {
+                            isEdit ? (
+                                <InputTextSearch
+                                label="*Nome do hóspede"
+                                value={hospedeOptions.find((option) => option.key === hospede)?.value || ''}
+                                onSelect={(option: Option) => setHospede(option.key)}
+                                searchOptions={hospedeOptions}
+                                placeholder="Selecione"
+                            />
+                            ) : (
+                                <InputTextSearch
+                                hasCreate={true}
+                                handleClickCreate={(value: string) => {
+                                    setNewHospedeName(value);
+                                }}
+                                label="*Nome do hóspede"
+                                value={hospedeOptions.find((option) => option.key === hospede)?.value || ''}
+                                onSelect={(option: Option) => setHospede(option.key)}
+                                searchOptions={hospedeOptions}
+                                placeholder="Selecione"
+                            />
+                            )
+                        }
 
-                        <div className={styles.inputGroup2}>
-                            <InputText className={styles.quickAddGuestInput} placeholder="Adicione novo hóspede" value={nomeNewHospede} onChange={(e) => setNomeNewHospede(e.target.value)} />
-                            <UserPlus className={styles.quickAddGuestIcon} size={30} onClick={() => handleQuickAddGuest()} />
-                        </div>
                     </div>
 
                     <SimpleDateSelect
