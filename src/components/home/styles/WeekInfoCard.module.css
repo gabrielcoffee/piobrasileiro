@@ -2,13 +2,27 @@
   margin-bottom: 1.5rem;
 }
 
+@media (min-width: 768px) {
+    .container {
+        margin-bottom: 0;
+    }
+}
+
 .weekCard {
-  background-color: var(--color-white);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
-  padding: 1rem;
-  box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.10);
-  overflow: hidden;
+    display: block;
+    padding: 0;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .weekCard {
+        background-color: var(--color-white);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-lg);
+        padding: 1rem;
+        box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.10);
+        overflow: hidden;
+    }
 }
 
 .weekHeader {
@@ -16,6 +30,14 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.5rem;
+}
+
+@media (min-width: 768px) {
+    .weekHeader {
+        justify-content: flex-start;
+        gap: 0.2rem;
+        font-size: 1.25rem;
+    }
 }
 
 .weekTitle {
@@ -87,5 +109,19 @@
 
 .successSubtext {
   font-size: 0.75rem;
-  color: var(--color-primary);
+  color: var(--color-text-muted);
 } 
+
+@media (min-width: 768px) {
+    .successText {
+        flex-direction: row;
+    }
+
+    .successTitle {
+        font-size: 1rem;
+    }
+
+    .successSubtext {
+        font-size: 1rem;
+    }
+}

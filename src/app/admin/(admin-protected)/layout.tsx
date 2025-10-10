@@ -13,7 +13,6 @@ export default function ProtectedAdminLayout({ children }: { children: ReactNode
     const [sideBarExpanded, setSideBarExpanded] = useState(true);
     useScrollToTop();
 
-
     const handleSideBarExpanded = (expanded: boolean) => {
         setSideBarExpanded(expanded);
     }

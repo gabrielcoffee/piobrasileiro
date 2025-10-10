@@ -5,12 +5,18 @@ import { Header } from "@/components/general/Header";
 import { Loading } from "@/components/ui/Loading";
 import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useScrollToTop } from "@/lib/useScrollToTop";
+import styles from './layout.module.css';
 
 export default function ProtectedLayout({ children }: { children: ReactNode}) {
     const { isLoading, isAuthenticated } = useAuth();
+    const [sideBarExpanded, setSideBarExpanded] = useState(true);
     const router = useRouter();
+
+    const handleSideBarExpanded = (expanded: boolean) => {
+        setSideBarExpanded(expanded);
+    }
     
     // Scroll to top on route changes
     useScrollToTop();
@@ -31,9 +37,11 @@ export default function ProtectedLayout({ children }: { children: ReactNode}) {
 
     return (
         <>
-            <Header />
-            <div style={{ marginTop: '80px' }}></div>
+            <Header setSideBarExpanded={handleSideBarExpanded} />
+            <div className={styles.marginTop}></div>
+            <div className={`${sideBarExpanded ? styles.sideBarExpanded : styles.sideBarCollapsed}`}>
                 {children}
+            </div>
             <Footer />
         </>
     )

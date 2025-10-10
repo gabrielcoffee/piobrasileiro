@@ -12,6 +12,7 @@ import { queryApi } from '@/lib/utils';
 import NotificationMenuAdmin from './NotificationMenuAdminDesktop';
 import NotificationMenuAdminDesktop from './NotificationMenuAdminDesktop';
 import Link from 'next/link';
+import { SideMenuComumDesktop } from './SideMenuComumDesktop';
 
 interface Notification {
     id: number;
@@ -139,6 +140,11 @@ export function Header({ setSideBarExpanded = (expanded: boolean) => void 0}: He
             {/* Desktop Side Menu - Always visible on desktop */}
             {isDesktop && pathname.startsWith('/admin') && (
                 <SideMenuAdminDesktop set={setSideBarExpanded} />
+            )}
+
+            {/* Desktop Side Menu - Always visible on desktop */}
+            {isDesktop && !pathname.startsWith('/admin') && (
+                <SideMenuComumDesktop set={setSideBarExpanded} />
             )}
 
             <div className={styles.mobileHeader}>

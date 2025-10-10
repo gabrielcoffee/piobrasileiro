@@ -7,7 +7,6 @@ import Link from 'next/link';
 export function Footer() {
 
     const pathname = usePathname();
-
     
     const tabs = [
         { id: 'home', href: '/home', label: 'Home', icon: Home },
@@ -36,7 +35,6 @@ export function Footer() {
                         </Link>
                     );
                 })}
-
             </div>
         </footer>
     );

@@ -1,0 +1,194 @@
+.sideMenuDesktop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 280px;
+    background-color: white;
+    z-index: 40;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-top: 80px;
+    transition: width 0.3s ease;
+}
+
+.sideMenuDesktop.collapsed {
+    width: 80px;
+}
+
+.toggleButton {
+    padding: 1rem;
+    padding-left: 2rem;
+    display: flex;
+    justify-content: left;
+    align-items: center; 
+    color: var(--color-text);
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+.navigation {
+    padding: 1rem 0;
+    transition: opacity 0.3s ease;
+}
+
+.menuItem {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    margin: 0 1.5rem;
+    color: var(--color-text);
+    text-decoration: none;
+    border-bottom: 1px solid var(--color-border);
+    width: 100%;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 250px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    height: 48px;
+}
+
+.menuLabelContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.collapsed .menuItem {
+    justify-content: center;
+    margin: 0 0.5rem;
+    padding: 1rem 0.5rem;
+}
+
+.menuLabel {
+    font-size: 1.25rem;
+    font-weight: 500;
+    transition: opacity 0.3s ease;
+} 
+
+.collapsed .menuLabel {
+    opacity: 0;
+    width: 0;
+}
+
+.submenuItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem;
+    margin-left: 2rem;
+    color: var(--color-text);
+    text-decoration: none;
+    transition: color 0.2s ease;
+    font-size: 1.1rem;
+    font-weight: 400;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+.collapsed .submenuItem {
+    display: none;
+}
+
+.submenuLabel {
+    font-size: 1.1rem;
+    font-weight: 400;
+}
+
+.logoutButton {
+    position: absolute;
+    bottom: 0;
+    width: 230px;
+    border-top: 1px solid var(--color-border);
+    padding-top: 2.2rem;
+    padding-bottom: 2.2rem;
+    margin-bottom: 1.5rem;
+    transition: width 0.3s ease;
+    color: var(--color-error);
+}
+
+.collapsed .logoutButton {
+    width: 60px;
+    padding: 1rem 0.5rem;
+    justify-content: center;
+}
+
+.submenuItem:hover {
+    background-color: var(--color-slate-100);
+    border-radius: 0.5rem;
+}
+
+.submenuItem:hover.active {
+    background-color: var(--color-primary);
+    border-radius: 0.5rem;
+    color: white;
+    font-weight: 800 !important;
+}
+
+.submenu {
+    margin-right: 0.5rem;
+}
+
+.active {
+    background-color: var(--color-primary);
+    border-radius: 0.5rem;
+    color: white;
+    font-weight: 800 !important;
+}
+
+.activeTopMenu {
+    background-color: var(--color-primary);
+    border-radius: 0.5rem;
+    color: white;
+    font-weight: 800 !important;
+    margin-right: 0.5rem;
+}
+
+.notification {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.notificationCount {
+    background-color: #CC9907;
+    margin-right: 1rem;
+    color: white;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.25rem;
+    border: 1px solid #F9C738;
+    border-radius: 100%;
+    font-size: 0.9rem;
+}
+
+.menuLabelContainer {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.menuItem:hover {
+    background-color: var(--color-slate-100);
+    color: var(--color-text);
+}
+
+.menuItem:hover.active {
+    background-color: var(--color-primary);
+    border-radius: 0.5rem;
+    color: white;
+    font-weight: 800 !important;
+}

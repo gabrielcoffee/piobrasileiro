@@ -23,6 +23,7 @@ export function WeekInfo({ curWeek, from, to, isBooked }: WeekInfoProps) {
             <div className={styles.weekCard}>
                 <div className={styles.weekHeader}>
                     <span className={styles.weekTitle}>Semana {curWeek}</span>
+                    <span className={styles.separator}>•</span>
                     <span className={styles.dateRange}>
                         {dateDay(from)} a {formatDate(to)}
                     </span>

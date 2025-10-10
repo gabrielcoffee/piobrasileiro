@@ -1,0 +1,25 @@
+.marginTop {
+    margin-top: 80px;
+}
+
+.sideBarExpanded {
+    display: block;
+    margin-left: calc(280px + 1rem);
+    transition: margin-left 0.3s ease;
+}
+
+.sideBarCollapsed {
+    display: block;
+    margin-left: calc(80px + 1rem);
+    transition: margin-left 0.3s ease;
+}
+
+@media (max-width: 768px) {
+    .sideBarExpanded {
+        margin-left: 0;
+    }
+
+    .sideBarCollapsed {
+        margin-left: 0;
+    }
+}
