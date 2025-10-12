@@ -26,6 +26,17 @@
     margin-right: 24px;
 }
 
+@media (min-width: 768px) {
+    .modal {
+        max-width: 600px;
+    }
+
+    .modal > input {
+        background-color: white;
+
+    }
+}
+
 .header {
     margin-bottom: 1.5rem;
     position: relative;

@@ -5,12 +5,17 @@ import styles from "./page.module.css";
 import { MealDaysSection } from "@/components/refeicoes/MealDaysSection";
 import DaySelector from "@/components/refeicoes/DaySelector";
 import MealCard from "@/components/refeicoes/MealCard";
-import { queryApi, getCurrentWeekInfoRegular } from "@/lib/utils";
+import { queryApi, getCurrentWeekInfoRegular, getCurrentWeekInfo } from "@/lib/utils";
 import { useEffect, useState, useCallback, useRef } from "react";
 import SaveFooter from "@/components/refeicoes/SaveFooter";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, CalendarIcon, CheckCheck, CircleCheck, CircleX } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Toast } from "@/components/general/Toast";
+import Card from "@/components/desktop/Card";
+import CardHeader from "@/components/desktop/CardHeader";
+import { Button } from "@/components/ui/Button";
+import { DateSection } from "@/components/admin/DateSection";
+import { Calendar } from "@/components/admin/Calendar";
 
 interface MealDay {
     date: string;           // "2025-08-18" (formato do banco)
@@ -26,6 +31,8 @@ interface MealDay {
 
 export default function RefeicoesPage() {
 
+    const [isMobile, setIsMobile] = useState(false);
+
     const router = useRouter();
 
     const [meals, setMeals] = useState<any[] | null>(null);
@@ -34,9 +41,12 @@ export default function RefeicoesPage() {
     const [blockedDates, setBlockedDates] = useState<string[]>([]);
     const [showSuccessToast, setShowSuccessToast] = useState(false);
     const [showConvidadoRemovidoSuccessToast, setShowConvidadoRemovidoSuccessToast] = useState(false);
+    const [haveSelected, setHaveSelected] = useState(false);
 
     const [mealsList, setMealsList] = useState<MealDay[]>([]);
     const [hasChanges, setHasChanges] = useState(false);
+    const [selectedWeekStart, setSelectedWeekStart] = useState<Date | null>(null);
+    const [selectedWeekEnd, setSelectedWeekEnd] = useState<Date | null>(null);
 
     const hasChangesRef = useRef(hasChanges);
     const mealsListRef = useRef(mealsList);
@@ -227,6 +237,8 @@ export default function RefeicoesPage() {
 
     // Marca ou desmarca todas as refeições (almoço e jantar) apenas para dias futuros
     const markAllMeals = (markAsTrue: boolean) => {
+
+        setHaveSelected(markAsTrue);
         
         // Create a copy of the meals list
         const newMealsList = [...mealsList];
@@ -283,6 +295,12 @@ export default function RefeicoesPage() {
         }
     }, [hasChanges, mealsList]);
     */
+    useEffect(() => {
+        const weekInfo = getCurrentWeekInfo();
+        setSelectedWeekStart(weekInfo.monday);
+        setSelectedWeekEnd(weekInfo.sunday);
+    }, []);
+
        // Sync refs with state
     useEffect(() => {
         hasChangesRef.current = hasChanges;
@@ -309,52 +327,110 @@ export default function RefeicoesPage() {
         }
     }, [guestMeals, createGuestMealList]);
 
+    useEffect(() => {
+        setIsMobile(window.innerWidth < 768);
+    }, [window.innerWidth]);
+
     return (
         <>
-        <div className={styles.gobackHeader}>
-            <ArrowLeft size={24} onClick={() => router.back()} />
-        </div>
-        <div className={styles.container}>
-            <MealDaysSection/>
+        {isMobile ? (
+        <div className={styles.mobileContainer}>
+            <div className={styles.gobackHeader}>
+                <ArrowLeft size={24} onClick={() => router.back()} />
+            </div>
+            <div className={styles.container}>
+                <MealDaysSection/>
 
-            <DaySelector 
-                mealsList={mealsList}
-                onDaySelect={(dayIndex: number) => {
-                    dayIndex = dayIndex + 1;
-                    const mealCard = document.getElementById(`meal-card-${dayIndex}`);
-                    if (mealCard) {
-                        mealCard.scrollIntoView({ behavior: 'smooth' });
-                    }
-                }}
-            />
-
-            {mealsList.map((meal, index) => (
-                <MealCard 
-                    key={meal.dayIndex}
-                    id={`meal-card-${meal.dayIndex}`}
-                    date={meal.displayDate}
-                    dayName={meal.dayName}
-                    blocked={meal.blocked}
-                    lunch={meal.lunch}
-                    dinner={meal.dinner}
-                    takeOut={meal.takeOut}
-                    guestMeals={guestMealList[meal.dayIndex] || []}
-                    onUpdate={(updates) => updateMeal(meal.dayIndex, updates)}
-                    onRemoveGuest={removeGuestMeal}
-                    onGuestAdded={fetchGuestMeals}
-                    style={{ display: meal.isPast ? 'none' : 'block' }}
+                <DaySelector 
+                    mealsList={mealsList}
+                    onDaySelect={(dayIndex: number) => {
+                        dayIndex = dayIndex + 1;
+                        const mealCard = document.getElementById(`meal-card-${dayIndex}`);
+                        if (mealCard) {
+                            mealCard.scrollIntoView({ behavior: 'smooth' });
+                        }
+                    }}
                 />
-            ))}
-            <Divider/>
+
+                {mealsList.map((meal, index) => (
+                    <MealCard 
+                        key={meal.dayIndex}
+                        id={`meal-card-${meal.dayIndex}`}
+                        date={meal.displayDate}
+                        dayName={meal.dayName}
+                        blocked={meal.blocked}
+                        lunch={meal.lunch}
+                        dinner={meal.dinner}
+                        takeOut={meal.takeOut}
+                        guestMeals={guestMealList[meal.dayIndex] || []}
+                        onUpdate={(updates) => updateMeal(meal.dayIndex, updates)}
+                        onRemoveGuest={removeGuestMeal}
+                        onGuestAdded={fetchGuestMeals}
+                        style={{ display: meal.isPast ? 'none' : 'block' }}
+                    />
+                ))}
+                <Divider/>
+            </div>
+
+            <SaveFooter hasChanges={hasChanges} onMarkAllMeals={markAllMeals} onSaveAndSend={saveMeals} />
+
+            {showSuccessToast && (
+                <Toast message="Refeições salvas com sucesso" type="success" onClose={() => setShowSuccessToast(false)} />
+            )}
+            {showConvidadoRemovidoSuccessToast && (
+                <Toast message="Convidado removido com sucesso" type="success" onClose={() => setShowConvidadoRemovidoSuccessToast(false)} />
+            )}
         </div>
 
-        <SaveFooter hasChanges={hasChanges} onMarkAllMeals={markAllMeals} onSaveAndSend={saveMeals} />
+        ) : (
 
-        {showSuccessToast && (
-            <Toast message="Refeições salvas com sucesso" type="success" onClose={() => setShowSuccessToast(false)} />
-        )}
-        {showConvidadoRemovidoSuccessToast && (
-            <Toast message="Convidado removido com sucesso" type="success" onClose={() => setShowConvidadoRemovidoSuccessToast(false)} />
+        <div className={styles.desktopContainer}>
+
+            <Card>
+                <CardHeader title="Refeições" breadcrumb={["Início", "Refeições"]} />
+
+                <div className={styles.headerSection}>
+                    <span className={styles.headerText}>Por favor, selecione suas refeições até <strong>hoje às 19h00.</strong></span>
+                    <div className={styles.buttonsContainer}> 
+
+                        <Button  
+                            variant="gray"
+                            iconLeft={<CalendarIcon size={20} />}
+                            onClick={() => {}}
+                            className={styles.dateButton}
+                            >
+                                <span className={styles.dateButtonText}>
+                                    {selectedWeekStart?.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
+                                    {' a '}
+                                    {selectedWeekEnd?.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
+                                </span>
+                        </Button>
+
+                        <SaveFooter hasChanges={hasChanges} onMarkAllMeals={markAllMeals} onSaveAndSend={saveMeals} />
+                    </div>
+                </div>
+
+                <div className={styles.mealsListContainer}>
+                    {mealsList.map((meal, index) => (
+                        <MealCard
+                            key={meal.dayIndex}
+                            id={`meal-card-${meal.dayIndex}`}
+                            date={meal.displayDate}
+                            dayName={meal.dayName}
+                            blocked={meal.blocked}
+                            lunch={meal.lunch}
+                            dinner={meal.dinner}
+                            takeOut={meal.takeOut}
+                            guestMeals={guestMealList[meal.dayIndex] || []}
+                            onUpdate={(updates) => updateMeal(meal.dayIndex, updates)}
+                            onRemoveGuest={removeGuestMeal}
+                            onGuestAdded={fetchGuestMeals}
+                            style={{ display: meal.isPast ? 'none' : 'block' }}
+                        />
+                    ))}
+                </div>
+            </Card>
+        </div>
         )}
         </>
     );

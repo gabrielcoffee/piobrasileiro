@@ -15,6 +15,20 @@
     padding: 0.5rem;
 }
 
+@media (min-width: 768px) {
+    .convidadosList {
+        margin-bottom: 0;
+        justify-content: space-between;
+        padding: 0;
+    }
+
+    .convidadoItem {
+        justify-content: space-between;
+        padding: 0;
+        flex: 1;
+    }
+}
+
 .icon {
     color: var(--color-primary);
     flex-shrink: 0;

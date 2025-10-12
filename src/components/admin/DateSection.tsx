@@ -8,9 +8,10 @@ interface DateSectionProps {
     selectedWeekStart?: Date;
     selectedWeekEnd?: Date;
     onWeekChange?: (weekStart: Date, weekEnd: Date) => void;
+    cantChangeWeek?: boolean;
 }
 
-export function DateSection({ selectedWeekStart, selectedWeekEnd, onWeekChange }: DateSectionProps) {
+export function DateSection({ selectedWeekStart, selectedWeekEnd, onWeekChange, cantChangeWeek = false }: DateSectionProps) {
 
     const [showMiniCalendar, setShowMiniCalendar] = useState(false);
     const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -224,7 +225,7 @@ export function DateSection({ selectedWeekStart, selectedWeekEnd, onWeekChange }
                 </button>
 
                 <Button  
-                variant="full-white"
+                variant="gray"
                 iconLeft={<Calendar />}
                 onClick={() => setShowMiniCalendar(!showMiniCalendar)}
                 className={styles.dateButton}

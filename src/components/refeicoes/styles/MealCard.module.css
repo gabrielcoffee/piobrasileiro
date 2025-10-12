@@ -9,7 +9,6 @@
     margin-top: 2rem;
 }
 
-
 .dateText {
   background-color: var(--color-slate-200);
   color: var(--color-text);
@@ -219,4 +218,106 @@
 .dateText.blockedTxt {
     color: var(--color-error);
     background-color: var(--color-error-bg);
+}
+
+.cardSubtitle {
+    display: none;
+}
+
+.addGuestButtonText {
+    cursor: pointer;
+    display: none;
+}
+
+@media (min-width: 768px) {
+
+    .addGuestButtonText {
+        display: block;
+    }
+
+    .cardHeader {
+        margin-bottom: 0;
+    }
+
+    .container {
+        margin-bottom: 0;
+    }
+
+    .dateHeader {
+        display: none;
+    }
+
+    .mealCard {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem;
+        width: 100%;
+        gap: 2rem;
+    }
+
+    .mealSection {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 0;
+        gap: 0.25rem;
+        padding: 0;
+        flex: 1;
+    }
+
+    .mealHeader {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        margin: 0;
+    }
+
+    .cardHeader {
+        flex: 1;
+    }
+
+    .cardSubtitle {
+        display: block;
+        font-size: 1rem;
+        font-weight: 400;
+        color: var(--color-text-muted);
+    }
+
+    .titleContainer {
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .titleTextContainer {
+        display: flex;
+        flex-direction: column;
+        gap: .5rem;
+    }
+
+    .convidadosListContainer {
+        display: none;
+    }
+
+    .addGuestButton {
+        margin: 0;
+    }
+
+    .addGuestButtonContainer {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        align-items: center;
+    }
+
+    .addGuestButtonText {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: var(--color-primary);
+        font-size: 1rem;
+        white-space: nowrap;
+        font-weight: 500;
+    }
 }

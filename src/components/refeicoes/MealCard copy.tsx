@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { LucidePlug, LucidePlus, Salad, UserCheck } from 'lucide-react';
+import { LucidePlug, LucidePlus, Salad } from 'lucide-react';
 import styles from './styles/MealCard.module.css';
 import { Button } from '../ui/Button';
 import GuestModal from './GuestModal';
 import ConvidadosList from './ConvidadosList';
-import Modal from '../admin/Modal';
+import { isDateSaturdaySunday } from '@/lib/utils';
 
 interface MealCardProps {
     id?: string;
@@ -35,9 +35,11 @@ export default function MealCard({
     style,
     blocked,
 }: MealCardProps) {
+    const [lunchConfirmed, setLunchConfirmed] = useState(lunch);
+    const [dinnerConfirmed, setDinnerConfirmed] = useState(dinner);
+    const [takeOutOption, setTakeOutOption] = useState(takeOut);
     const [isGuestModalOpen, setIsGuestModalOpen] = useState(false);
-    const [showConvidadosModal, setShowConvidadosModal] = useState(false);
-    const isAnyMealConfirmed = lunch || dinner;
+    const isAnyMealConfirmed = lunchConfirmed || dinnerConfirmed;
 
     const handleRemoveConvidado = (guestMealId: string) => {
         if (onRemoveGuest) {
@@ -45,16 +47,32 @@ export default function MealCard({
         }
     };
 
+    // Sincroniza o estado local com as props quando elas mudam
+    useEffect(() => {
+        setLunchConfirmed(lunch);
+    }, [lunch]);
+
+    useEffect(() => {
+        setDinnerConfirmed(dinner);
+    }, [dinner]);
+
+    useEffect(() => {
+        setTakeOutOption(takeOut);
+    }, [takeOut]);
+
     // Atualiza estado local e notifica componente pai
     const updateLunch = (newValue: boolean) => {
-        onUpdate?.({ lunch: newValue, takeOut: takeOut });
+        setLunchConfirmed(newValue);
+        onUpdate?.({ lunch: newValue, takeOut: takeOutOption });
     };
 
     const updateDinner = (newValue: boolean) => {
+        setDinnerConfirmed(newValue);
         onUpdate?.({ dinner: newValue });
     };
 
     const updateTakeOut = (newValue: boolean) => {
+        setTakeOutOption(newValue);
         onUpdate?.({ takeOut: newValue });
     };
 
@@ -67,30 +85,24 @@ export default function MealCard({
 
             {/* Meal Card */}
             <div className={`${styles.mealCard} ${isAnyMealConfirmed ? styles.mealCardEnabled : ''} ${blocked ? styles.mealCardBlocked : ''}`}>
-                
                 <div className={styles.cardHeader}>
                     <div className={styles.titleContainer}>
                         <Salad size={24} className={styles.saladIcon} />
-                        <div className={styles.titleTextContainer}>
-                            <h2 className={styles.cardTitle}>Refeições do dia {date}</h2>
-                            <h2 className={styles.cardSubtitle}>{dayName.split(',')[0]}</h2>  
-                        </div>
+                        <h2 className={styles.cardTitle}>Refeições do dia {date}</h2>
                     </div>
                 </div>
 
                 {/* Lunch Section */}
                 <div className={styles.mealSection}>
-
                     <div className={styles.mealHeader}>
                         <h3 className={styles.mealTitle}>Almoço (13h - 14h)</h3>
-
                         <div className={styles.toggleContainer}>
                             <span className={styles.toggleText}>
-                                {lunch ? 'SIM' : 'NÃO'}
+                                {lunchConfirmed ? 'SIM' : 'NÃO'}
                             </span>
                             <button
-                                className={`${styles.toggle} ${lunch ? styles.toggleOn : styles.toggleOff}`}
-                                onClick={() => {blocked ? null : updateLunch(!lunch)}}
+                                className={`${styles.toggle} ${lunchConfirmed ? styles.toggleOn : styles.toggleOff}`}
+                                onClick={() => {blocked ? null : updateLunch(!lunchConfirmed)}}
                             >
                                 <div className={styles.toggleCircle} />
                             </button>
@@ -98,30 +110,28 @@ export default function MealCard({
                     </div>
 
                     <div className={styles.optionsContainer}>
-                        <label className={`${styles.radioOption} ${!lunch ? styles.disabled : ''}`}>
+                        <label className={`${styles.radioOption} ${!lunchConfirmed ? styles.disabled : ''}`}>
                             <input
-                                id={`lunch-school-${id}`}
                                 type="radio"
                                 name={`lunch-${id}`}
                                 value="school"
-                                checked={!takeOut}
+                                checked={!takeOutOption}
                                 onChange={() => {blocked ? null : updateTakeOut(false)}}
-                                disabled={!lunch}
+                                disabled={!lunchConfirmed}
                                 className={styles.radioInput}
                             />
                             <span className={styles.radioCircle} />
                             <span className={styles.radioLabel}>No Colégio PIO</span>
                         </label>
 
-                        <label className={`${styles.radioOption} ${!lunch ? styles.disabled : ''}`}>
+                        <label className={`${styles.radioOption} ${!lunchConfirmed ? styles.disabled : ''}`}>
                             <input
-                                id={`lunch-takeaway-${id}`}
                                 type="radio"
                                 name={`lunch-${id}`}
                                 value="takeaway"
-                                checked={takeOut}
+                                checked={takeOutOption}
                                 onChange={() => {blocked ? null : updateTakeOut(true)}}
-                                disabled={!lunch}
+                                disabled={!lunchConfirmed}
                                 className={styles.radioInput}
                             />
                             <span className={styles.radioCircle} />
@@ -129,20 +139,13 @@ export default function MealCard({
                         </label>
                     </div>
 
+                    {/* Convidados List - só mostra se há convidados */}
                     {guestMeals.length > 0 && (
-                        <div className={styles.convidadosListContainer}>
-                            <ConvidadosList guestMeals={guestMeals} onRemove={handleRemoveConvidado} />
-                        </div>
+                        <ConvidadosList guestMeals={guestMeals} onRemove={handleRemoveConvidado} />
                     )}
 
-                    {lunch && (
-                        <div className={styles.addGuestButtonContainer}>
-                            <Button available={!takeOut} onClick={() => takeOut ? undefined : setIsGuestModalOpen(true)} className={styles.addGuestButton} variant="full">Adicionar convidado</Button>
-
-                            {guestMeals.length > 0 && (
-                                <span className={styles.addGuestButtonText} onClick={() => setShowConvidadosModal(true)} ><UserCheck size={16} />Ver Convidados</span>
-                            )}
-                        </div>
+                    {lunchConfirmed && !takeOutOption && (
+                        <Button onClick={() => setIsGuestModalOpen(true)} className={styles.addGuestButton} variant="full">Adicionar convidado</Button>
                     )}
                 </div>
 
@@ -162,11 +165,11 @@ export default function MealCard({
 
                         <div className={styles.toggleContainer}>
                             <span className={styles.toggleText}>
-                                {dinner ? 'SIM' : 'NÃO'}
+                                {dinnerConfirmed ? 'SIM' : 'NÃO'}
                             </span>
                             <button
-                                className={`${styles.toggle} ${dinner ? styles.toggleOn : styles.toggleOff}`}
-                                onClick={() => {blocked ? null : updateDinner(!dinner)}}
+                                className={`${styles.toggle} ${dinnerConfirmed ? styles.toggleOn : styles.toggleOff}`}
+                                onClick={() => {blocked ? null : updateDinner(!dinnerConfirmed)}}
                             >
                                 <div className={styles.toggleCircle} />
                             </button>
@@ -174,13 +177,13 @@ export default function MealCard({
                     </div>
 
                     <div className={styles.optionsContainer}>
-                        <label className={`${styles.radioOption} ${!dinner ? styles.disabled : ''}`}>
+                        <label className={`${styles.radioOption} ${!dinnerConfirmed ? styles.disabled : ''}`}>
                             <input
                                 type="radio"
                                 name={`dinner-${id}`}
                                 value="school"
                                 defaultChecked={true}
-                                disabled={!dinner}
+                                disabled={!dinnerConfirmed}
                                 className={styles.radioInput}
                             />
                             <span className={styles.radioCircle} />
@@ -197,21 +200,6 @@ export default function MealCard({
                     onClose={() => setIsGuestModalOpen(false)}
                     onGuestAdded={onGuestAdded}
                 />
-            )}
-
-            {showConvidadosModal && (
-                <Modal
-                    title="Convidados"
-                    isOpen={showConvidadosModal} 
-                    onClose={() => setShowConvidadosModal(false)}
-                    buttons={
-                        <>
-                            <Button variant="soft-red" onClick={() => setShowConvidadosModal(false)}>Fechar</Button>
-                        </>
-                    }
-                >
-                    <ConvidadosList guestMeals={guestMeals} onRemove={handleRemoveConvidado} />
-                </Modal>
             )}
         </div>
     );

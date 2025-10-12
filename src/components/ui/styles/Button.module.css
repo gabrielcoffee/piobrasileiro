@@ -45,6 +45,16 @@
     background-color: var(--color-white-hover);
 }
 
+.button_gray {
+    background-color: white;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-slate-200);
+}
+
+.button_gray:hover {
+    background-color: var(--color-slate-100);
+}
+
 .button_soft_red {
     background-color: var(--color-white);
     color: var(--color-error);

@@ -2,7 +2,7 @@ import * as React from "react"
 import styles from "./styles/Button.module.css"
 import Link from "next/link";
 
-type ButtonVariant = 'full' | 'outline' | 'text' | 'full-white' | 'soft-red';
+type ButtonVariant = 'full' | 'outline' | 'text' | 'full-white' | 'soft-red' | 'gray';
 type ButtonAlign = 'left' | 'center' | 'right';
 
 interface ButtonProps extends React.ComponentProps<"button"> {
@@ -40,6 +40,8 @@ function Button({
             return styles.button_text;
         else if (variant === 'full-white') 
             return styles.button_full_white;
+        else if (variant === 'gray') 
+            return styles.button_gray;
         else
             return styles.button;
     }

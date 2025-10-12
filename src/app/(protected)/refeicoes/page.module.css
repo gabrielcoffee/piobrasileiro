@@ -1,15 +1,56 @@
-.container {
+.mobileContainer {
     margin-left: 24px;
     margin-right: 24px;
     padding-bottom: 6rem; /* Space for fixed footer */
     min-height: 100vh;
-  }
-  
-  .section {
-    margin-bottom: 1.5rem;
-  } 
+}
 
-  .gobackHeader {
+.desktopContainer {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .mobileContainer {
+        display: none;
+    }
+
+    .desktopContainer {
+        display: block;
+    }
+
+    .headerSection {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 1rem;
+        align-items: center;
+        height: 50px;
+    }
+
+    .buttonsContainer {
+        display: flex;
+        flex-direction: row;
+        gap: 1rem;
+        justify-content: flex-end;
+        height: 100%;
+    }
+
+    .mealsListContainer {
+        display: flex;
+        flex-direction: column;
+        margin-top: 1rem;
+        gap: 1rem;
+    }
+    .section {
+        margin-bottom: 0;
+    } 
+}
+
+.section {
+    margin-bottom: 1.5rem;
+} 
+
+.gobackHeader {
     position: fixed;
     top: 0;
     left: 0;
@@ -21,4 +62,11 @@
     padding-left: 24px;
     z-index: 20;
     background-color: var(--color-slate-100);
-  }
+}
+
+
+.dateButton {
+    padding: 12px;
+    color: var(--color-text);
+}
+
