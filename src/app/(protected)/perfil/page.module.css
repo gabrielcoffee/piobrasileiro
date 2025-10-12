@@ -1,8 +1,22 @@
-.container {
+.mobileContainer {
     margin-left: 24px;
     margin-right: 24px;
     padding-bottom: 6rem; /* Space for fixed footer */
     min-height: 100vh;
+}
+
+.desktopContainer {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .mobileContainer {
+        display: none;
+    }
+
+    .desktopContainer {
+        display: block;
+    }
 }
 
 .passwordTitle {
@@ -72,6 +86,17 @@
     margin-top: 0.5rem;
 }
 
+.currentPasswordContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.passwordErrorMessage {
+    color: var(--color-error);
+    font-size: 12px;
+    margin-top: 0.25rem;
+}
+
 .passwordRequirementsList {
     li {
         display: flex;
@@ -85,4 +110,57 @@
     color: var(--color-error);
     margin-top: 2.5rem;
     width: 50%;
+}
+
+@media (min-width: 768px) {
+    .imageContainer {
+        display: flex;
+        justify-content: left;
+        align-items: center;
+        margin-top: 1rem;
+    }
+
+    .Data {
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: var(--color-primary);
+    }
+
+    .inputsContainer {
+        margin-top: 1rem;
+    }
+
+    .inputsRow {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+    }
+
+    .passwordInputsRow {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2rem;
+        align-items: start;
+    }
+
+    .newPasswordContainer {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .passwordRequirements {
+        margin-top: 0;
+    }
+
+    .saveButtonContainer {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 2rem;
+    }
+
+    .saveButtonContainer button {
+        width: auto;
+        min-width: 200px;
+    }
 }

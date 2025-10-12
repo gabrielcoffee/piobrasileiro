@@ -25,3 +25,9 @@
     gap: 1rem;
     font-size: 1rem;
 }
+
+.backButton {
+    color: var(--color-text);
+    font-size: 1rem;
+    font-weight: 500;
+}

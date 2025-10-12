@@ -11,11 +11,16 @@ import { queryApi, uploadAvatar } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import ProfileImage from "@/components/profile/ProfileImage";
 import { useAuth } from "@/contexts/AuthContext";
+import CardHeader from "@/components/desktop/CardHeader";
+import Card from "@/components/desktop/Card";
+import { useRouter } from "next/navigation";
 
 
 export default function PerfilPage() {
 
     const { logout } = useAuth();
+
+    const router = useRouter();
 
     const [avatar, setAvatar] = useState<string | null>(null);
     const [fullname, setFullname] = useState<string | undefined>(undefined);
@@ -25,6 +30,7 @@ export default function PerfilPage() {
     const [currentPassword, setCurrentPassword] = useState<string>('');
     const [newPassword, setNewPassword] = useState<string>('');
     const [passwordChanged, setPasswordChanged] = useState<boolean>(false);
+    const [passwordError, setPasswordError] = useState<string>('');
 
     const [lengthRequirement, setLengthRequirement] = useState<boolean>(false);
     const [uppercaseRequirement, setUppercaseRequirement] = useState<boolean>(false);
@@ -125,8 +131,13 @@ export default function PerfilPage() {
                 setPasswordChanged(true);
                 setCurrentPassword('');
                 setNewPassword('');
+                setPasswordError('');
             } else {
-                console.error('Erro ao alterar senha:', result.error);
+                if (result.status === 401 && result.error === 'Wrong old password') {
+                    setPasswordError('Senha atual incorreta');
+                } else {
+                    console.error('Erro ao alterar senha:', result.error);
+                }
             }
         } catch (error) {
             console.error('Erro ao alterar senha:', error);
@@ -162,28 +173,144 @@ export default function PerfilPage() {
     }
 
     return (
-        <div className={styles.container}>
-                <div className={styles.section}>
-                    <PageTitle
-                        icon={<UserRound size={24} />}
-                        title="Perfil"
-                        text={<></>}
-                    />
-                </div>
-                
-                <div className={styles.inputsContainer}>
+        <>
+        <div className={styles.mobileContainer}>
+            <div className={styles.section}>
+                <PageTitle
+                    icon={<UserRound size={24} />}
+                    title="Perfil"
+                    text={<></>}
+                />
+            </div>
+            
+            <div className={styles.inputsContainer}>
 
+                <ProfileImage 
+                    uploadAvatar={handleAvatarChange}
+                    avatarImage={avatar}
+                />
+
+                <InputText 
+                    label="Nome Completo:" 
+                    value={fullname} 
+                    placeholder="Insira seu nome completo"
+                    onChange={(e) => setFullname(e.target.value)}
+                />
+
+                {showNameButton && (
+                    <Button 
+                        onClick={handleNameChange}
+                        available={true}
+                        variant="full"
+                    >
+                        <Check size={20} />
+                        Salvar alteração
+                    </Button>
+                )}
+
+                <InputText
+                    label="E-mail:"
+                    disabled={true}
+                    value={email}
+                    placeholder="Insira seu email"
+                    onChange={(e) => setEmail(e.target.value)}
+                />
+            </div>
+
+            <h3 className={styles.passwordTitle}>
+                {passwordChanged ? "Senha alterada com sucesso" : "Alterar senha"}
+            </h3>
+
+
+            <div className={styles.passwordSection}>
+                <div className={styles.currentPasswordContainer}>
+                    <InputPassword
+                        label="Senha atual"
+                        value={currentPassword}
+                        onChange={(e) => {
+                            setCurrentPassword(e.target.value);
+                            if (passwordError) setPasswordError('');
+                        }}
+                        placeholder="Insira sua senha atual"
+                    />
+                    {passwordError && <span className={styles.passwordErrorMessage}>{passwordError}</span>}
+                </div>
+
+                <InputPassword
+                    label="Nova senha"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    placeholder="Insira sua nova senha"
+                />
+
+                <div className={styles.passwordRequirements}>
+                    <p>Sua senha deve conter:</p>
+                    <ul className={styles.passwordRequirementsList}>
+                        <li>{lengthRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 8 caracteres </li>
+                        <li>{uppercaseRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 1 letra maiúscula </li>
+                        <li>{lowercaseRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 1 letra minúscula </li>
+                        <li>{numberRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 1 número </li>
+                        <li>{nameRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Não deve conter seu nome ou data de nascimento </li>
+                    </ul>
+                </div>
+
+                <Button 
+                    onClick={handlePasswordChange}
+                    available={isPasswordFormValid}
+                    variant="full"
+                >
+                    <Check size={20} />
+                    Salvar alteração
+                </Button>
+
+                <Button
+                    onClick={logout}
+                    variant="text"
+                    iconLeft={<LogOut size={20} color="var(--color-error)" />}
+                    className={styles.logoutButton}
+                >
+                    Sair da conta
+                </Button>
+            </div>
+        </div>
+
+
+
+        {/* DESKTOP */}
+
+
+
+        <div className={styles.desktopContainer}>
+
+            <Card>
+                <CardHeader backButton={true} backButtonClick={() => router.back()} title="Perfil" breadcrumb={["Início", "Perfil"]} />
+
+                <span className={styles.Data}>Dados</span>
+
+                <div className={styles.imageContainer}>
                     <ProfileImage 
                         uploadAvatar={handleAvatarChange}
                         avatarImage={avatar}
                     />
+                </div>
+                
+                <div className={styles.inputsContainer}>
+                    <div className={styles.inputsRow}>
+                        <InputText 
+                            label="Nome completo" 
+                            value={fullname} 
+                            placeholder="Insira seu nome completo"
+                            onChange={(e) => setFullname(e.target.value)}
+                        />
 
-                    <InputText 
-                        label="Nome Completo:" 
-                        value={fullname} 
-                        placeholder="Insira seu nome completo"
-                        onChange={(e) => setFullname(e.target.value)}
-                    />
+                        <InputText
+                            label="E-mail"
+                            disabled={true}
+                            value={email}
+                            placeholder="Insira seu email"
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
 
                     {showNameButton && (
                         <Button 
@@ -195,66 +322,61 @@ export default function PerfilPage() {
                             Salvar alteração
                         </Button>
                     )}
-
-                    <InputText
-                        label="E-mail:"
-                        disabled={true}
-                        value={email}
-                        placeholder="Insira seu email"
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
                 </div>
 
                 <h3 className={styles.passwordTitle}>
                     {passwordChanged ? "Senha alterada com sucesso" : "Alterar senha"}
                 </h3>
 
-
                 <div className={styles.passwordSection}>
-                    <InputPassword
-                        label="Senha atual"
-                        value={currentPassword}
-                        onChange={(e) => setCurrentPassword(e.target.value)}
-                        placeholder="Insira sua senha atual"
-                    />
+                    <div className={styles.passwordInputsRow}>
+                        <div className={styles.currentPasswordContainer}>
+                            <InputPassword
+                                label="Senha atual"
+                                value={currentPassword}
+                                onChange={(e) => {
+                                    setCurrentPassword(e.target.value);
+                                    if (passwordError) setPasswordError('');
+                                }}
+                                placeholder="Insira sua senha atual"
+                            />
+                            {passwordError && <span className={styles.passwordErrorMessage}>{passwordError}</span>}
+                        </div>
 
-                    <InputPassword
-                        label="Nova senha"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                        placeholder="Insira sua nova senha"
-                    />
+                        <div className={styles.newPasswordContainer}>
+                            <InputPassword
+                                label="Nova senha"
+                                value={newPassword}
+                                onChange={(e) => setNewPassword(e.target.value)}
+                                placeholder="Insira sua nova senha"
+                            />
 
-                    <div className={styles.passwordRequirements}>
-                        <p>Sua senha deve conter:</p>
-                        <ul className={styles.passwordRequirementsList}>
-                            <li>{lengthRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 8 caracteres </li>
-                            <li>{uppercaseRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 1 letra maiúscula </li>
-                            <li>{lowercaseRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 1 letra minúscula </li>
-                            <li>{numberRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 1 número </li>
-                            <li>{nameRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Não deve conter seu nome ou data de nascimento </li>
-                        </ul>
+                            <div className={styles.passwordRequirements}>
+                                <p>Sua senha deve conter:</p>
+                                <ul className={styles.passwordRequirementsList}>
+                                    <li>{lengthRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 8 caracteres </li>
+                                    <li>{uppercaseRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 1 letra maiúscula </li>
+                                    <li>{lowercaseRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 1 letra minúscula </li>
+                                    <li>{numberRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Pelo menos 1 número </li>
+                                    <li>{nameRequirement ? <CheckCheck size={16} color="var(--color-primary)" /> : <X size={16} color="var(--color-error)" />}Não deve conter seu nome ou data de nascimento </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
 
-                    <Button 
-                        onClick={handlePasswordChange}
-                        available={isPasswordFormValid}
-                        variant="full"
-                    >
-                        <Check size={20} />
-                        Salvar alteração
-                    </Button>
-
-                    <Button
-                        onClick={logout}
-                        variant="text"
-                        iconLeft={<LogOut size={20} color="var(--color-error)" />}
-                        className={styles.logoutButton}
-                    >
-                        Sair da conta
-                    </Button>
+                    <div className={styles.saveButtonContainer}>
+                        <Button 
+                            onClick={handlePasswordChange}
+                            available={isPasswordFormValid}
+                            variant="full"
+                        >
+                            <Check size={20} />
+                            Salvar alteração
+                        </Button>
+                    </div>
                 </div>
-
+            </Card>
         </div>
+        </>
     )
 }
