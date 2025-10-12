@@ -10,7 +10,7 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import SaveFooter from "@/components/refeicoes/SaveFooter";
 import { ArrowLeft, CalendarIcon, CheckCheck, CircleCheck, CircleX } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Toast } from "@/components/general/Toast";
+import { useToast } from "@/contexts/ToastContext";
 import Card from "@/components/desktop/Card";
 import CardHeader from "@/components/desktop/CardHeader";
 import { Button } from "@/components/ui/Button";
@@ -34,13 +34,12 @@ export default function RefeicoesPage() {
     const [isMobile, setIsMobile] = useState(false);
 
     const router = useRouter();
+    const { showToast } = useToast();
 
     const [meals, setMeals] = useState<any[] | null>(null);
     const [guestMeals, setGuestMeals] = useState<any[] | null>(null);
     const [guestMealList, setGuestMealList] = useState<any[][]>([]);
     const [blockedDates, setBlockedDates] = useState<string[]>([]);
-    const [showSuccessToast, setShowSuccessToast] = useState(false);
-    const [showConvidadoRemovidoSuccessToast, setShowConvidadoRemovidoSuccessToast] = useState(false);
     const [haveSelected, setHaveSelected] = useState(false);
 
     const [mealsList, setMealsList] = useState<MealDay[]>([]);
@@ -195,19 +194,21 @@ export default function RefeicoesPage() {
             const result = await queryApi('POST', '/user/weekmeals', { meals: mealsToSave });
 
             if (result.success) {
-                setShowSuccessToast(true);
+                showToast('Refeições salvas com sucesso!', 'success');
+                router.push('/home');
                 console.log('Refeições salvas com sucesso');
             } else {
+                showToast('Erro ao salvar refeições', 'error');
                 console.error('Erro ao salvar refeições:', result.error);
             }
         } catch (error) {
+            showToast('Erro ao salvar refeições', 'error');
             console.error('Erro ao salvar refeições:', error);
         }
     };
 
     // Updated saveMeals for auto-save (calls doSave and resets hasChanges)
     const saveMeals = useCallback(async () => {
-        setShowSuccessToast(true);
         await doSave(mealsList);
         setHasChanges(false);
     }, [mealsList]);
@@ -269,7 +270,7 @@ export default function RefeicoesPage() {
                     prevGuestMeals ? prevGuestMeals.filter((meal: any) => meal.id !== guestMealId) : null
                 );
 
-                setShowConvidadoRemovidoSuccessToast(true);
+                showToast('Convidado removido com sucesso', 'success');
 
                 console.log('Convidado removido com sucesso');
             } else {
@@ -372,13 +373,6 @@ export default function RefeicoesPage() {
             </div>
 
             <SaveFooter hasChanges={hasChanges} onMarkAllMeals={markAllMeals} onSaveAndSend={saveMeals} />
-
-            {showSuccessToast && (
-                <Toast message="Refeições salvas com sucesso" type="success" onClose={() => setShowSuccessToast(false)} />
-            )}
-            {showConvidadoRemovidoSuccessToast && (
-                <Toast message="Convidado removido com sucesso" type="success" onClose={() => setShowConvidadoRemovidoSuccessToast(false)} />
-            )}
         </div>
 
         ) : (

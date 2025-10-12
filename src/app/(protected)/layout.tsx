@@ -4,6 +4,7 @@ import { Footer } from "@/components/general/Footer";
 import { Header } from "@/components/general/Header";
 import { Loading } from "@/components/ui/Loading";
 import { useAuth } from "@/contexts/AuthContext";
+import { ToastProvider } from "@/contexts/ToastContext";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import { useScrollToTop } from "@/lib/useScrollToTop";
@@ -36,13 +37,13 @@ export default function ProtectedLayout({ children }: { children: ReactNode}) {
     }
 
     return (
-        <>
+        <ToastProvider>
             <Header setSideBarExpanded={handleSideBarExpanded} />
             <div className={styles.marginTop}></div>
             <div className={`${sideBarExpanded ? styles.sideBarExpanded : styles.sideBarCollapsed}`}>
                 {children}
             </div>
             <Footer />
-        </>
+        </ToastProvider>
     )
 }

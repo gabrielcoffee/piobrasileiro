@@ -11,6 +11,7 @@ import { queryApi, uploadAvatar } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import ProfileImage from "@/components/profile/ProfileImage";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/contexts/ToastContext";
 import CardHeader from "@/components/desktop/CardHeader";
 import Card from "@/components/desktop/Card";
 import { useRouter } from "next/navigation";
@@ -19,6 +20,7 @@ import { useRouter } from "next/navigation";
 export default function PerfilPage() {
 
     const { logout, refreshUser } = useAuth();
+    const { showToast } = useToast();
 
     const router = useRouter();
 
@@ -132,11 +134,13 @@ export default function PerfilPage() {
                 setCurrentPassword('');
                 setNewPassword('');
                 setPasswordError('');
+                showToast('Senha atualizada com sucesso!', 'success');
             } else {
                 if (result.status === 401 && result.error === 'Wrong old password') {
                     setPasswordError('Senha atual incorreta');
                 } else {
                     console.error('Erro ao alterar senha:', result.error);
+                    showToast('Erro ao atualizar senha', 'error');
                 }
             }
         } catch (error) {
@@ -159,8 +163,10 @@ export default function PerfilPage() {
                 setOriginalName(fullname);
                 setShowNameButton(false);
                 await refreshUser(); // Refresh user data in header
+                showToast('Nome atualizado com sucesso!', 'success');
             } else {
                 console.error('Erro ao alterar nome:', result.error);
+                showToast('Erro ao atualizar nome', 'error');
             }
         } catch (error) {
             console.error('Erro ao alterar nome:', error);
