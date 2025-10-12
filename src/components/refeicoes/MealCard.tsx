@@ -146,7 +146,7 @@ export default function MealCard({
                     )}
                 </div>
 
-                <div className={styles.divider} />
+                <div className={styles.divider}/>
 
                 {/* Dinner Section */}
                 <div className={styles.mealSection}>

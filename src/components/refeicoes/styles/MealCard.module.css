@@ -320,4 +320,12 @@
         white-space: nowrap;
         font-weight: 500;
     }
+
+    .divider {
+        margin: 0;
+        padding: 0;
+        background-color: var(--color-border);
+        height: 70px;
+        width: 1px;
+    }
 }
