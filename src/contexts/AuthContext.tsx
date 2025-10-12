@@ -19,6 +19,7 @@ interface AuthContextType {
     setIsLoading: (isLoading: boolean) => void;
     login: (email: string, password: string) => Promise<boolean>;
     logout: () => void;
+    refreshUser: () => Promise<void>;
 }
 
 // Creating the context with the type being authentication or undefined (user not authenticated)
@@ -132,6 +133,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
     }
 
+    // Refresh user data
+    const refreshUser = async () => {
+        try {
+            const userData = await fetchUserData();
+            if (userData) {
+                setUser(userData);
+            }
+        } catch (error) {
+            console.log('Failed to refresh user data', error);
+        }
+    }
+
     // Context data that is send by the provider
     const value: AuthContextType = {
         user,
@@ -140,6 +153,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setIsLoading,
         login,
         logout,
+        refreshUser,
     };
 
     return (

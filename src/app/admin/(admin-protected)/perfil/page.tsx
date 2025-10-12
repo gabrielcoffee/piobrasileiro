@@ -13,9 +13,11 @@ import { DropdownInput } from "@/components/ui/DropdownInput";
 import { Button } from "@/components/ui/Button";
 import ProfileImage from "@/components/profile/ProfileImage";
 import { InputTextBox } from "@/components/ui/InputTextBox";
+import { useAuth } from "@/contexts/AuthContext";
 
 
-export default function PerfilAdminPage() {    
+export default function PerfilAdminPage() {
+    const { refreshUser } = useAuth();    
     const [usuario, setUsuario] = useState<any>(null);
 
     // User data states
@@ -172,6 +174,7 @@ export default function PerfilAdminPage() {
             if (result.success) {
                 console.log('Dados do usuário atualizados com sucesso');
                 fetchUsuario(); // Refresh data
+                await refreshUser(); // Refresh user data in header
             } else {
                 console.error('Erro ao atualizar dados do usuário:', result.error);
             }

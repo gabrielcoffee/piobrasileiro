@@ -13,6 +13,7 @@ import NotificationMenuAdmin from './NotificationMenuAdminDesktop';
 import NotificationMenuAdminDesktop from './NotificationMenuAdminDesktop';
 import Link from 'next/link';
 import { SideMenuComumDesktop } from './SideMenuComumDesktop';
+import NotificationMenuUserDesktop from './NotificationMenuUserDesktop';
 
 interface Notification {
     id: number;
@@ -43,9 +44,15 @@ export function Header({ setSideBarExpanded = (expanded: boolean) => void 0}: He
     const [notificationsCount, setNotificationsCount] = useState(0);
 
     const fetchNotificationsCount = async () => {
-        const result = await queryApi('GET', '/admin/requests/notifications');
-        if (result.success) {
-            setNotificationsCount(result.data);
+        // Only fetch admin notifications if user is on admin pages
+        if (pathname.startsWith('/admin')) {
+            const result = await queryApi('GET', '/admin/requests/notifications');
+            if (result.success) {
+                setNotificationsCount(result.data);
+            }
+        } else {
+            // For regular users, set count to 0 (they don't have real notifications)
+            setNotificationsCount(0);
         }
     }
 
@@ -55,11 +62,11 @@ export function Header({ setSideBarExpanded = (expanded: boolean) => void 0}: He
             fetchNotificationsCount();
         }, 10000);
         return () => clearInterval(timer);
-    }, []);
+    }, [pathname]);
     
     useEffect(() => {
         fetchNotificationsCount();
-    }, []);
+    }, [pathname]);
 
     useEffect(() => {
         if (user?.avatar) {
@@ -171,10 +178,10 @@ export function Header({ setSideBarExpanded = (expanded: boolean) => void 0}: He
 
             </div>
             <div className={styles.desktopHeader}>
-                <div className={styles.leftSide}>
+                <Link href={pathname.startsWith('/admin') ? '/admin/home' : '/home'} className={styles.leftSide}>
                     <img src="/brasao.png" alt="Logo" width={100} height={100} />
                     <span className={styles.logoText}>PONTIFÍCIO COLÉGIO PIO BRASILEIRO</span>
-                </div>
+                </Link>
 
                 <div className={styles.rightSide}>
 
@@ -186,11 +193,19 @@ export function Header({ setSideBarExpanded = (expanded: boolean) => void 0}: He
                                 <div className={styles.notificationCount}>{notificationsCount}</div>
                             }
 
-                            <Link href="/admin/solicitacoes">
-                                {desktopShowNotificationMenu && (
-                                    <NotificationMenuAdminDesktop />
-                                )}
-                            </Link>
+                            {pathname.startsWith('/admin') ? (
+                                <Link href="/admin/solicitacoes">
+                                    {desktopShowNotificationMenu && (
+                                        <NotificationMenuAdminDesktop />
+                                    )}
+                                </Link>
+                            ) : (
+                                <>
+                                    {desktopShowNotificationMenu && (
+                                        <NotificationMenuUserDesktop />
+                                    )}
+                                </>
+                            )}
                         </button>
                     </div>
 

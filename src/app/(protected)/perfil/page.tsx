@@ -18,7 +18,7 @@ import { useRouter } from "next/navigation";
 
 export default function PerfilPage() {
 
-    const { logout } = useAuth();
+    const { logout, refreshUser } = useAuth();
 
     const router = useRouter();
 
@@ -158,6 +158,7 @@ export default function PerfilPage() {
                 console.log('Nome alterado com sucesso');
                 setOriginalName(fullname);
                 setShowNameButton(false);
+                await refreshUser(); // Refresh user data in header
             } else {
                 console.error('Erro ao alterar nome:', result.error);
             }
@@ -258,6 +259,7 @@ export default function PerfilPage() {
                     onClick={handlePasswordChange}
                     available={isPasswordFormValid}
                     variant="full"
+                    className={styles.passwordSaveButton}
                 >
                     <Check size={20} />
                     Salvar alteração
@@ -317,6 +319,7 @@ export default function PerfilPage() {
                             onClick={handleNameChange}
                             available={true}
                             variant="full"
+                            className={styles.nameSaveButton}
                         >
                             <Check size={20} />
                             Salvar alteração
