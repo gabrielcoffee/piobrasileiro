@@ -285,7 +285,7 @@ export default function PerfilPage() {
         <div className={styles.desktopContainer}>
 
             <Card>
-                <CardHeader backButton={true} backButtonClick={() => router.back()} title="Perfil" breadcrumb={["Início", "Perfil"]} />
+                <CardHeader backButton={true} backButtonClick={() => router.push('/home')} title="Perfil" breadcrumb={["Início", "Perfil"]} />
 
                 <span className={styles.Data}>Dados</span>
 

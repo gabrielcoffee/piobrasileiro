@@ -135,15 +135,16 @@ export default function MealCard({
                         </div>
                     )}
 
-                    {lunch && (
-                        <div className={styles.addGuestButtonContainer}>
+                    
+                    <div className={styles.addGuestButtonContainer}>
+                        {lunch && (
                             <Button available={!takeOut} onClick={() => takeOut ? undefined : setIsGuestModalOpen(true)} className={styles.addGuestButton} variant="full">Adicionar convidado</Button>
-
-                            {guestMeals.length > 0 && (
-                                <span className={styles.addGuestButtonText} onClick={() => setShowConvidadosModal(true)} ><UserCheck size={16} />Ver Convidados</span>
-                            )}
-                        </div>
-                    )}
+                        )}
+                        {guestMeals.length > 0 && (
+                            <span className={styles.addGuestButtonText} onClick={() => setShowConvidadosModal(true)} ><UserCheck size={16} />Ver Convidados</span>
+                        )}
+                    </div>
+                    
                 </div>
 
                 <div className={styles.divider}/>

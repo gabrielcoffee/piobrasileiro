@@ -210,7 +210,6 @@ export default function RefeicoesPage() {
         setShowSuccessToast(true);
         await doSave(mealsList);
         setHasChanges(false);
-        router.push('/home');
     }, [mealsList]);
 
     // Atualiza uma refeição específica
@@ -336,7 +335,7 @@ export default function RefeicoesPage() {
         {isMobile ? (
         <div className={styles.mobileContainer}>
             <div className={styles.gobackHeader}>
-                <ArrowLeft size={24} onClick={() => router.back()} />
+                <ArrowLeft size={24} onClick={() => router.push('/home')} />
             </div>
             <div className={styles.container}>
                 <MealDaysSection/>
