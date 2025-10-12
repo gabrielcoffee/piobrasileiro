@@ -1,6 +1,36 @@
-.container {
+.mobileContainer {
     margin-left: 24px;
     margin-right: 24px;
     padding-bottom: 6rem; /* Space for fixed footer */
     min-height: 100vh;
+}
+
+.desktopContainer {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .mobileContainer {
+        display: none;
+    }
+
+    .desktopContainer {
+        display: block;
+    }
+
+    .section {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .sectionTitle {
+        width: 60%;
+    }
+
+    .sectionButtons {
+        width: 25%;
+    }
 }
