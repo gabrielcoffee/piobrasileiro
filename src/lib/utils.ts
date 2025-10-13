@@ -341,3 +341,14 @@ export function isDateSaturdaySunday(date: Date) {
     console.log(date.getDay());
     return date.getDay() === 6 || date.getDay() === 0;
 }
+
+export function getInitials(nome: string) {
+    const firstName = nome.split(' ')[0];
+    const lastName = nome.split(' ')[1];
+
+    if (lastName) {
+        return firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
+    }
+
+    return firstName.charAt(0).toUpperCase();
+}

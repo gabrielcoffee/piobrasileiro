@@ -8,7 +8,7 @@ import Table from '@/components/admin/Table';
 import SearchSection from '@/components/admin/SearchSection';
 import { Check, Info, PencilLine, Plus, Printer, X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { convertBufferToBase64, getCurrentWeekInfo, getDateString, queryApi } from '@/lib/utils';
+import { convertBufferToBase64, getCurrentWeekInfo, getDateString, getInitials, queryApi } from '@/lib/utils';
 import { generateReportPDFLib } from '@/lib/reportUtils';
 import { DateSection } from '@/components/admin/DateSection';
 import Modal from '@/components/admin/Modal';
@@ -186,7 +186,15 @@ export default function ListaDeRefeicoesPage() {
                     ...meal,
                     rawData: meal,
                     nome_limpo: meal.nome.toLowerCase(),
-                    nome: <span className={styles.nomeCompleto}><img src={avatar} alt="Avatar" className={styles.avatar} />{meal.nome}</span>,
+                    nome: 
+                        <span className={styles.nomeCompleto}>
+                            {meal.avatar_image_data !== null ? (
+                                <img src={avatar} alt="Avatar" className={styles.avatar} />
+                            ) : (
+                                <span className={styles.avatarInitials}>{getInitials(meal.nome)}</span>
+                            )}
+                            {meal.nome}
+                        </span>,
                     almoco: getAlmocoText(meal.almoco_colegio, meal.almoco_levar),
                     tipo_usuario: getTipoUsuarioText(meal),
                     jantar: meal.janta_colegio ? 'No Colégio Pio' : <X style={{color: 'var(--color-error)'}} />,

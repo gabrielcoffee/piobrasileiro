@@ -154,3 +154,15 @@
     opacity: 1;
     visibility: visible;
 }
+
+.avatarInitials {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    object-fit: cover;
+    background-color: var(--color-slate-200);
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

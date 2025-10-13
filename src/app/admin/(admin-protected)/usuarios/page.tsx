@@ -8,7 +8,7 @@ import { EllipsisVertical, Filter, FlipVertical, PencilLine, Plus, Power, PowerO
 import Table from "@/components/admin/Table";
 import SearchSection from "@/components/admin/SearchSection";
 import { useEffect, useState } from "react";
-import { convertBufferToBase64, getDateString, queryApi } from "@/lib/utils";
+import { convertBufferToBase64, getDateString, getInitials, queryApi } from "@/lib/utils";
 import Modal from "@/components/admin/Modal";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
@@ -157,17 +157,6 @@ export default function UsuariosPage() {
             setIsInativarModalOpen(false);
             setCanShowExcluirButtons(false);
         }
-    }
-
-    const getInitials = (nome: string) => {
-        const firstName = nome.split(' ')[0];
-        const lastName = nome.split(' ')[1];
-
-        if (lastName) {
-            return firstName.charAt(0).toUpperCase() + lastName.charAt(0).toUpperCase();
-        }
-
-        return firstName.charAt(0).toUpperCase();
     }
 
     const toggleActiveUser = async (id: string) => {
