@@ -8,7 +8,7 @@ import styles from "./page.module.css";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect, useState } from "react";
 import { Loading } from "@/components/ui/Loading";
-import { queryApi, getCurrentWeekInfo } from "@/lib/utils";
+import { queryApi, getCurrentWeekInfo, getCurrentWeekInfoRegular } from "@/lib/utils";
 import { ShowDateSection } from "@/components/home/ShowDateSection";
 import { Button } from "@/components/ui/Button";
 import Card from "@/components/desktop/Card";
@@ -35,7 +35,7 @@ export default function HomePage() {
         fetchWeekMeals();
     }, []);
 
-    const weekInfo = getCurrentWeekInfo();
+    const weekInfo = getCurrentWeekInfoRegular();
 
     if (isLoading) {
         return <Loading/>
@@ -65,7 +65,7 @@ export default function HomePage() {
                 <WeekInfo
                     curWeek={weekInfo.weekNumber}
                     from={weekInfo.monday}
-                    to={weekInfo.sunday}
+                    to={weekInfo.nextSunday}
                     isBooked={isBooked}
                 />
 
@@ -133,7 +133,7 @@ export default function HomePage() {
                         <WeekInfo
                             curWeek={weekInfo.weekNumber}
                             from={weekInfo.monday}
-                            to={weekInfo.sunday}
+                            to={weekInfo.nextSunday}
                             isBooked={isBooked}
                         />
                     </div>

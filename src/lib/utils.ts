@@ -109,9 +109,15 @@ export function getCurrentWeekInfoRegular() {
     const nextSunday = new Date(sunday);
     nextSunday.setDate(sunday.getDate() + 7);
 
+    const monday = new Date(sunday);
+    monday.setDate(sunday.getDate() + 1);
+
     return {
         weekNumber,
         weekDates,
+        sunday,
+        monday,
+        nextSunday
     }
 }
 
@@ -352,3 +358,4 @@ export function getInitials(nome: string) {
 
     return firstName.charAt(0).toUpperCase();
 }
+
