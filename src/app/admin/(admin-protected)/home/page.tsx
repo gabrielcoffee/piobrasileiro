@@ -83,7 +83,8 @@ export default function HomePage() {
                         setFullWeek(false);
                     }}
                 >
-                    <span>{date.toLocaleDateString('pt-BR', { weekday: 'long' }).toUpperCase()}</span>
+                    <span className={styles.desktopDayButtonText}>{date.toLocaleDateString('pt-BR', { weekday: 'long' }).toUpperCase()}</span>
+                    <span className={styles.mobileDayButtonText}>{date.toLocaleDateString('pt-BR', { weekday: 'short' }).toUpperCase()}</span>
                 </button>
             )
         })
@@ -97,7 +98,8 @@ export default function HomePage() {
                     fetchDashboardData();
                 }}
             >
-                <span>SEMANA INTEIRA</span>
+                <span className={styles.desktopDayButtonText}>SEMANA INTEIRA</span>
+                <span className={styles.mobileDayButtonText}>SEMANA</span>
             </button>,
             ...weekDayButtons
         ]
@@ -112,7 +114,8 @@ export default function HomePage() {
     }, []);
 
     return (
-        <div className={styles.container}>
+        <>
+        <div className={styles.desktopContainer}>
             <Card>
                 <CardHeader title="Início" breadcrumb={["Início", "Informações"]} />
 
@@ -145,7 +148,6 @@ export default function HomePage() {
                                 <MiniCard color="green" value={dashboardData?.weekTotals?.almocoLevarCount} title="Almoço para Levar" />
                                 <MiniCard color="green" value={dashboardData?.weekTotals?.jantaColegioCount} title="Jantares" />
                             </div>
-                            <div></div>
                             <div className={styles.dashboardRow}>
                                 <MiniCard color="yellow" value={dashboardData?.totalMoradores} title="Moradores" />
                                 <MiniCard color="yellow" value={dashboardData?.weekTotals?.convidadosCount} title="Visitantes" />
@@ -159,7 +161,6 @@ export default function HomePage() {
                                 <MiniCard color="green" value={dashboardData?.dailyStats?.find((data: any) => data.day === selectedDate)?.almocoLevarCount} title="Almoço para Levar" />
                                 <MiniCard color="green" value={dashboardData?.dailyStats?.find((data: any) => data.day === selectedDate)?.jantaColegioCount} title="Jantares" />
                             </div>
-                            <div></div>
                             <div className={styles.dashboardRow}>
                                 <MiniCard color="yellow" value={dashboardData?.totalMoradores} title="Moradores" />
                                 <MiniCard color="yellow" value={dashboardData?.dailyStats?.find((data: any) => data.day === selectedDate)?.convidadosCount} title="Visitantes" />
@@ -168,7 +169,6 @@ export default function HomePage() {
                         </>
                     )}
 
-                    <div></div>
                     <span className={styles.dashboardTitle}>Acessos rápidos</span>
                     <div className={styles.dashboardRow}>
                         <MiniCard color="white" value={dashboardData?.weekTotals?.totalMeals} title="Total de refeições da semana" 
@@ -179,5 +179,75 @@ export default function HomePage() {
                 </div>
             </Card>
         </div>
+
+
+        {/* MOBILE VERSION BELOW */}
+
+
+        <div className={styles.mobileContainer}>
+            <div className={styles.weekInfo}>
+                <span>
+                    Semana {weekStart.toLocaleDateString( 'pt-BR', { day: '2-digit', month: '2-digit' } )} a {weekEnd.toLocaleDateString( 'pt-BR', { day: '2-digit', month: '2-digit' } )}
+                </span>
+            </div>
+
+            <div className={styles.weekDaysButtons}>
+                <div className={styles.weekList}>
+                    {currentWeekDaysButtons()}
+                </div>
+            </div>
+
+            <div className={styles.dashboard}>
+                {fullWeek ? (
+                    <>
+                        <div className={styles.dashboardRow}>
+                            <MiniCard color="green" value={dashboardData?.weekTotals?.almocoColegioCount} title="Almoço no Colégio Pio" />
+                            <MiniCard color="green" value={dashboardData?.weekTotals?.almocoLevarCount} title="Almoço para Levar" />
+                            <MiniCard color="green" value={dashboardData?.weekTotals?.jantaColegioCount} title="Jantares" />
+                        </div>
+                        <div></div>
+                        <div className={styles.dashboardRow}>
+                            <MiniCard color="yellow" value={dashboardData?.totalMoradores} title="Moradores" />
+                            <MiniCard color="yellow" value={dashboardData?.weekTotals?.convidadosCount} title="Visitantes" />
+                            <MiniCard color="yellow" value={dashboardData?.hospedesCount} title="Hóspedes" />
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <div className={styles.dashboardRow}>
+                            <MiniCard color="green" value={dashboardData?.dailyStats?.find((data: any) => data.day === selectedDate)?.almocoColegioCount} title="Almoço no Colégio Pio" />
+                            <MiniCard color="green" value={dashboardData?.dailyStats?.find((data: any) => data.day === selectedDate)?.almocoLevarCount} title="Almoço para Levar" />
+                            <MiniCard color="green" value={dashboardData?.dailyStats?.find((data: any) => data.day === selectedDate)?.jantaColegioCount} title="Jantares" />
+                        </div>
+                        <div></div>
+                        <div className={styles.dashboardRow}>
+                            <MiniCard color="yellow" value={dashboardData?.totalMoradores} title="Moradores" />
+                            <MiniCard color="yellow" value={dashboardData?.dailyStats?.find((data: any) => data.day === selectedDate)?.convidadosCount} title="Visitantes" />
+                            <MiniCard color="yellow" value={dashboardData?.dailyStats?.find((data: any) => data.day === selectedDate)?.hospedesCount} title="Hóspedes" />
+                        </div>
+                    </>
+                )}
+
+                <div className={styles.calendarioButton}>
+                    <Button variant="full-white" iconRight={<ArrowRight />} className={styles.calendarButton}
+                    href="/admin/calendario"
+                    >
+                        Ver calendário
+                    </Button>             
+                </div>
+
+                <div></div>
+                <span className={styles.dashboardTitle}>Acessos rápidos</span>
+                <div className={styles.dashboardRow}>
+                    <MiniCard color="white" value={dashboardData?.weekTotals?.totalMeals} title="Total de refeições da semana" 
+                    button={<Button onClick={() => handleGenerateReport()} variant="full-white" iconLeft={<Printer/>}>Gerar relatório</Button>} />
+                </div>
+                <div className={styles.dashboardRow}>
+                    <MiniCard color="white" value={dashboardData?.availableRooms} title="Quartos disponíveis na semana"
+                    button={<Button href="/admin/reservas" variant="full-white" iconLeft={<Plus/>}>Nova reserva</Button>} />
+                </div>
+            </div>
+        </div>
+        </>
     )
 }

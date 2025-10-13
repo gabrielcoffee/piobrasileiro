@@ -6,6 +6,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import { useScrollToTop } from "@/lib/useScrollToTop";
+import { ToastProvider } from "@/contexts/ToastContext";
+import styles from './layout.module.css';
 
 export default function ProtectedAdminLayout({ children }: { children: ReactNode}) {
     const { isLoading, isAuthenticated, user } = useAuth();
@@ -37,12 +39,12 @@ export default function ProtectedAdminLayout({ children }: { children: ReactNode
     }
 
     return (
-        <>
-            <Header setSideBarExpanded={handleSideBarExpanded} />
-            <div style={{ marginTop: '80px' }}></div>
-            <div style={{ marginLeft: `calc(${sideBarExpanded ? '280px' : '80px'} + 1rem)`, transition: 'margin-left 0.3s ease' }}>
+        <ToastProvider>
+        <Header setSideBarExpanded={handleSideBarExpanded} />
+            <div className={styles.marginTop}></div>
+            <div className={`${sideBarExpanded ? styles.sideBarExpanded : styles.sideBarCollapsed}`}>
                 {children}
             </div>
-        </>
+        </ToastProvider>
     )
 }

@@ -27,6 +27,20 @@
     color: var(--color-primary);
 }
 
+@media (max-width: 768px) {
+    .dashboardRow {
+        gap: 0.5rem;
+        justify-content: space-between;
+    }
+
+    .dashboard { 
+        gap: 0.5rem;
+    }
+
+    .dashboardTitle {
+        font-size: 1rem;
+    }
+}
 
 .dayButton {
     display: flex;
@@ -41,6 +55,14 @@
     padding: 0.2rem 0.5rem;
     border-radius: 4px;
     cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .dayButton {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.6rem;
+        border-radius: 4px;
+    }
 }
 
 .dayButton:hover {
@@ -62,6 +84,21 @@
     gap: 1rem;
 }
 
+@media (max-width: 768px) {
+    .weekList {
+        gap: 1rem;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .calendarioButton {
+        margin-top: 0.5rem;
+    }
+}
+
 .selected {
     color: white !important;
     border-color: var(--color-primary); 
@@ -72,4 +109,41 @@
     color: white !important;
     border-color: var(--color-primary-hover); 
     background-color: var(--color-primary-hover);
+}
+
+.mobileContainer {
+    margin-left: 24px;
+    margin-right: 24px;
+    padding-bottom: 6rem;
+    min-height: 100vh;
+}
+
+.desktopContainer {
+    display: none;
+}
+
+.desktopDayButtonText {
+    display: none;
+}
+
+.mobileDayButtonText {
+    display: block;
+}
+
+@media (min-width: 768px) {
+    .mobileContainer {
+        display: none;
+    }
+
+    .desktopContainer {
+        display: block;
+    }
+
+    .desktopDayButtonText {
+        display: block;
+    }
+
+    .mobileDayButtonText {
+        display: none;
+    }
 }

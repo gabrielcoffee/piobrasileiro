@@ -7,7 +7,7 @@
     height: 100%;
     background-color: var(--color-primary);
     color: var(--color-white);
-    font-weight: bold;
+    font-weight: 500;
     border-radius: var(--radius-sm);
     border: none;
     cursor: pointer;

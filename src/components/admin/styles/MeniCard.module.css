@@ -12,16 +12,38 @@
     background-color: var(--color-white);
 }
 
+@media (max-width: 768px) {
+    .container {
+        flex: 1;
+        border-radius: 8px;
+        height: 95px;
+        padding: 1rem;
+    }
+}
+
 .value {
     font-size: 2.5rem;
     font-weight: 600;
 }
 
 .title {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     font-weight: 400;
     color: var(--color-text-muted);
 }
+
+@media (max-width: 768px) {
+
+    .value {
+        font-size: 1.5rem;
+    }
+
+    .title {
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+}
+
 
 .green {
     background-color: #EAFCE9;
@@ -47,6 +69,13 @@
     color: var(--color-primary);
 
     box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.10);
+}
+
+@media (max-width: 768px) {
+    .white {
+        height: 100%;
+        margin-top: 0.5rem;
+    }
 }
 
 .button {
