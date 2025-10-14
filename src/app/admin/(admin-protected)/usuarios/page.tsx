@@ -13,6 +13,8 @@ import Modal from "@/components/admin/Modal";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { DropdownInput } from "@/components/ui/DropdownInput";
+import MobileTitle from "@/components/admin/MobileTitle";
+import SaveFooterAdmin from "@/components/admin/SaveFooterAdmin";
 
 export default function UsuariosPage() {
 
@@ -208,8 +210,16 @@ export default function UsuariosPage() {
         return filterTipoUsuario !== '';
     }
 
+    const [isMobile, setIsMobile] = useState<boolean>(false);
+
+    useEffect(() => {
+        setIsMobile(window.innerWidth < 768);
+    }, [window.innerWidth]);
+
     return (
-        <div className={styles.container}>
+        <>
+        {!isMobile ? (
+        <div className={styles.desktopContainer}>
             <Card>
                 <CardHeader title="Lista de usuários" breadcrumb={["Início", "Usuários"]} />
 
@@ -288,7 +298,96 @@ export default function UsuariosPage() {
                     }}
                 />
             </Card>
+        </div>
 
+
+
+        ) : ( /* MOBILE VERSION */
+
+
+
+            <div className={styles.mobileContainer}>
+                <MobileTitle title="Lista de usuários" />
+
+                <SearchSection
+                    searchText={searchText}
+                    setSearchText={setSearchText}
+                    searchPlaceholder="Pesquise por nome"
+                    dateSection={false}
+                    buttons={[
+                        filters.length > 0 ? (
+                            <Button 
+                            onClick={() => handleOpenFilterModal()} 
+                            key="filter" variant="full-white" 
+                            style={{backgroundColor: 'var(--color-primary-foreground)', border: '1px solid var(--color-primary)'}} 
+                            iconLeft={<Filter size={24} />}>
+                                Alterar filtros
+                            </Button>
+                        ) : (
+                            <Button 
+                            onClick={() => handleOpenFilterModal()} 
+                            key="filter" variant="full-white" 
+                            iconLeft={<Filter size={24} />}>
+                                Filtrar
+                            </Button>
+                        ),
+                        <Button visible={canShowExcluirButtons} key="powerOff" variant="full-white" style={{color:'var(--color-error)'}} iconLeft={<PowerOff size={24} />} onClick={() => setIsInativarModalOpen(true)}>Inativar</Button>,
+                        <Button visible={canShowExcluirButtons} key="trash" variant="full-white" style={{color:'var(--color-error)'}} iconLeft={<Trash2 size={24} />} onClick={() => setIsExcluirModalOpen(true)}>Excluir</Button>,
+                    ]}
+                />
+
+                <Table
+                    filters={filters}
+                    searchText={searchText}
+                    searchKey="nome_limpo"
+                    headerItems={[
+                        { key: "nome_completo", label: "Nome" },
+                        { key: "tipo_usuario", label: "Tipo de usuário" },
+                        { key: "funcao", label: "Função" },
+                        { key: "data_nasc", label: "Nascimento" },
+                        { key: "email", label: "Email" },
+                        { key: "acao", label: "Ação" },
+                    ]}
+                    rowItems={usuarios.map((u) => ({
+                        // used for searching but not displayed
+                        user_id: u.user_id,
+                        nome_limpo: u.nome_limpo,
+                        // display cells
+                        nome_completo: (
+                            <span className={styles.nomeCompleto}>
+                                {u.avatar !== null ? (
+                                    <img src={u.avatar} alt="Avatar" className={styles.avatar} />
+                                ) : (
+                                    
+                                    <span className={styles.avatarInitials}>{getInitials(u.nome_completo)}</span>
+                                )}
+                                {u.nome_completo}
+                            </span>
+                        ),
+                        tipo_usuario: u.tipo_usuario,
+                        funcao: u.funcao,
+                        data_nasc: u.data_nasc,
+                        email: u.email,
+                        acao: renderActionCell(u.active, u.user_id),
+                    }))}
+                    itemsPerPage={8}
+                    hasSelector={true}
+                    onSelectionChange={(selectedRows) => {
+                        if (selectedRows.length > 0) {
+                            setSelectedUsers(selectedRows);
+                            setCanShowExcluirButtons(true);
+                        } else {
+                            setSelectedUsers([]);
+                            setCanShowExcluirButtons(false);
+                        }
+                    }}
+                />
+
+            <SaveFooterAdmin buttonText="Novo usuário" executeFunction={() => router.push('/admin/usuarios/novo')} />
+
+            </div>
+        )}
+                
             <Modal
             title="Tem certeza que deseja excluir o(s) usuário(s)?"
             subtitle="Esta ação é irreversível e resultará na exclusão permanente de todo o histórico deste usuário."
@@ -343,7 +442,6 @@ export default function UsuariosPage() {
                     />
                 </div>
             </Modal>
-        </div>
-        
+        </>
     )
 }

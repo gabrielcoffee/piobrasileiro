@@ -1,3 +1,26 @@
+.mobileContainer {
+    margin-left: 24px;
+    margin-right: 24px;
+    padding-bottom: 6rem;
+    min-height: 100vh;
+}
+
+.desktopContainer {
+    display: none;
+}
+
+
+@media (min-width: 768px) {
+
+    .mobileContainer {
+        display: none;
+    }
+
+    .desktopContainer {
+        display: block;
+    }
+}
+
 .acoes {
     position: relative;
 

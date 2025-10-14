@@ -1,10 +1,8 @@
 'use client'
 
 import { Search } from "lucide-react";
-import { InputText } from "../ui/InputText";
 import styles from "./styles/SearchSection.module.css";
 import { useEffect, useState } from "react";
-import { DateSection } from "./DateSection";
 
 interface SearchSectionProps {
     searchPlaceholder: string;
