@@ -24,6 +24,7 @@ interface TableProps {
     searchText?: string;
     searchKey?: string;
     filters?: { key: string, value: string | boolean | number }[];
+    rowIdKey?: string;
 }
 
 export interface TableRef {
@@ -41,11 +42,12 @@ const Table = forwardRef<TableRef, TableProps>(({
     onSelectionChange,
     searchText = '',
     searchKey = 'nome_completo',
-    filters = []
+    filters = [],
+    rowIdKey = 'id'
 }, ref) => {    
 
     const [currentPage, setCurrentPage] = useState(1);
-    const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
+    const [selectedRows, setSelectedRows] = useState<Set<string | number>>(new Set());
     
     // Calculate pagination
     const defaultRows = rowItems;
@@ -53,9 +55,9 @@ const Table = forwardRef<TableRef, TableProps>(({
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const [currentPageItems, setCurrentPageItems] = useState(defaultRows.slice(startIndex, endIndex));
-    const currentPageSelectedCount = Array.from(selectedRows)
-        .filter(index => index >= startIndex && index < endIndex)
-        .length;
+    const currentPageSelectedCount = currentPageItems.filter(item => 
+        selectedRows.has(String(item[rowIdKey]))
+    ).length;
 
     // For filtering:
     const stableFilters = useMemo(() => {
@@ -152,7 +154,7 @@ const Table = forwardRef<TableRef, TableProps>(({
     // Expose these methods to parent
     useImperativeHandle(ref, () => ({
         getSelectedRowsData: () => {
-            return Array.from(selectedRows).map(index => rowItems[index]);
+            return rowItems.filter(row => selectedRows.has(String(row[rowIdKey])));
         },
         getSelectedRowsCount: () => {
             return selectedRows.size;
@@ -167,21 +169,17 @@ const Table = forwardRef<TableRef, TableProps>(({
     
     const handleSelectAll = () => {
         const newSelected = new Set(selectedRows);
-
-        const maxInThisPage = startIndex + currentPageItems.length;
         
         if (isAllSelected) {
-            for (let i = startIndex; i < maxInThisPage; i++) {
-                newSelected.delete(i);
-            }
+            currentPageItems.forEach(item => {
+                newSelected.delete(String(item[rowIdKey]));
+            });
             setIsAllSelected(false);
-
         } else {
-            for (let i = startIndex; i < maxInThisPage; i++) {
-                newSelected.add(i);
-            }
+            currentPageItems.forEach(item => {
+                newSelected.add(String(item[rowIdKey]));
+            });
             setIsAllSelected(true);
-
         }
         
         setSelectedRows(newSelected);
@@ -189,14 +187,14 @@ const Table = forwardRef<TableRef, TableProps>(({
     };
     
     const handleRowSelect = (rowIndex: number) => {
-        const absoluteIndex = startIndex + rowIndex;
+        const item = currentPageItems[rowIndex];
+        const rowId = String(item[rowIdKey]);
         const newSelected = new Set(selectedRows);
-
         
-        if (newSelected.has(absoluteIndex)) {
-            newSelected.delete(absoluteIndex);
+        if (newSelected.has(rowId)) {
+            newSelected.delete(rowId);
         } else {
-            newSelected.add(absoluteIndex);
+            newSelected.add(rowId);
         }
 
         setSelectedRows(newSelected);
@@ -204,13 +202,14 @@ const Table = forwardRef<TableRef, TableProps>(({
     };
     
     const isRowSelected = (rowIndex: number) => {
-        return selectedRows.has(startIndex + rowIndex);
+        const item = currentPageItems[rowIndex];
+        return selectedRows.has(String(item[rowIdKey]));
     };
     
     // Notify parent component of selection changes
-    const notifySelectionChange = (selectedIndices: Set<number>) => {
+    const notifySelectionChange = (selectedIds: Set<string | number>) => {
         if (onSelectionChange) {
-            const selectedData = Array.from(selectedIndices).map(index => rowItems[index]);
+            const selectedData = rowItems.filter(row => selectedIds.has(String(row[rowIdKey])));
             onSelectionChange(selectedData);
         }
     };
@@ -314,6 +313,7 @@ const Table = forwardRef<TableRef, TableProps>(({
 
     return (
         <div className={`${styles.container} ${className || ''}`}>
+            {/* Desktop Table View */}
             <div className={styles.tableWrapper}>
                 <table className={styles.table}>
                     <thead className={styles.tableHeader}>
@@ -375,6 +375,63 @@ const Table = forwardRef<TableRef, TableProps>(({
                         ))}
                     </tbody>
                 </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className={styles.mobileCardContainer}>
+                {currentPageItems.map((rowItem, rowIndex) => (
+                    <div 
+                        key={startIndex + rowIndex} 
+                        className={`
+                            ${styles.mobileCard} 
+                            ${isRowSelected(rowIndex) ? styles.selectedCard : ''} 
+                            ${rowItem.visualizada === true ? styles.seenCard : ''}
+                            ${rowItem.active === false ? styles.inactiveCard : ''}
+                        `}
+                    >
+                        {/* Checkbox */}
+                        {hasSelector && (
+                            <div className={styles.mobileCardCheckbox}>
+                                <input
+                                    type="checkbox"
+                                    checked={isRowSelected(rowIndex)}
+                                    onChange={() => handleRowSelect(rowIndex)}
+                                    className={styles.checkbox}
+                                />
+                            </div>
+                        )}
+
+                        {/* Card Content */}
+                        <div className={`${styles.mobileCardContent} ${hasSelector ? styles.withCheckbox : ''}`}>
+                            {/* Name - Primary Color */}
+                            <div className={styles.mobileCardName}>
+                                {rowItem[searchKey] || rowItem.nome_completo || 'Nome não encontrado'}
+                            </div>
+
+                            {/* Fields */}
+                            <div className={styles.mobileCardFields}>
+                                {headerItems
+                                    .filter(headerItem => headerItem.key !== searchKey && headerItem.key !== 'nome_completo' && headerItem.key !== 'acao')
+                                    .map((headerItem) => (
+                                        <div key={headerItem.key} className={styles.mobileCardField}>
+                                            <span className={styles.mobileCardFieldLabel}>{headerItem.label}:</span>
+                                            <span className={styles.mobileCardFieldValue}>{rowItem[headerItem.key]}</span>
+                                        </div>
+                                    ))
+                                }
+                            </div>
+
+                            {/* Action Buttons */}
+                            <div className={styles.mobileCardActions}>
+                                {rowItem.acao && (
+                                    <div className={styles.mobileCardActionButtons}>
+                                        {rowItem.acao}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                ))}
             </div>
 
             {/* Pagination */}

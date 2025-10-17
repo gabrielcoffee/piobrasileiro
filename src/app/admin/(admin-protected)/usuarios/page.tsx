@@ -25,6 +25,7 @@ export default function UsuariosPage() {
     const [selectedUsers, setSelectedUsers] = useState<any[]>([]);
     const [searchText, setSearchText] = useState<string>('');
     const [showExcluirInfoId, setShowExcluirInfoId] = useState<string | null>(null);
+    const [showSearchInput, setShowSearchInput] = useState<boolean>(true);
 
     const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
     const [filterTipoUsuario, setFilterTipoUsuario] = useState<string>('');
@@ -63,7 +64,7 @@ export default function UsuariosPage() {
                 {active ? (
                     <PowerOff
                         size={20}
-                        style={{ cursor: 'pointer' }}
+                        className={styles.actionButton}
                         onClick={() => {
                             setSelectedUsers([{ user_id: id }]);
                             setIsInativarModalOpen(true);
@@ -72,13 +73,13 @@ export default function UsuariosPage() {
                 ) : (
                     <Power
                         size={20}
-                        style={{ cursor: 'pointer' }}
+                        className={styles.actionButton}
                         onClick={() => toggleActiveUser(id)}
                     />
                 )}
 
-                <PencilLine size={20} onClick={() => editar(id)} style={{ cursor: 'pointer' }} />
-                <EllipsisVertical size={20} onClick={() => setShowExcluirInfoId(id)} style={{ cursor: 'pointer' }} />
+                <PencilLine size={20} onClick={() => editar(id)} className={styles.actionButton} />
+                <EllipsisVertical size={20} onClick={() => setShowExcluirInfoId(id)} className={styles.actionButton} />
             </div>
 
             {showExcluirInfoId === id && (
@@ -228,6 +229,7 @@ export default function UsuariosPage() {
                     setSearchText={setSearchText}
                     searchPlaceholder="Pesquise por nome"
                     dateSection={false}
+                    shrinkSearch={selectedUsers.length > 0}
                     buttons={[
                         filters.length > 0 ? (
                             <Button 
@@ -255,6 +257,7 @@ export default function UsuariosPage() {
                     filters={filters}
                     searchText={searchText}
                     searchKey="nome_limpo"
+                    rowIdKey="user_id"
                     headerItems={[
                         { key: "nome_completo", label: "Nome" },
                         { key: "tipo_usuario", label: "Tipo de usuário" },
@@ -314,6 +317,7 @@ export default function UsuariosPage() {
                     setSearchText={setSearchText}
                     searchPlaceholder="Pesquise por nome"
                     dateSection={false}
+                    shrinkSearch={selectedUsers.length > 0}
                     buttons={[
                         filters.length > 0 ? (
                             <Button 
@@ -340,6 +344,7 @@ export default function UsuariosPage() {
                     filters={filters}
                     searchText={searchText}
                     searchKey="nome_limpo"
+                    rowIdKey="user_id"
                     headerItems={[
                         { key: "nome_completo", label: "Nome" },
                         { key: "tipo_usuario", label: "Tipo de usuário" },

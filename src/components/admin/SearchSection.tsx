@@ -1,8 +1,10 @@
 'use client'
 
 import { Search } from "lucide-react";
+import { InputText } from "../ui/InputText";
 import styles from "./styles/SearchSection.module.css";
 import { useEffect, useState } from "react";
+import { DateSection } from "./DateSection";
 
 interface SearchSectionProps {
     searchPlaceholder: string;
@@ -10,9 +12,10 @@ interface SearchSectionProps {
     buttons: React.ReactNode[];
     searchText?: string;
     setSearchText?: (text: string) => void;
+    shrinkSearch?: boolean;
 }
 
-export default function SearchSection({ searchPlaceholder, dateSection, buttons, searchText, setSearchText }: SearchSectionProps) {
+export default function SearchSection({ searchPlaceholder, dateSection, buttons, searchText, setSearchText, shrinkSearch = false }: SearchSectionProps) {
 
     const [search, setSearch] = useState(searchText || '');
 
@@ -21,11 +24,16 @@ export default function SearchSection({ searchPlaceholder, dateSection, buttons,
     }, [search]);
     
     return (
-        <div className={styles.container}>
+        <div className={`${styles.container} ${shrinkSearch ? styles.containerShrunk : ''}`}>
 
                 
-            <div className={styles.inputContainer}>
-                <div className={styles.leftIcon}>
+            <div className={`${styles.inputContainer} ${shrinkSearch ? styles.shrink : ''}`}>
+                {!shrinkSearch && (
+                    <div className={styles.leftIcon}>
+                        <Search size={20} />
+                    </div>
+                )}
+                <div className={styles.leftIconDesktop}>
                     <Search size={20} />
                 </div>
                 <input
@@ -33,7 +41,7 @@ export default function SearchSection({ searchPlaceholder, dateSection, buttons,
                     placeholder={searchPlaceholder}
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className={styles.inputSearch}
+                    className={`${styles.inputSearch} ${shrinkSearch ? styles.shrinkInput : ''}`}
                 />
             </div>
 
