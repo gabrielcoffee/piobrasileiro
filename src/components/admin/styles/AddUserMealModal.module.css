@@ -166,3 +166,25 @@
     font-weight: 400;
     transition: color 0.2s ease;
 }
+
+
+@media (max-width: 768px) {
+    .optionsContainer {
+        flex-direction: row;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .mealTitle {
+        font-size: 0.875rem;
+    }
+
+    .toggleText {
+        font-size: 0.875rem;
+    }
+
+    .radioLabel {
+        font-size: 0.75rem;
+    }
+}

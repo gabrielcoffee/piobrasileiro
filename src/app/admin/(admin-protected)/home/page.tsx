@@ -84,7 +84,7 @@ export default function HomePage() {
                     }}
                 >
                     <span className={styles.desktopDayButtonText}>{date.toLocaleDateString('pt-BR', { weekday: 'long' }).toUpperCase()}</span>
-                    <span className={styles.mobileDayButtonText}>{date.toLocaleDateString('pt-BR', { weekday: 'short' }).toUpperCase()}</span>
+                    <span className={styles.mobileDayButtonText}>{date.toLocaleDateString('pt-BR', { weekday: 'long' }).toUpperCase().split('-')[0]}</span>
                 </button>
             )
         })

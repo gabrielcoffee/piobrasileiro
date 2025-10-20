@@ -39,9 +39,8 @@
     }
 
     .inputContainer {
-        flex: 2;
-        min-width: 0;
-        max-width: 66.666%;
+        flex: 1; /* Grow to fill remaining space */
+        min-width: 0; /* Allow shrinking below natural size */
         transition: all 0.3s ease;
     }
 
@@ -63,9 +62,9 @@
     }
 
     .buttons {
-        flex: 1;
+        flex: 0 0 auto; /* Take only space needed, don't grow/shrink */
         height: 100%;
-        max-width: 33.333%;
+        min-width: 0;
         transition: all 0.3s ease;
     }
 
@@ -110,10 +109,6 @@
         text-overflow: ellipsis;
         white-space: nowrap;
         min-width: 0;
-    }
-
-    .dateSection {
-        display: none;
     }
 }
 

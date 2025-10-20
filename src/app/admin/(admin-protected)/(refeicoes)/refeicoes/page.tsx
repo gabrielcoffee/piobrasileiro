@@ -17,6 +17,8 @@ import AddGuestAdminModal from '@/components/admin/AddGuestAdminModal';
 import AddUserMealModal from '@/components/admin/AddUserMealModal';
 import { Loading } from '@/components/ui/Loading';
 import { useAuth } from '@/contexts/AuthContext';
+import MobileTitle from '@/components/admin/MobileTitle';
+import SaveFooterAdmin from '@/components/admin/SaveFooterAdmin';
 
 export default function ListaDeRefeicoesPage() {
 
@@ -44,6 +46,7 @@ export default function ListaDeRefeicoesPage() {
     const [guestFormData, setGuestFormData] = useState<any>(null);
     const [residentFormData, setResidentFormData] = useState<any>(null);
     const [searchText, setSearchText] = useState<string>('');
+    const [isMobile, setIsMobile] = useState<boolean>(false);
     const [reportDays, setReportDays] = useState<{
         monday: boolean;
         tuesday: boolean;
@@ -140,7 +143,7 @@ export default function ListaDeRefeicoesPage() {
                 return 'No Colégio Pio';
             }
         } else {
-            return <X style={{color: 'var(--color-error)'}} />
+            return <X className={styles.icon} />
         }
     }
 
@@ -189,7 +192,7 @@ export default function ListaDeRefeicoesPage() {
                     nome: 
                         <span className={styles.nomeCompleto}>
                             {meal.avatar_image_data !== null ? (
-                                <img src={avatar} alt="Avatar" className={styles.avatar} />
+                                <img className={styles.avatar} src={avatar} alt="Avatar" />
                             ) : (
                                 <span className={styles.avatarInitials}>{getInitials(meal.nome)}</span>
                             )}
@@ -197,7 +200,7 @@ export default function ListaDeRefeicoesPage() {
                         </span>,
                     almoco: getAlmocoText(meal.almoco_colegio, meal.almoco_levar),
                     tipo_usuario: getTipoUsuarioText(meal),
-                    jantar: meal.janta_colegio ? 'No Colégio Pio' : <X style={{color: 'var(--color-error)'}} />,
+                    jantar: meal.janta_colegio ? 'No Colégio Pio' : <X className={styles.icon} />,
                     data: meal.data.split('T')[0],
                     acao: acoes(meal),
                 };
@@ -248,8 +251,10 @@ export default function ListaDeRefeicoesPage() {
                     <button 
                         className={styles.dayButton}
                     >
-                        <span>{date.toLocaleDateString('pt-BR', { weekday: 'short' }).toUpperCase()}</span>
-                        <span>{date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}</span>
+                        <span className={styles.desktopDaySelectorText}>{date.toLocaleDateString('pt-BR', { weekday: 'short' }).toUpperCase()}</span>
+                        <span className={styles.desktopDaySelectorText}>{date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}</span>
+
+                        <span className={styles.mobileDaySelectorText}>{date.toLocaleDateString('pt-BR', { weekday: 'long' }).toUpperCase().split('-')[0]}</span>
                     </button>
                 </div>
             )
@@ -494,23 +499,136 @@ export default function ListaDeRefeicoesPage() {
         }
     }, [selectedWeekStart, selectedWeekEnd]);
 
-    return (
-        <div className={styles.container}>
-            <Card>
-                <CardHeader title="Lista de agendamento de refeições" breadcrumb={["Início", "Refeições"]} />
+    useEffect(() => {
+        setIsMobile(window.innerWidth < 768);
+    }, [window.innerWidth]);
+
+    useEffect(() => {
+        fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
+    }, [])
+
+        return (
+            <>
+
+            {!isMobile ? (
+
+            <div className={styles.container}>
+                <Card>
+                    <CardHeader title="Lista de agendamento de refeições" breadcrumb={["Início", "Refeições"]} />
+
+                    <div className={styles.dateHeader}>
+                        {dayInfo && (
+                        <div className={styles.dayInfoTotal}>
+                            <div className={styles.curDate}>
+                                <span className={styles.curDateText}>
+                                    Nº de refeições: <strong>{new Date(selectedDate + 'T00:00:00').toLocaleDateString('pt-BR', { weekday: 'long'}).charAt(0).toUpperCase() 
+                                        + new Date(selectedDate + 'T00:00:00').toLocaleDateString('pt-BR', { weekday: 'long'}).slice(1)}
+
+                                    , {new Date(selectedDate + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
+                                    </strong>
+                                </span>
+                            </div>
+
+                            <div className={styles.dayInfo}>
+                                <div className={styles.almoco}>
+                                    <span className={styles.bigNum}>{dayInfo.totalAlmoco}</span>
+                                    <span>almoços</span>
+                                </div>
+                                <div className={styles.almocoOpcoes}>
+                                    <span><strong>{dayInfo.totalAlmocoColegio} No Colégio PIO</strong></span>
+                                    <span><strong>{dayInfo.totalAlmocoLevar}</strong> Para Levar</span>
+                                </div>
+                                <div className={styles.totalJanta}>
+                                    <span className={styles.bigNum}>{dayInfo.totalJanta}</span>
+                                    <span>jantares</span>
+                                </div>
+                            </div>
+                        
+                        </div>
+                        )}
+
+                        <div className={styles.daySelector}>
+                            {currentWeekDaysButtons()}
+                        </div>
+                    </div>
+
+                    <SearchSection
+                        searchText={searchText}
+                        setSearchText={setSearchText}
+                        searchPlaceholder="Pesquise por nome"
+                        dateSection={(
+                        <DateSection
+                            selectedWeekStart={selectedWeekStart}
+                            selectedWeekEnd={selectedWeekEnd}
+                            onWeekChange={handleWeekChange}
+                        />
+                        )}
+                        buttons={[
+                            <Button key="report" variant="full-white" iconLeft={<Printer size={20}/>} onClick={() => setShowReportModal(true)}>Gerar relatório</Button>,
+                            <Button available={selectedDate >= today.toISOString().split('T')[0]} key="new_booking" variant="full" onClick={() => {handleShowBookingModal()}} iconLeft={<Plus size={20} />}>Novo agendamento</Button> 
+                        ]}
+                    />
+                    
+                    {isLoading ? <Loading /> : (
+                    <>
+
+                    <Table
+                        searchText={searchText} 
+                        searchKey="nome_limpo"
+                        headerItems={[
+                            { key: "nome", label: "Nome" },
+                            { key: "tipo_usuario", label: "Tipo de usuário" },
+                            { key: "funcao", label: "Função" },
+                            { key: "almoco", label: "Almoço" },
+                            { key: "jantar", label: "Jantar" },
+                            { key: "data", label: "Data" },
+                            { key: "acao", label: "Ação" },
+                        ]}
+                        rowItems={
+                            refeicoes.filter((refeicao: any) => {
+                            return refeicao.data === selectedDate;
+                        }).map((refeicao: any) => {
+                            return {
+                                ...refeicao,
+                                data: getDateString(refeicao.data),
+                            }
+                        })
+                        }
+                        itemsPerPage={7}
+                    />
+                    </>)}
+                </Card>
+            </div>
+
+
+
+
+        ) : (
+
+
+
+
+            <div className={styles.mobileContainer}>
+
+                <MobileTitle title={`Lista de agendamento de refeições`} />
+
+                <SearchSection
+                        searchText={searchText}
+                        setSearchText={setSearchText}
+                        searchPlaceholder="Pesquise por nome"
+                        dateSection={(
+                        <DateSection
+                            selectedWeekStart={selectedWeekStart}
+                            selectedWeekEnd={selectedWeekEnd}
+                            onWeekChange={handleWeekChange}
+                        />
+                        )}
+                        buttons={[]}
+                    />
 
                 <div className={styles.dateHeader}>
                     {dayInfo && (
                     <div className={styles.dayInfoTotal}>
-                        <div className={styles.curDate}>
-                            <span className={styles.curDateText}>
-                                Nº de refeições: <strong>{new Date(selectedDate + 'T00:00:00').toLocaleDateString('pt-BR', { weekday: 'long'}).charAt(0).toUpperCase() 
-                                    + new Date(selectedDate + 'T00:00:00').toLocaleDateString('pt-BR', { weekday: 'long'}).slice(1)}
-
-                                , {new Date(selectedDate + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}
-                                </strong>
-                            </span>
-                        </div>
 
                         <div className={styles.dayInfo}>
                             <div className={styles.almoco}>
@@ -526,7 +644,7 @@ export default function ListaDeRefeicoesPage() {
                                 <span>jantares</span>
                             </div>
                         </div>
-                       
+                    
                     </div>
                     )}
 
@@ -535,25 +653,12 @@ export default function ListaDeRefeicoesPage() {
                     </div>
                 </div>
 
-                <SearchSection
-                    searchText={searchText}
-                    setSearchText={setSearchText}
-                    searchPlaceholder="Pesquise por nome"
-                    dateSection={(
-                    <DateSection
-                        selectedWeekStart={selectedWeekStart}
-                        selectedWeekEnd={selectedWeekEnd}
-                        onWeekChange={handleWeekChange}
-                    />
-                    )}
-                    buttons={[
-                        <Button key="report" variant="full-white" iconLeft={<Printer size={20}/>} onClick={() => setShowReportModal(true)}>Gerar relatório</Button>,
-                        <Button available={selectedDate >= today.toISOString().split('T')[0]} key="new_booking" variant="full" onClick={() => {handleShowBookingModal()}} iconLeft={<Plus size={20} />}>Novo agendamento</Button> 
-                    ]}
-                />
-                
-                {isLoading ? <Loading /> : (
-                <>
+                <div className={styles.dateHeader}>
+                    <span className={styles.dateText}>
+                        {new Date(selectedDate + 'T00:00:00').toLocaleDateString('pt-BR', { weekday: 'long'}).toUpperCase()}, {' '}
+                        {new Date(selectedDate + 'T00:00:00').toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric' })}
+                    </span>
+                </div>
 
                 <Table
                     searchText={searchText} 
@@ -578,137 +683,137 @@ export default function ListaDeRefeicoesPage() {
                     })
                     }
                     itemsPerPage={7}
-                    hasSelector={true}
                 />
 
+                <SaveFooterAdmin buttonText="Novo agendamento" executeFunction={() => handleShowBookingModal()} />
+            </div>
 
-                {/* MODAL DO RELATÓRIO */}
-                <Modal
-                    isOpen={showReportModal}
-                    onClose={() => setShowReportModal(false)}
-                    subtitle={"Relário da semana: " + selectedWeekStart.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit'}) + " a " + selectedWeekEnd.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit'})}
-                    title="Gerar Relatório"
-                    buttons={
-                        <>
-                            <Button variant="soft-red" onClick={() => setShowReportModal(false)}>Cancelar</Button>
-                            <Button available={
-                                reportDays?.monday || reportDays?.tuesday || reportDays?.wednesday ||
-                                 reportDays?.thursday || reportDays?.friday || reportDays?.saturday ||
-                                  reportDays?.sunday}
-                             iconLeft={<Printer size={20} />} variant="full" onClick={handleGenerateReport}>Gerar</Button>
-                        </>
-                    }
-                >
-                    <div className={styles.reportModalContent}>
-                        <ReportCheckList onChange={handleDaysChange}/>
-                    </div>
-                </Modal>
+        )}  
 
-                <Modal
-                    isOpen={showNewBookingModal}
-                    onClose={() => setShowNewBookingModal(false)}
-                    title="Novo agendamento"
-                    subtitle="Selecione o tipo de agendamento que deseja"
-                    buttons={
-                        <>
-                            <Button variant="full" onClick={() => handleGuestBooking()}>Convidado</Button>
-                            <Button variant="full-white" onClick={() => handleResidentBooking()}>Morador</Button>
-                        </>
-                    }
-                />
-
-
-                {/* ADICIONAR NOVO CONVIDADO */}
-                <Modal
-                    isOpen={showGuestBookingModal}
-                    onClose={() => setShowGuestBookingModal(false)}
-                    title="Novo agendamento convidado"
-                    buttons={<>
-                        <Button variant="soft-red" onClick={() => setShowGuestBookingModal(false)}>Cancelar</Button>
-                        <Button available={guestFormData?.nome && guestFormData?.funcao && guestFormData?.origem && guestFormData?.data && (guestFormData?.almoco_colegio || guestFormData?.janta_colegio) ? true : false} variant="full" iconLeft={<Check size={20} />} onClick={() => handleGuestBookingSave()}>Salvar</Button>
-                    </>}
-                >
-                    <AddGuestAdminModal 
-                        date={selectedDate}
-                        formData={handleGuestFormData}
-                    />
-                </Modal>
-
-                {/* EDITAR CONVIDADO */}
-                <Modal
-                    isOpen={showGuestBookingEditModal}
-                    onClose={() => setShowGuestBookingEditModal(false)}
-                    title="Editar agendamento convidado"
-                    buttons={<>
-                        <Button variant="soft-red" onClick={() => setShowGuestBookingEditModal(false)}>Cancelar</Button>
-                        <Button onClick={() => handleGuestBookingEdit()} available={guestFormData?.nome && guestFormData?.funcao && guestFormData?.origem && guestFormData?.data ? true : false} variant="full" iconLeft={<Check size={20} />}>Salvar</Button>
-                    </>}
-                >
-                    <AddGuestAdminModal 
-                        onDeleteGuest={() => handleGuestBookingEditDelete()}
-                        date={selectedDate}
-                        guestMealData={selectedGuestMealData}
-                        formData={handleGuestFormData}
-                        isEdit={true}
-                    />
-                </Modal>
-
-                {/* NOVA REFEICAO MORADOR */}
-                <Modal
-                    isOpen={showResidentBookingModal}
-                    onClose={() => setShowResidentBookingModal(false)}
-                    title="Novo agendamento morador"
-                    buttons={
-                        <>
-                            <Button variant="soft-red" onClick={() => setShowResidentBookingModal(false)}>Cancelar</Button>
-                            <Button available={checkResidentAvaliability()} variant="full" iconLeft={<Check size={20} />} onClick={() => handleResidentBookingSave()}>Salvar</Button>
-                        </>
-                    }
-                >
-                    <AddUserMealModal
-                        date={new Date(selectedDate + 'T00:00:00').toISOString()}
-                        formData={handleResidentFormData}
-                    />
-                </Modal>
-
-                {/* EDITAR REFEICAO MORADOR */}
-                <Modal
-                    isOpen={showResidentBookingEditModal}
-                    onClose={() => setShowResidentBookingEditModal(false)}
-                    title="Editar agendamento morador"
-                    buttons={<>
-                        <Button variant="soft-red" onClick={() => setShowResidentBookingEditModal(false)}>Cancelar</Button>
-                        <Button onClick={() => handleResidentBookingEdit()} available={residentFormData?.almoco_colegio || residentFormData?.janta_colegio ? true : false} variant="full" iconLeft={<Check size={20} />}>Salvar</Button>
-                    </>}
-                >
-                    <AddUserMealModal
-                        date={new Date(selectedDate + 'T00:00:00').toISOString()}
-                        isEdit={true}
-                        userMealData={selectedResidentMealData}
-                        formData={handleResidentFormData}
-                    />
-                </Modal>
-
-                {/* EDITAR REFEICAO HOSPEDE */}
-                <Modal
-                    isOpen={showHospedeBookingEditModal}
-                    onClose={() => setShowHospedeBookingEditModal(false)}
-                    title="Editar agendamento hóspede"
-                    buttons={<>
-                        <Button variant="soft-red" onClick={() => setShowHospedeBookingEditModal(false)}>Cancelar</Button>
-                        <Button onClick={() => handleHospedeBookingEdit()} variant="full" iconLeft={<Check size={20} />}>Salvar</Button>
-                    </>}
-                >
-                    <AddUserMealModal
-                        hospedeName={selectedHospedeMealData?.nome || ''}
-                        date={new Date(selectedDate + 'T00:00:00').toISOString()}
-                        isEdit={true}
-                        userMealData={selectedHospedeMealData}
-                        formData={handleHospedeFormData}
-                    />
-                </Modal>
-                </>)}
-            </Card>
+        {/* MODAL DO RELATÓRIO */}
+        <Modal
+        isOpen={showReportModal}
+        onClose={() => setShowReportModal(false)}
+        subtitle={"Relário da semana: " + selectedWeekStart.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit'}) + " a " + selectedWeekEnd.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit'})}
+        title="Gerar Relatório"
+        buttons={
+            <>
+                <Button variant="soft-red" onClick={() => setShowReportModal(false)}>Cancelar</Button>
+                <Button available={
+                    reportDays?.monday || reportDays?.tuesday || reportDays?.wednesday ||
+                     reportDays?.thursday || reportDays?.friday || reportDays?.saturday ||
+                      reportDays?.sunday}
+                 iconLeft={<Printer size={20} />} variant="full" onClick={handleGenerateReport}>Gerar</Button>
+            </>
+        }
+    >
+        <div className={styles.reportModalContent}>
+            <ReportCheckList onChange={handleDaysChange}/>
         </div>
-    );
+    </Modal>
+
+    <Modal
+        isOpen={showNewBookingModal}
+        onClose={() => setShowNewBookingModal(false)}
+        title="Novo agendamento"
+        subtitle="Selecione o tipo de agendamento que deseja"
+        buttons={
+            <>
+                <Button variant="full" onClick={() => handleGuestBooking()}>Convidado</Button>
+                <Button variant="full-white" onClick={() => handleResidentBooking()}>Morador</Button>
+            </>
+        }
+    />
+
+
+    {/* ADICIONAR NOVO CONVIDADO */}
+    <Modal
+        isOpen={showGuestBookingModal}
+        onClose={() => setShowGuestBookingModal(false)}
+        title="Novo agendamento convidado"
+        buttons={<>
+            <Button variant="soft-red" onClick={() => setShowGuestBookingModal(false)}>Cancelar</Button>
+            <Button available={guestFormData?.nome && guestFormData?.funcao && guestFormData?.origem && guestFormData?.data && (guestFormData?.almoco_colegio || guestFormData?.janta_colegio) ? true : false} variant="full" iconLeft={<Check size={20} />} onClick={() => handleGuestBookingSave()}>Salvar</Button>
+        </>}
+    >
+        <AddGuestAdminModal 
+            date={selectedDate}
+            formData={handleGuestFormData}
+        />
+    </Modal>
+
+    {/* EDITAR CONVIDADO */}
+    <Modal
+        isOpen={showGuestBookingEditModal}
+        onClose={() => setShowGuestBookingEditModal(false)}
+        title="Editar agendamento convidado"
+        buttons={<>
+            <Button variant="soft-red" onClick={() => setShowGuestBookingEditModal(false)}>Cancelar</Button>
+            <Button onClick={() => handleGuestBookingEdit()} available={guestFormData?.nome && guestFormData?.funcao && guestFormData?.origem && guestFormData?.data ? true : false} variant="full" iconLeft={<Check size={20} />}>Salvar</Button>
+        </>}
+    >
+        <AddGuestAdminModal 
+            onDeleteGuest={() => handleGuestBookingEditDelete()}
+            date={selectedDate}
+            guestMealData={selectedGuestMealData}
+            formData={handleGuestFormData}
+            isEdit={true}
+        />
+    </Modal>
+
+    {/* NOVA REFEICAO MORADOR */}
+    <Modal
+        isOpen={showResidentBookingModal}
+        onClose={() => setShowResidentBookingModal(false)}
+        title="Novo agendamento morador"
+        buttons={
+            <>
+                <Button variant="soft-red" onClick={() => setShowResidentBookingModal(false)}>Cancelar</Button>
+                <Button available={checkResidentAvaliability()} variant="full" iconLeft={<Check size={20} />} onClick={() => handleResidentBookingSave()}>Salvar</Button>
+            </>
+        }
+    >
+        <AddUserMealModal
+            date={new Date(selectedDate + 'T00:00:00').toISOString()}
+            formData={handleResidentFormData}
+        />
+    </Modal>
+
+    {/* EDITAR REFEICAO MORADOR */}
+    <Modal
+        isOpen={showResidentBookingEditModal}
+        onClose={() => setShowResidentBookingEditModal(false)}
+        title="Editar agendamento morador"
+        buttons={<>
+            <Button variant="soft-red" onClick={() => setShowResidentBookingEditModal(false)}>Cancelar</Button>
+            <Button onClick={() => handleResidentBookingEdit()} available={residentFormData?.almoco_colegio || residentFormData?.janta_colegio ? true : false} variant="full" iconLeft={<Check size={20} />}>Salvar</Button>
+        </>}
+    >
+        <AddUserMealModal
+            date={new Date(selectedDate + 'T00:00:00').toISOString()}
+            isEdit={true}
+            userMealData={selectedResidentMealData}
+            formData={handleResidentFormData}
+        />
+    </Modal>
+
+    {/* EDITAR REFEICAO HOSPEDE */}
+    <Modal
+        isOpen={showHospedeBookingEditModal}
+        onClose={() => setShowHospedeBookingEditModal(false)}
+        title="Editar agendamento hóspede"
+        buttons={<>
+            <Button variant="soft-red" onClick={() => setShowHospedeBookingEditModal(false)}>Cancelar</Button>
+            <Button onClick={() => handleHospedeBookingEdit()} variant="full" iconLeft={<Check size={20} />}>Salvar</Button>
+        </>}
+    >
+        <AddUserMealModal
+            hospedeName={selectedHospedeMealData?.nome || ''}
+            date={new Date(selectedDate + 'T00:00:00').toISOString()}
+            isEdit={true}
+            userMealData={selectedHospedeMealData}
+            formData={handleHospedeFormData}
+        />
+    </Modal>
+    </>)
 }

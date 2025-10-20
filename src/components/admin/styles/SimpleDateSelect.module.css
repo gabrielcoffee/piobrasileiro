@@ -156,3 +156,12 @@
   color: white;
   font-weight: 600;
 }
+
+@media (max-width: 768px) {
+    .miniCalendar {
+        width: 86%;
+        margin-left: 0;
+        margin-right: 0;
+        transform: none;
+    }
+}

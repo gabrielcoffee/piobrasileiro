@@ -9,6 +9,7 @@ import { InputTextSearch } from '../ui/InputTextSearch';
 import { SimpleDateSelect } from './SimpleDateSelect';
 import { Button } from '../ui/Button';
 import { Trash2 } from 'lucide-react';
+import MealSection from './MealSection';
 
 type Option = {
     key: string;
@@ -193,84 +194,14 @@ export default function AddGuestAdminModal({ formData, isEdit = false, guestMeal
                     />
                 </div>
 
-                {/* Almoço Section */}
-                <div className={styles.mealSection}>
-                    <div className={styles.mealHeader}>
-                        <h3 className={styles.mealTitle}>Almoço (13h - 14h)</h3>
-                        <div className={styles.toggleContainer}>
-                            <span className={styles.toggleText}>
-                                {lunchConfirmed ? 'SIM' : 'NÃO'}
-                            </span>
-                            <button
-                                className={`${styles.toggle} ${lunchConfirmed ? styles.toggleOn : styles.toggleOff}`}
-                                onClick={() => setLunchConfirmed(!lunchConfirmed)}
-                            >
-                                <div className={styles.toggleCircle} />
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className={styles.optionsContainer}>
-                        <label className={`${styles.radioOption} ${!lunchConfirmed ? styles.disabled : ''}`}>
-                            <input
-                                type="radio"
-                                name="lunch"
-                                value="school"
-                                checked={!takeOutOption}
-                                onChange={() => setTakeOutOption(false)}
-                                disabled={!lunchConfirmed}
-                                className={styles.radioInput}
-                            />
-                            <span className={styles.radioCircle} />
-                            <span className={styles.radioLabel}>No Colégio PIO</span>
-                        </label>
-
-                        <label className={`${styles.radioOption} ${!lunchConfirmed ? styles.disabled : ''}`}>
-                            <input
-                                type="radio"
-                                name="lunch"
-                                value="takeaway"
-                                checked={takeOutOption}
-                                onChange={() => setTakeOutOption(true)}
-                                disabled={!lunchConfirmed}
-                                className={styles.radioInput}
-                            />
-                            <span className={styles.radioCircle} />
-                            <span className={styles.radioLabel}>Para levar</span>
-                        </label>
-                    </div>
-
-                {/* Jantar Section */}
-                    <div className={styles.mealHeader}>
-                        <h3 className={styles.mealTitle}>Jantar (19h30 - 20h30)</h3>
-                        <div className={styles.toggleContainer}>
-                            <span className={styles.toggleText}>
-                                {dinnerConfirmed ? 'SIM' : 'NÃO'}
-                            </span>
-                            <button
-                                className={`${styles.toggle} ${dinnerConfirmed ? styles.toggleOn : styles.toggleOff}`}
-                                onClick={() => setDinnerConfirmed(!dinnerConfirmed)}
-                            >
-                                <div className={styles.toggleCircle} />
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className={styles.optionsContainer}>
-                        <label className={`${styles.radioOption} ${!dinnerConfirmed ? styles.disabled : ''}`}>
-                            <input
-                                type="radio"
-                                name="dinner"
-                                value="school"
-                                defaultChecked={true}
-                                disabled={!dinnerConfirmed}
-                                className={styles.radioInput}
-                            />
-                            <span className={styles.radioCircle} />
-                            <span className={styles.radioLabel}>No Colégio PIO</span>
-                        </label>
-                    </div>
-                </div>
+                <MealSection
+                    almoco_colegio={lunchConfirmed}
+                    almoco_levar={takeOutOption}
+                    janta_colegio={dinnerConfirmed}
+                    onAlmocoColegioChange={setLunchConfirmed}
+                    onAlmocoLevarChange={setTakeOutOption}
+                    onJantaColegioChange={setDinnerConfirmed}
+                />
 
                 {/* Observações */}
                 <div className={`${styles.inputGroup} ${styles.observacoesGroup}`}>
