@@ -136,6 +136,7 @@ export default function SolicitacoesPage() {
         )}
 
         <Modal
+        comesFromBottomMobile={true}
         title="Solicitação de hospedagem"
         onClose={() => setIsDetalhesModalOpen(false)}
         isOpen={isDetalhesModalOpen}

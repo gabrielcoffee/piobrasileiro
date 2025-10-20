@@ -728,6 +728,7 @@ export default function ListaDeRefeicoesPage() {
 
     {/* ADICIONAR NOVO CONVIDADO */}
     <Modal
+        comesFromBottomMobile={true}
         isOpen={showGuestBookingModal}
         onClose={() => setShowGuestBookingModal(false)}
         title="Novo agendamento convidado"
@@ -744,6 +745,7 @@ export default function ListaDeRefeicoesPage() {
 
     {/* EDITAR CONVIDADO */}
     <Modal
+        comesFromBottomMobile={true}
         isOpen={showGuestBookingEditModal}
         onClose={() => setShowGuestBookingEditModal(false)}
         title="Editar agendamento convidado"
@@ -763,6 +765,7 @@ export default function ListaDeRefeicoesPage() {
 
     {/* NOVA REFEICAO MORADOR */}
     <Modal
+        comesFromBottomMobile={true}
         isOpen={showResidentBookingModal}
         onClose={() => setShowResidentBookingModal(false)}
         title="Novo agendamento morador"
@@ -781,6 +784,7 @@ export default function ListaDeRefeicoesPage() {
 
     {/* EDITAR REFEICAO MORADOR */}
     <Modal
+        comesFromBottomMobile={true}
         isOpen={showResidentBookingEditModal}
         onClose={() => setShowResidentBookingEditModal(false)}
         title="Editar agendamento morador"
@@ -799,6 +803,7 @@ export default function ListaDeRefeicoesPage() {
 
     {/* EDITAR REFEICAO HOSPEDE */}
     <Modal
+        comesFromBottomMobile={true}
         isOpen={showHospedeBookingEditModal}
         onClose={() => setShowHospedeBookingEditModal(false)}
         title="Editar agendamento hóspede"

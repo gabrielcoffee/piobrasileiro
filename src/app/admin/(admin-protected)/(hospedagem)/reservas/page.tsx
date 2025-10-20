@@ -480,6 +480,7 @@ export default function GestaoDeReservasPage() {
 
 
         <Modal
+        comesFromBottomMobile={true}
         title="Nova reserva"
         buttons={
             <>
@@ -497,6 +498,7 @@ export default function GestaoDeReservasPage() {
         </Modal>
 
         <Modal
+        comesFromBottomMobile={true}
         title="Editar reserva"
         buttons={
             <>
@@ -529,6 +531,7 @@ export default function GestaoDeReservasPage() {
         </Modal>
 
         <Modal
+        comesFromBottomMobile={true}
         title="Filtrar"
         onClose={() => setShowFilterModal(false)}
         isOpen={showFilterModal}

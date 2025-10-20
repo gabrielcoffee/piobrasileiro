@@ -1,6 +1,6 @@
-import { X } from 'lucide-react';
+import { X, ArrowLeft } from 'lucide-react';
 import styles from './styles/Modal.module.css';
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 
 interface ModalProps {
     children?: ReactNode;
@@ -10,9 +10,23 @@ interface ModalProps {
     subtitle?: string;
     onClose: () => void;
     isOpen: boolean;
+    comesFromBottomMobile?: boolean;
 }
 
-export default function Modal({ children, buttons, buttonsLeft, title, subtitle, onClose, isOpen }: ModalProps) {
+export default function Modal({ children, buttons, buttonsLeft, title, subtitle, onClose, isOpen, comesFromBottomMobile = false }: ModalProps) {
+    
+    useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isOpen]);
+
     if (!isOpen) {
         return null;
     }
@@ -20,12 +34,22 @@ export default function Modal({ children, buttons, buttonsLeft, title, subtitle,
     return (
         <div className={styles.overlay} onClick={onClose}>
 
-            <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            <div 
+                className={`${styles.modal} ${comesFromBottomMobile ? styles.modalBottomMobile : ''}`} 
+                onClick={(e) => e.stopPropagation()}
+            >
+
+                {comesFromBottomMobile && (
+                    <div className={styles.mobileTopHeader}>
+                        <ArrowLeft className={styles.backButton} size={24} onClick={onClose} />
+                    </div>
+                )}
 
                 <div className={styles.header}>
-
                     <h2 className={styles.title}>{title}</h2>
-                    <X className={styles.closeButton} size={20} onClick={onClose} />
+                    {!comesFromBottomMobile && (
+                        <X className={styles.closeButton} size={20} onClick={onClose} />
+                    )}
                 </div>
 
                 <span className={styles.subtitle}>{subtitle}

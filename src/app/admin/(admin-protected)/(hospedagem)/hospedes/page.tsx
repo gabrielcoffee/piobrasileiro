@@ -220,6 +220,7 @@ export default function HospedesPage() {
         )}
 
             <Modal
+                comesFromBottomMobile={true}
                 title="Novo hóspede"
                 isOpen={showNewBookingModal}
                 onClose={() => setShowNewBookingModal(false)}
@@ -246,6 +247,7 @@ export default function HospedesPage() {
 
 
             <Modal
+                comesFromBottomMobile={true}
                 title="Editar hóspede"
                 isOpen={showEditGuestModal}
                 onClose={() => setShowEditGuestModal(false)}

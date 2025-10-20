@@ -476,6 +476,7 @@ export default function QuartosPage() {
         )}
 
         <Modal
+            comesFromBottomMobile={true}
             title="Cadastrar novo quarto"
             buttons={
                 <>
@@ -518,6 +519,7 @@ export default function QuartosPage() {
         </Modal>
 
         <Modal
+            comesFromBottomMobile={true}
             title="Editar quarto"
             buttons={
                 <>
@@ -560,20 +562,21 @@ export default function QuartosPage() {
         </Modal>
 
         <Modal
-        title="Tem certeza que deseja inativar o quarto?"
-        subtitle="O acesso desse quarto ao sistema ficará suspenso até a reativação. Você pode reverter essa ação a qualquer momento."
-        onClose={() => setShowDeactivateModal(false)}
-        isOpen={showDeactivateModal}
-        buttons={
-            <>
-            <Button variant="soft-red" onClick={() => setShowDeactivateModal(false)}>Cancelar</Button>
-            <Button variant="full" style={{backgroundColor: 'var(--color-error)', border: '1px solid var(--color-error)'}} onClick={deactivateRoom}>Sim, tenho certeza</Button>
-            </>
-        }
+            title="Tem certeza que deseja inativar o quarto?"
+            subtitle="O acesso desse quarto ao sistema ficará suspenso até a reativação. Você pode reverter essa ação a qualquer momento."
+            onClose={() => setShowDeactivateModal(false)}
+            isOpen={showDeactivateModal}
+            buttons={
+                <>
+                <Button variant="soft-red" onClick={() => setShowDeactivateModal(false)}>Cancelar</Button>
+                <Button variant="full" style={{backgroundColor: 'var(--color-error)', border: '1px solid var(--color-error)'}} onClick={deactivateRoom}>Sim, tenho certeza</Button>
+                </>
+            }
         />
 
 
         <Modal
+        comesFromBottomMobile={true}
         title="Filtrar"
         onClose={() => setShowFilterModal(false)}
         isOpen={showFilterModal}
