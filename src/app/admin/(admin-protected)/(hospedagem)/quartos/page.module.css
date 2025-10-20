@@ -132,3 +132,52 @@
         display: block;
     }
 }
+
+@media (max-width: 768px) {
+    .actionButton {
+        background-color: var(--color-slate-100);
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        padding: 4px;
+        width: 28px;
+        height: 28px;
+        cursor: pointer;
+    }
+
+    .buttonsTop {
+        display: flex;
+        margin-top: 1rem;
+        flex-direction: row-reverse;
+        gap: 4rem;
+        max-height: 40px;
+        align-items: center;
+        justify-content: center;
+    
+    
+        /* botao ter seu tamanho baseado no tamanho do conteudo dentro dele*/
+        > * {
+            flex: 1;
+            white-space: nowrap;
+        }
+    }
+
+    .occupiedTextBig {
+        display: block;
+    }
+    .availableTextBig {
+        display: block;
+    }
+    .availableTextSmall {
+        display: none;
+    }
+    .occupiedTextSmall {
+        display: none;
+    }
+}
+
+.mobileContainer {
+    margin-left: 24px;
+    margin-right: 24px;
+    padding-bottom: 6rem;
+    min-height: 100vh;
+}

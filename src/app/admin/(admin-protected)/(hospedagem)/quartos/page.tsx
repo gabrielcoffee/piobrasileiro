@@ -16,6 +16,8 @@ import { InputText } from '@/components/ui/InputText';
 import { DropdownInput } from '@/components/ui/DropdownInput';
 import { InputDate } from '@/components/ui/InputDate';
 import { SimpleDateSelect } from '@/components/admin/SimpleDateSelect';
+import MobileTitle from '@/components/admin/MobileTitle';
+import SaveFooterAdmin from '@/components/admin/SaveFooterAdmin';
 
 export default function QuartosPage() {
 
@@ -38,6 +40,8 @@ export default function QuartosPage() {
     const [capacity, setCapacity] = useState<number>(0);
     const [active, setActive] = useState<boolean>(true);
     const [searchText, setSearchText] = useState<string>('');   
+
+    const [isMobile, setIsMobile] = useState<boolean>(false);
 
     // Helpers for local-date normalization and formatting
     const formatLocalYMD = (date: Date): string => {
@@ -105,6 +109,7 @@ export default function QuartosPage() {
             <div className={styles.acoes}>
                 {room.active ? (
                     <PowerOff 
+                        className={styles.actionButton}
                         size={20} 
                         style={{color: 'var(--color-error)', cursor: 'pointer'}} 
                         onClick={() => {
@@ -114,12 +119,13 @@ export default function QuartosPage() {
                     />
                 ) : (
                     <Power 
+                        className={styles.actionButton}
                         size={20} 
                         style={{cursor: 'pointer'}} 
                         onClick={() => toggleActiveRoom(room.id)} 
                     />
                 )}
-                <PencilLine size={20} onClick={() => editar(room)} style={{cursor: 'pointer'}} />
+                <PencilLine className={styles.actionButton} size={20} onClick={() => editar(room)} style={{cursor: 'pointer'}} />
             </div>
         );
     }
@@ -353,7 +359,14 @@ export default function QuartosPage() {
         fetchRooms();
     }, []);
 
+    useEffect(() => {
+        setIsMobile(window.innerWidth < 768);
+    }, [window.innerWidth]);
+
     return (
+        <>
+
+        {!isMobile ? (
         <div className={styles.container}>
             <Card>
                 <CardHeader title="Lista de quartos" breadcrumb={["Início", "Hospedagem", "Quartos"]} />
@@ -405,139 +418,194 @@ export default function QuartosPage() {
                     itemsPerPage={8}
                 />
             </Card>
-
-            <Modal
-                title="Cadastrar novo quarto"
-                buttons={
-                    <>
-                        <Button variant="soft-red" onClick={() => setShowNewRoomModal(false)}>Cancelar</Button>
-                        <Button variant="full" onClick={() => saveNewRoom()}>Cadastrar</Button>
-                    </>
-                }
-                onClose={() => setShowNewRoomModal(false)}
-                isOpen={showNewRoomModal}
-            >
-                <div className={styles.newRoomModalContent}>
-                    <InputText
-                        label="*Nome"
-                        placeholder="Informe o nome do quarto"
-                        value={nome}
-                        onChange={(e) => setNome(e.target.value)}
-                    />
-                    <InputText
-                        label="*Capacidade"
-                        placeholder="Informe o número máximo de hóspedes"
-                        numberValue={capacity}
-                        onChange={(e) => setCapacity(Number(e.target.value))}
-                        onlyNumber={true}
-                    />
-                    <div className={styles.toggleContainer}>
-                        <button
-                            id="active"
-                            className={`${styles.toggle} ${active ? styles.toggleOn : styles.toggleOff}`}
-                            onClick={() => setActive(!active)}
-                        >
-                            <div className={styles.toggleCircle} />
-                        </button>
-                        <label htmlFor="active" className={styles.toggleText}>
-                            
-                            {active ? 'ATIVADO' : 'DESATIVADO'}
-                        </label>
-                        
-                    </div>
-                </div>
-            </Modal>
-
-            <Modal
-                title="Editar quarto"
-                buttons={
-                    <>
-                        <Button variant="soft-red" onClick={() => setShowEditRoomModal(false)}>Cancelar</Button>
-                        <Button variant="full" onClick={() => saveEditRoom()}>Salvar</Button>
-                    </>
-                }
-                onClose={() => setShowEditRoomModal(false)}
-                isOpen={showEditRoomModal}
-            >
-                <div className={styles.newRoomModalContent}>
-                    <InputText
-                        label="*Nome"
-                        placeholder="Informe o nome do quarto"
-                        value={nome}
-                        onChange={(e) => setNome(e.target.value)}
-                    />
-                    <InputText
-                        label="*Capacidade"
-                        placeholder="Informe o número máximo de hóspedes"
-                        numberValue={capacity}
-                        onChange={(e) => setCapacity(Number(e.target.value))}
-                        onlyNumber={true}
-                    />
-                    <div className={styles.toggleContainer}>
-                        <button
-                            id="active"
-                            className={`${styles.toggle} ${active ? styles.toggleOn : styles.toggleOff}`}
-                            onClick={() => setActive(!active)}
-                        >
-                            <div className={styles.toggleCircle} />
-                        </button>
-                        <label htmlFor="active" className={styles.toggleText}>
-                            
-                            {active ? 'ATIVADO' : 'DESATIVADO'}
-                        </label>
-                        
-                    </div>
-                </div>
-            </Modal>
-
-            <Modal
-            title="Tem certeza que deseja inativar o quarto?"
-            subtitle="O acesso desse quarto ao sistema ficará suspenso até a reativação. Você pode reverter essa ação a qualquer momento."
-            onClose={() => setShowDeactivateModal(false)}
-            isOpen={showDeactivateModal}
-            buttons={
-                <>
-                <Button variant="soft-red" onClick={() => setShowDeactivateModal(false)}>Cancelar</Button>
-                <Button variant="full" style={{backgroundColor: 'var(--color-error)', border: '1px solid var(--color-error)'}} onClick={deactivateRoom}>Sim, tenho certeza</Button>
-                </>
-            }
-            />
-
-
-            <Modal
-            title="Filtrar"
-            onClose={() => setShowFilterModal(false)}
-            isOpen={showFilterModal}
-            buttonsLeft={
-                <Button available={canFilter()} variant="soft-red" onClick={() => clearFilters()}>Limpar filtros</Button>
-            }
-            buttons={
-                <>
-                    <Button variant="soft-red" onClick={() => setShowFilterModal(false)}>Cancelar</Button>
-                    <Button available={canFilter()} variant="full" onClick={() => handleFiltrar()}>Filtrar</Button>
-                </>
-            }
-            >
-                <div className={styles.filterModalContent}>
-                    <DropdownInput
-                        variant="white"
-                        label="Status"
-                        value={filterStatus}
-                        placeholder="Filtre por status"
-                        onChange={(value) => setFilterStatus(value)}
-                        options={[
-                            { key: "disponivel", value: "Disponível" },
-                            { key: "ocupado", value: "Ocupado" }
-                        ]}
-                    />
-                    <SimpleDateSelect
-                        cantBeBeforeToday={true}
-                        label="Data ou período"
-                        selectedDate={filterPeriod ? new Date(filterPeriod.split('T')[0] + 'T00:00:00') : null}
-                        onDateChange={(value) => setFilterPeriod(value?.toISOString().split('T')[0])}
-                    />
-                </div>
-            </Modal>
         </div>
-    );
+
+        ) : (
+
+            <div className={styles.mobileContainer}>
+                <MobileTitle title="Lista de quartos" />
+
+                <div className={styles.buttonsTop}>
+                    {filters.length > 0 ? (
+                        <Button 
+                        onClick={() => handleOpenFilterModal()} 
+                        key="filter" variant="full-white" 
+                        style={{backgroundColor: 'var(--color-primary-foreground)', border: '1px solid var(--color-primary)'}} 
+                        iconLeft={<Filter size={24} />}>
+                            Alterar filtros
+                        </Button>
+                    ) : (
+                        <Button 
+                        onClick={() => handleOpenFilterModal()} 
+                        key="filter" variant="full-white" 
+                        iconLeft={<Filter size={24} />}>
+                            Filtrar
+                        </Button>
+                    )}
+                    <DateSection
+                        selectedWeekStart={selectedWeekStart}
+                        selectedWeekEnd={selectedWeekEnd}
+                        onWeekChange={handleWeekChange}
+                    />
+                </div>
+
+
+                <SearchSection
+                    searchText={searchText}
+                    setSearchText={setSearchText}
+                    searchPlaceholder="Pesquise por nome do quarto"
+                    dateSection={false}
+                    buttons={[]}
+                />
+
+                <Table
+                    filters={filters}
+                    searchText={searchText}
+                    searchKey="numero"
+                    headerItems={[
+                        { key: "numero", label: "Nome" },
+                        ...weekDaysList,
+                        { key: "acao", label: "Ação" },
+                    ]}
+                    rowItems={quartos}
+                    itemsPerPage={8}
+                />
+
+                <SaveFooterAdmin buttonText="Novo quarto" executeFunction={() => setShowNewRoomModal(true)} />
+            </div>
+        )}
+
+        <Modal
+            title="Cadastrar novo quarto"
+            buttons={
+                <>
+                    <Button variant="soft-red" onClick={() => setShowNewRoomModal(false)}>Cancelar</Button>
+                    <Button variant="full" onClick={() => saveNewRoom()}>Cadastrar</Button>
+                </>
+            }
+            onClose={() => setShowNewRoomModal(false)}
+            isOpen={showNewRoomModal}
+        >
+            <div className={styles.newRoomModalContent}>
+                <InputText
+                    label="*Nome"
+                    placeholder="Informe o nome do quarto"
+                    value={nome}
+                    onChange={(e) => setNome(e.target.value)}
+                />
+                <InputText
+                    label="*Capacidade"
+                    placeholder="Informe o número máximo de hóspedes"
+                    numberValue={capacity}
+                    onChange={(e) => setCapacity(Number(e.target.value))}
+                    onlyNumber={true}
+                />
+                <div className={styles.toggleContainer}>
+                    <button
+                        id="active"
+                        className={`${styles.toggle} ${active ? styles.toggleOn : styles.toggleOff}`}
+                        onClick={() => setActive(!active)}
+                    >
+                        <div className={styles.toggleCircle} />
+                    </button>
+                    <label htmlFor="active" className={styles.toggleText}>
+                        
+                        {active ? 'ATIVADO' : 'DESATIVADO'}
+                    </label>
+                    
+                </div>
+            </div>
+        </Modal>
+
+        <Modal
+            title="Editar quarto"
+            buttons={
+                <>
+                    <Button variant="soft-red" onClick={() => setShowEditRoomModal(false)}>Cancelar</Button>
+                    <Button variant="full" onClick={() => saveEditRoom()}>Salvar</Button>
+                </>
+            }
+            onClose={() => setShowEditRoomModal(false)}
+            isOpen={showEditRoomModal}
+        >
+            <div className={styles.newRoomModalContent}>
+                <InputText
+                    label="*Nome"
+                    placeholder="Informe o nome do quarto"
+                    value={nome}
+                    onChange={(e) => setNome(e.target.value)}
+                />
+                <InputText
+                    label="*Capacidade"
+                    placeholder="Informe o número máximo de hóspedes"
+                    numberValue={capacity}
+                    onChange={(e) => setCapacity(Number(e.target.value))}
+                    onlyNumber={true}
+                />
+                <div className={styles.toggleContainer}>
+                    <button
+                        id="active"
+                        className={`${styles.toggle} ${active ? styles.toggleOn : styles.toggleOff}`}
+                        onClick={() => setActive(!active)}
+                    >
+                        <div className={styles.toggleCircle} />
+                    </button>
+                    <label htmlFor="active" className={styles.toggleText}>
+                        
+                        {active ? 'ATIVADO' : 'DESATIVADO'}
+                    </label>
+                    
+                </div>
+            </div>
+        </Modal>
+
+        <Modal
+        title="Tem certeza que deseja inativar o quarto?"
+        subtitle="O acesso desse quarto ao sistema ficará suspenso até a reativação. Você pode reverter essa ação a qualquer momento."
+        onClose={() => setShowDeactivateModal(false)}
+        isOpen={showDeactivateModal}
+        buttons={
+            <>
+            <Button variant="soft-red" onClick={() => setShowDeactivateModal(false)}>Cancelar</Button>
+            <Button variant="full" style={{backgroundColor: 'var(--color-error)', border: '1px solid var(--color-error)'}} onClick={deactivateRoom}>Sim, tenho certeza</Button>
+            </>
+        }
+        />
+
+
+        <Modal
+        title="Filtrar"
+        onClose={() => setShowFilterModal(false)}
+        isOpen={showFilterModal}
+        buttonsLeft={
+            <Button available={canFilter()} variant="soft-red" onClick={() => clearFilters()}>Limpar filtros</Button>
+        }
+        buttons={
+            <>
+                <Button variant="soft-red" onClick={() => setShowFilterModal(false)}>Cancelar</Button>
+                <Button available={canFilter()} variant="full" onClick={() => handleFiltrar()}>Filtrar</Button>
+            </>
+        }
+        >
+            <div className={styles.filterModalContent}>
+                <DropdownInput
+                    variant="white"
+                    label="Status"
+                    value={filterStatus}
+                    placeholder="Filtre por status"
+                    onChange={(value) => setFilterStatus(value)}
+                    options={[
+                        { key: "disponivel", value: "Disponível" },
+                        { key: "ocupado", value: "Ocupado" }
+                    ]}
+                />
+                <SimpleDateSelect
+                    cantBeBeforeToday={true}
+                    label="Data ou período"
+                    selectedDate={filterPeriod ? new Date(filterPeriod.split('T')[0] + 'T00:00:00') : null}
+                    onDateChange={(value) => setFilterPeriod(value?.toISOString().split('T')[0])}
+                />
+            </div>
+        </Modal>
+    </>);
 }
