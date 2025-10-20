@@ -9,7 +9,7 @@ import { SideMenuAdmin } from '../admin/SideMenuAdmin';
 import { SideMenuAdminDesktop } from '../admin/SideMenuAdminDesktop';
 import { usePathname, useRouter } from 'next/navigation';
 import { queryApi } from '@/lib/utils';
-import NotificationMenuAdmin from './NotificationMenuAdminDesktop';
+import NotificationMenuAdmin from './NotificationMenuAdmin';
 import NotificationMenuAdminDesktop from './NotificationMenuAdminDesktop';
 import Link from 'next/link';
 import { SideMenuComumDesktop } from './SideMenuComumDesktop';
@@ -172,9 +172,13 @@ export function Header({ setSideBarExpanded = (expanded: boolean) => void 0}: He
                 <SideMenu isOpen={sideMenuOpen} onClose={closeSideMenu} />
             ) : null}
             
-            {!isDesktop && !pathname.startsWith('/admin') ? (
+            {!isDesktop && pathname.startsWith('/admin') && (
+                <NotificationMenuAdmin isOpen={showNotificationMenu} onClose={() => setShowNotificationMenu(false)} />
+            )}
+
+            {!isDesktop && !pathname.startsWith('/admin') && (
                 <NotificationMenu isOpen={showNotificationMenu} onClose={() => setShowNotificationMenu(false)} />
-            ) : null}
+            )}
 
             </div>
             <div className={styles.desktopHeader}>
