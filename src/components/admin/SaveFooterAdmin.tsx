@@ -4,14 +4,15 @@ import { Plus } from "lucide-react";
 
 interface SaveFooterAdminProps {
     buttonText: string;
+    iconLeft?: React.ReactNode;
     executeFunction: () => void;
 }
 
-export default function SaveFooterAdmin({buttonText, executeFunction}: SaveFooterAdminProps) {
+export default function SaveFooterAdmin({buttonText, iconLeft = <Plus size={24} />, executeFunction}: SaveFooterAdminProps) {
 
     return (
         <div className={styles.container}>
-            <Button variant="full" onClick={() => executeFunction()} iconLeft={<Plus size={24} />}>{buttonText}</Button>
+            <Button variant="full" onClick={() => executeFunction()} iconLeft={iconLeft}>{buttonText}</Button>
         </div>
     )
 }

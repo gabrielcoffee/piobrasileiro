@@ -262,7 +262,7 @@ export function DateSection({ selectedWeekStart, selectedWeekEnd, onWeekChange }
                                 <div className={styles.weekDay}>TER</div>
                                 <div className={styles.weekDay}>QUA</div>
                                 <div className={styles.weekDay}>QUI</div>
-                                <div className={styles.weekDay}>SEX</div>
+                                <div translate="no" className={styles.weekDay}>SEX</div>
                                 <div className={styles.weekDay}>SAB</div>
                                 <div className={styles.weekDay}>DOM</div>
                             </div>
@@ -304,7 +304,7 @@ export function DateSection({ selectedWeekStart, selectedWeekEnd, onWeekChange }
                                 <div className={styles.weekDay}>TER</div>
                                 <div className={styles.weekDay}>QUA</div>
                                 <div className={styles.weekDay}>QUI</div>
-                                <div className={styles.weekDay}>SEX</div>
+                                <div translate='no' className={styles.weekDay}>SEX</div>
                                 <div className={styles.weekDay}>SAB</div>
                                 <div className={styles.weekDay}>DOM</div>
                             </div>
