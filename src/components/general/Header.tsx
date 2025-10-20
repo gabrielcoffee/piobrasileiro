@@ -66,6 +66,7 @@ export function Header({ setSideBarExpanded = (expanded: boolean) => void 0}: He
     
     useEffect(() => {
         fetchNotificationsCount();
+        setShowNotificationMenu(false);
     }, [pathname]);
 
     useEffect(() => {

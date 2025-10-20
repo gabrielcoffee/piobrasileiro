@@ -5,6 +5,8 @@ import NotificationCard from "./NotificationCard";
 import styles from "./styles/NotificationMenu.module.css";
 import { useEffect, useState } from "react";
 import { queryApi } from "@/lib/utils";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 interface NotificationMenuAdminProps {
     isOpen: boolean;
@@ -14,6 +16,8 @@ interface NotificationMenuAdminProps {
 export default function NotificationMenuAdmin({ isOpen, onClose }: NotificationMenuAdminProps) {
 
     const [notifications, setNotifications] = useState<any[]>([]);
+
+    const router = useRouter();
 
     const formatDate = (isoString: string): string => {
         const date = new Date(isoString);
@@ -77,7 +81,9 @@ export default function NotificationMenuAdmin({ isOpen, onClose }: NotificationM
                 <ul className={styles.notificationList}>
                     {notifications.map((notification) => (
                         <li key={notification.id} className={styles.notificationItem}>
-                            <NotificationCard {...notification} />
+                            <Link href={`/admin/solicitacoes`}>
+                                <NotificationCard {...notification} />
+                            </Link>
                         </li>
                     ))}
                 </ul>
