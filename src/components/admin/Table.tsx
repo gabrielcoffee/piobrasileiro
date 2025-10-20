@@ -1,7 +1,8 @@
 "use client";
 import React, { useState, useImperativeHandle, forwardRef, useEffect, useMemo } from 'react';
 import styles from './styles/Table.module.css';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, ChevronUp } from 'lucide-react';
+import { Button } from '../ui/Button';
 
 // Define types for the table data
 interface TableHeaderItem {
@@ -48,6 +49,8 @@ const Table = forwardRef<TableRef, TableProps>(({
 
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedRows, setSelectedRows] = useState<Set<string | number>>(new Set());
+    const [showAllMobile, setShowAllMobile] = useState(false);
+    const [allFilteredItems, setAllFilteredItems] = useState<TableRowItem[]>(rowItems);
     
     // Calculate pagination
     const defaultRows = rowItems;
@@ -145,7 +148,8 @@ const Table = forwardRef<TableRef, TableProps>(({
             return aValue.localeCompare(bValue);
         });
     
-        // Step 4: Paginate
+        // Step 4: Store all filtered items and paginate
+        setAllFilteredItems(filteredRows);
         setCurrentPageItems(filteredRows.slice(startIndex, endIndex));
     }, [searchText, rowItems, searchKey, currentPage, itemsPerPage, startIndex, endIndex, stableFilters]);
     
@@ -186,9 +190,8 @@ const Table = forwardRef<TableRef, TableProps>(({
         notifySelectionChange(newSelected);
     };
     
-    const handleRowSelect = (rowIndex: number) => {
-        const item = currentPageItems[rowIndex];
-        const rowId = String(item[rowIdKey]);
+    const handleRowSelect = (rowItem: TableRowItem) => {
+        const rowId = String(rowItem[rowIdKey]);
         const newSelected = new Set(selectedRows);
         
         if (newSelected.has(rowId)) {
@@ -201,9 +204,8 @@ const Table = forwardRef<TableRef, TableProps>(({
         notifySelectionChange(newSelected);
     };
     
-    const isRowSelected = (rowIndex: number) => {
-        const item = currentPageItems[rowIndex];
-        return selectedRows.has(String(item[rowIdKey]));
+    const isRowSelected = (rowItem: TableRowItem) => {
+        return selectedRows.has(String(rowItem[rowIdKey]));
     };
     
     // Notify parent component of selection changes
@@ -279,6 +281,7 @@ const Table = forwardRef<TableRef, TableProps>(({
         if (rowItems.length > itemsPerPage) {
             setCurrentPage(1);
         }
+        setShowAllMobile(false);
     }, [rowItems.length, searchText, itemsPerPage]);
 
     useEffect(() => {
@@ -295,6 +298,26 @@ const Table = forwardRef<TableRef, TableProps>(({
             setIsAllSelected(true);
         }
     }, [selectedRows]);
+
+    const handleShowMore = () => {
+        setShowAllMobile(true);
+    };
+
+    const handleScrollToTop = () => {
+        setShowAllMobile(false);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // Get mobile items to display
+    const getMobileItems = () => {
+        if (showAllMobile) {
+            return allFilteredItems;
+        }
+        return currentPageItems;
+    };
+
+    const mobileItems = getMobileItems();
+    const hasMoreItems = !showAllMobile && allFilteredItems.length > itemsPerPage;
 
     if (rowItems.length === 0) {
         return (
@@ -348,7 +371,7 @@ const Table = forwardRef<TableRef, TableProps>(({
                             <tr 
                                 key={startIndex + rowIndex} 
                                 className={`
-                                    ${styles.tableRow} ${isRowSelected(rowIndex) ? styles.selectedRow : ''} 
+                                    ${styles.tableRow} ${isRowSelected(rowItem) ? styles.selectedRow : ''} 
                                     ${rowItem.visualizada === true ? styles.seenRow : ''}
                                     ${rowItem.active === false ? styles.inactiveRow : ''}
                                     `}
@@ -357,8 +380,8 @@ const Table = forwardRef<TableRef, TableProps>(({
                                     <td className={styles.selectorCell}>
                                         <input
                                             type="checkbox"
-                                            checked={isRowSelected(rowIndex)}
-                                            onChange={() => handleRowSelect(rowIndex)}
+                                            checked={isRowSelected(rowItem)}
+                                            onChange={() => handleRowSelect(rowItem)}
                                             className={styles.checkbox}
                                         />
                                     </td>
@@ -379,12 +402,12 @@ const Table = forwardRef<TableRef, TableProps>(({
 
             {/* Mobile Card View */}
             <div className={styles.mobileCardContainer}>
-                {currentPageItems.map((rowItem, rowIndex) => (
+                {mobileItems.map((rowItem, rowIndex) => (
                     <div 
-                        key={startIndex + rowIndex} 
+                        key={showAllMobile ? String(rowItem[rowIdKey]) : startIndex + rowIndex} 
                         className={`
                             ${styles.mobileCard} 
-                            ${isRowSelected(rowIndex) ? styles.selectedCard : ''} 
+                            ${isRowSelected(rowItem) ? styles.selectedCard : ''} 
                             ${rowItem.visualizada === true ? styles.seenCard : ''}
                             ${rowItem.active === false ? styles.inactiveCard : ''}
                         `}
@@ -394,8 +417,8 @@ const Table = forwardRef<TableRef, TableProps>(({
                             <div className={styles.mobileCardCheckbox}>
                                 <input
                                     type="checkbox"
-                                    checked={isRowSelected(rowIndex)}
-                                    onChange={() => handleRowSelect(rowIndex)}
+                                    checked={isRowSelected(rowItem)}
+                                    onChange={() => handleRowSelect(rowItem)}
                                     className={styles.checkbox}
                                 />
                             </div>
@@ -403,15 +426,20 @@ const Table = forwardRef<TableRef, TableProps>(({
 
                         {/* Card Content */}
                         <div className={`${styles.mobileCardContent} ${hasSelector ? styles.withCheckbox : ''}`}>
-                            {/* Name - Primary Color */}
-                            <div className={styles.mobileCardName}>
-                                {rowItem[searchKey] || rowItem.nome_completo || 'Nome não encontrado'}
+                            {/* Name - Primary Color with optional seen indicator */}
+                            <div className={styles.mobileCardNameContainer}>
+                                {rowItem.visualizada === false && (
+                                    <div className={styles.seenIcon}></div>
+                                )}
+                                <div className={styles.mobileCardName}>
+                                    {rowItem[searchKey] || rowItem.nome_completo || (rowItem.visualizada !== undefined ? '' : 'Nome não encontrado')}
+                                </div>
                             </div>
 
                             {/* Fields */}
                             <div className={styles.mobileCardFields}>
                                 {headerItems
-                                    .filter(headerItem => headerItem.key !== searchKey && headerItem.key !== 'nome_completo' && headerItem.key !== 'acao')
+                                    .filter(headerItem => headerItem.key !== searchKey && headerItem.key !== 'nome_completo' && headerItem.key !== 'acao' && headerItem.key !== 'status')
                                     .map((headerItem) => (
                                         <div key={headerItem.key} className={styles.mobileCardField}>
                                             <span className={styles.mobileCardFieldLabel}>{headerItem.label}:</span>
@@ -421,8 +449,13 @@ const Table = forwardRef<TableRef, TableProps>(({
                                 }
                             </div>
 
-                            {/* Action Buttons */}
+                            {/* Bottom Row: Status (left) and Action Buttons (right) */}
                             <div className={styles.mobileCardActions}>
+                                {rowItem.status && (
+                                    <div className={styles.mobileCardStatus}>
+                                        {rowItem.status}
+                                    </div>
+                                )}
                                 {rowItem.acao && (
                                     <div className={styles.mobileCardActionButtons}>
                                         {rowItem.acao}
@@ -432,7 +465,30 @@ const Table = forwardRef<TableRef, TableProps>(({
                         </div>
                     </div>
                 ))}
+
+                {/* Mostrar mais button - Mobile only */}
+                {hasMoreItems && (
+                    <div className={styles.showMoreButtonContainer}>
+                        <Button 
+                            variant="text"
+                            onClick={handleShowMore}
+                        >
+                            Mostrar mais
+                        </Button>
+                    </div>
+                )}
             </div>
+
+            {/* Scroll to top button - Mobile only, shown when all items are displayed */}
+            {showAllMobile && (
+                <button 
+                    className={styles.scrollToTopButton}
+                    onClick={handleScrollToTop}
+                    aria-label="Voltar ao topo"
+                >
+                    <ChevronUp size={24} />
+                </button>
+            )}
 
             {/* Pagination */}
             {totalPages > 1 && (

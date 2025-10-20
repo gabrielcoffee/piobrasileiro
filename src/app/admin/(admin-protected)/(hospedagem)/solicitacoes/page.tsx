@@ -9,18 +9,20 @@ import { getDateStringAndTime, getDateString, queryApi } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { Eye } from 'lucide-react';
 import Modal from '@/components/admin/Modal';
+import MobileTitle from '@/components/admin/MobileTitle';
 
 export default function SolicitacoesPage() {
 
     const [solicitacoes, setSolicitacoes] = useState<any[]>([]);
     const [isDetalhesModalOpen, setIsDetalhesModalOpen] = useState<boolean>(false);
     const [selectedSolicitacao, setSelectedSolicitacao] = useState<any>(null);
+    const [isMobile, setIsMobile] = useState<boolean>(false);
 
     const acoes = (request: any) => {
         return (
             <div className={styles.acoes}>
-                <Button onClick={() => handleContatar(request.telefone)} variant="full-white" iconLeft={<img src="/wpp.png" width={24} alt="Whatsapp" />}>Contatar</Button>
-                <Button onClick={() => handleDetalhes(request)} variant="full-white" iconLeft={<Eye size={20} />}>Detalhes</Button>
+                <Button className={styles.actionButton} onClick={() => handleContatar(request.telefone)} variant="full-white" iconLeft={<img src="/wpp.png" width={24} alt="Whatsapp" />}><span className={styles.acoesText}>Contatar</span></Button>
+                <Button className={styles.actionButton} onClick={() => handleDetalhes(request)} variant="full-white" iconLeft={<Eye size={20} />}><span className={styles.acoesText}>Detalhes</span></Button>
             </div>
         );
     }
@@ -83,26 +85,55 @@ export default function SolicitacoesPage() {
     useEffect(() => {
         fetchSolicitacoes();
     }, []);
+
+    useEffect(() => {
+        setIsMobile(window.innerWidth < 768);
+    }, [window.innerWidth]);
     
     return (
-        <div className={styles.container}>
-        <Card>
-            <CardHeader title="Lista de solicitações de reserva" breadcrumb={["Início", "Hospedagem", "Solicitações"]} />
 
-            <Table
-                headerItems={[
-                    { key: "criado_em", label: "Solicitado em" },
-                    { key: "nome", label: "Nome" },
-                    { key: "num_pessoas", label: "Qtd" },
-                    { key: "data_chegada", label: "Data de chegada" },
-                    { key: "data_saida", label: "Data de saída" },
-                    { key: "telefone", label: "Telefone" },
-                    { key: "acao", label: "Ação" },
-                ]}
-                rowItems={solicitacoes}
-                itemsPerPage={9}
-            />
-        </Card>
+        <>
+        {!isMobile ? (
+            <div className={styles.container}>
+            <Card>
+                <CardHeader title="Lista de solicitações de reserva" breadcrumb={["Início", "Hospedagem", "Solicitações"]} />
+
+                <Table
+                    headerItems={[
+                        { key: "criado_em", label: "Solicitado em" },
+                        { key: "nome", label: "Nome" },
+                        { key: "num_pessoas", label: "Qtd" },
+                        { key: "data_chegada", label: "Data de chegada" },
+                        { key: "data_saida", label: "Data de saída" },
+                        { key: "telefone", label: "Telefone" },
+                        { key: "acao", label: "Ação" },
+                    ]}
+                    rowItems={solicitacoes}
+                    itemsPerPage={9}
+                />
+            </Card>
+            </div>
+        ) : (
+            <div className={styles.mobileContainer}>
+                <MobileTitle title="Lista de solicitações de reserva" />
+
+                <div style={{ marginTop: '2rem' }}></div>
+
+                <Table
+                    headerItems={[
+                        { key: "criado_em", label: "Solicitado em" },
+                        { key: "nome", label: "Nome" },
+                        { key: "num_pessoas", label: "Quantidade" },
+                        { key: "data_chegada", label: "Data de chegada" },
+                        { key: "data_saida", label: "Data de saída" },
+                        { key: "telefone", label: "Telefone" },
+                        { key: "acao", label: "Ação" },
+                    ]}
+                    rowItems={solicitacoes}
+                    itemsPerPage={9}
+                />
+            </div>
+        )}
 
         <Modal
         title="Solicitação de hospedagem"
@@ -142,6 +173,7 @@ export default function SolicitacoesPage() {
                 </div>
             </div>
         </Modal>
-        </div>
+
+        </>
     );
 }

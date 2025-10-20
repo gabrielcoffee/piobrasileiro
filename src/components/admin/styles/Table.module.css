@@ -174,12 +174,26 @@
     margin-top: 25px;
 }
 
+.mobileCardNameContainer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.seenIcon {
+    width: 10px;
+    height: 10px;
+    background-color: #FAD24F;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
 .mobileCardName {
     color: var(--color-primary);
     font-size: 1rem;
     font-weight: 600;
-    margin-bottom: 12px;
-    margin-top: 0;
+    margin: 0;
 }
 
 .mobileCardFields {
@@ -212,14 +226,21 @@
 
 .mobileCardActions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
     gap: 12px;
+}
+
+.mobileCardStatus {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text);
 }
 
 .mobileCardActionButtons {
     display: flex;
     gap: 12px;
+    margin-left: auto;
 }
 
 .mobileCardActionButtons > * {
@@ -240,6 +261,58 @@
     background-color: var(--color-error-bg) !important;
 }
 
+/* Mobile "Mostrar mais" button */
+.showMoreButtonContainer {
+    display: none;
+}
+
+.showMoreButton {
+    width: 100%;
+    padding: 12px 24px;
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-top: 8px;
+}
+
+.showMoreButton:hover {
+    background-color: var(--color-primary-hover);
+}
+
+/* Floating scroll to top button */
+.scrollToTopButton {
+    display: none;
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    width: 48px;
+    height: 48px;
+    background-color: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.scrollToTopButton:hover {
+    background-color: var(--color-primary-hover);
+    transform: scale(1.05);
+}
+
+.scrollToTopButton:active {
+    transform: scale(0.95);
+}
+
 /* Mobile responsive styles */
 @media (max-width: 768px) {
     .tableWrapper {
@@ -248,5 +321,18 @@
     
     .mobileCardContainer {
         display: block;
+    }
+
+    .showMoreButtonContainer {
+        display: block;
+        margin-top: 16px;
+    }
+
+    .scrollToTopButton {
+        display: flex;
+    }
+
+    .pagination {
+        display: none;
     }
 }
