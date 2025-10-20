@@ -45,14 +45,36 @@
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
+/* Desktop and Mobile Containers */
+.monthsContainerDesktop {
+    display: flex;
+    gap: 2rem;
+}
+
+.monthsContainerMobile {
+    display: none;
+}
+
+.footerDesktop {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    gap: 16rem;
+}
+
+.footerMobile {
+    display: none;
+}
+
 /* MOBILE */
 @media (max-width: 768px) {
     .container {
-        flex-shrink: 0; /* Don't shrink the date section */
+        flex-shrink: 0;
     }
 
     .dateBox {
-        white-space: nowrap; /* Prevent date text from wrapping */
+        white-space: nowrap;
     }
 
     .weekLeftArrow,
@@ -60,6 +82,7 @@
         background-color: transparent;
         border-radius: 0;
         padding: 0;
+        margin: 0;
         display: flex;
         align-items: center;
     }
@@ -71,15 +94,44 @@
     }
 
     .miniCalendar {
+        width: 86%;
+        margin-left: 0;
+        margin-right: 0;
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+
+    .monthsContainerDesktop {
         display: none;
+    }
+
+    .monthsContainerMobile {
+        display: flex;
+    }
+
+    .footerDesktop {
+        display: none;
+    }
+
+    .footerMobile {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+        padding-top: 1rem;
+        width: 100%;
+        max-width: 100%;
+    }
+    
+    .footerMobile button {
+        flex: 1;
+        min-width: 0;
+        font-size: 0.875rem;
+        padding: 0.625rem 0.5rem;
     }
 
 }
 
-.monthsContainer {
-  display: flex;
-  gap: 2rem;
-}
 
 .monthBlock {
   flex: 1;
@@ -167,12 +219,4 @@
 .weekBoundary {
   background-color: var(--color-primary);
   color: white;
-}
-
-.footer {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 1rem;
-  padding-top: 1rem;
-  gap: 16rem;
 }

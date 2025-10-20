@@ -9,6 +9,7 @@ import { InputTextSearch } from '../ui/InputTextSearch';
 import { SimpleDateSelect } from './SimpleDateSelect';
 import { Button } from '../ui/Button';
 import { Trash2, UserPlus } from 'lucide-react';
+import MealSection from './MealSection';
 
 type Option = {
     key: string;
@@ -231,41 +232,17 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
 
 
                 {/* MEALS Section */}
-
-                <div className={styles.mealSection}>
-                <span className={styles.mealSectionTitle}>*Incluir refeições?</span>
-
-                    {/* Almoço Section */}
-                    <div className={styles.mealHeader}>
-                        <h3 className={styles.mealTitle}>Almoço (13h - 14h)</h3>
-                        <div className={styles.toggleContainer}>
-                            <span className={styles.toggleText}>
-                                {almoco ? 'SIM' : 'NÃO'}
-                            </span>
-                            <button
-                                className={`${styles.toggle} ${almoco ? styles.toggleOn : styles.toggleOff}`}
-                                onClick={() => setAlmoco(!almoco)}
-                            >
-                                <div className={styles.toggleCircle} />
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Jantar Section */}
-                    <div className={styles.mealHeader}>
-                        <h3 className={styles.mealTitle}>Jantar (19h30 - 20h30)</h3>
-                        <div className={styles.toggleContainer}>
-                            <span className={styles.toggleText}>
-                                {janta ? 'SIM' : 'NÃO'}
-                            </span>
-                            <button
-                                className={`${styles.toggle} ${janta ? styles.toggleOn : styles.toggleOff}`}
-                                onClick={() => setJanta(!janta)}
-                            >
-                                <div className={styles.toggleCircle} />
-                            </button>
-                        </div>
-                    </div>
+                    <div className={styles.mealSectionContainer}>
+                        <span className={styles.mealSectionTitle}>*Incluir refeições?</span>
+                        <MealSection
+                            almoco_colegio={almoco}
+                            almoco_levar={false}
+                            janta_colegio={janta}
+                            onAlmocoColegioChange={setAlmoco}
+                            onAlmocoLevarChange={() => {}}
+                            onJantaColegioChange={setJanta}
+                            hasTakeoutOption={false}
+                        />
                     </div>
                 </div>
 

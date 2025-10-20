@@ -10,6 +10,7 @@ interface MealSectionProps {
     onAlmocoColegioChange: (value: boolean) => void;
     onAlmocoLevarChange: (value: boolean) => void;
     onJantaColegioChange: (value: boolean) => void;
+    hasTakeoutOption?: boolean;
 }
 
 export default function MealSection({
@@ -18,7 +19,8 @@ export default function MealSection({
     janta_colegio,
     onAlmocoColegioChange,
     onAlmocoLevarChange,
-    onJantaColegioChange
+    onJantaColegioChange,
+    hasTakeoutOption = true
 }: MealSectionProps) {
     return (
         <div className={styles.mealSection}>
@@ -37,35 +39,37 @@ export default function MealSection({
                 </div>
             </div>
 
-            <div className={styles.optionsContainer}>
-                <label className={`${styles.radioOption} ${!almoco_colegio ? styles.disabled : ''}`}>
-                    <input
-                        type="radio"
-                        name="lunch"
-                        value="school"
-                        checked={!almoco_levar}
-                        onChange={() => onAlmocoLevarChange(false)}
-                        disabled={!almoco_colegio}
-                        className={styles.radioInput}
-                    />
-                    <span className={styles.radioCircle} />
-                    <span className={styles.radioLabel}>No Colégio PIO</span>
-                </label>
+            {hasTakeoutOption && (
+                <div className={styles.optionsContainer}>
+                    <label className={`${styles.radioOption} ${!almoco_colegio ? styles.disabled : ''}`}>
+                        <input
+                            type="radio"
+                            name="lunch"
+                            value="school"
+                            checked={!almoco_levar}
+                            onChange={() => onAlmocoLevarChange(false)}
+                            disabled={!almoco_colegio}
+                            className={styles.radioInput}
+                        />
+                        <span className={styles.radioCircle} />
+                        <span className={styles.radioLabel}>No Colégio PIO</span>
+                    </label>
 
-                <label className={`${styles.radioOption} ${!almoco_colegio ? styles.disabled : ''}`}>
-                    <input
-                        type="radio"
-                        name="lunch"
-                        value="takeaway"
-                        checked={almoco_levar}
-                        onChange={() => onAlmocoLevarChange(true)}
-                        disabled={!almoco_colegio}
-                        className={styles.radioInput}
-                    />
-                    <span className={styles.radioCircle} />
-                    <span className={styles.radioLabel}>Para levar</span>
-                </label>
-            </div>
+                    <label className={`${styles.radioOption} ${!almoco_colegio ? styles.disabled : ''}`}>
+                        <input
+                            type="radio"
+                            name="lunch"
+                            value="takeaway"
+                            checked={almoco_levar}
+                            onChange={() => onAlmocoLevarChange(true)}
+                            disabled={!almoco_colegio}
+                            className={styles.radioInput}
+                        />
+                        <span className={styles.radioCircle} />
+                        <span className={styles.radioLabel}>Para levar</span>
+                    </label>
+                </div>
+            )}
 
             {/* Jantar Section */}
             <div className={styles.mealHeader}>
@@ -83,20 +87,22 @@ export default function MealSection({
                 </div>
             </div>
 
-            <div className={styles.optionsContainer}>
-                <label className={`${styles.radioOption} ${!janta_colegio ? styles.disabled : ''}`}>
-                    <input
-                        type="radio"
-                        name="dinner"
-                        value="school"
-                        defaultChecked={true}
-                        disabled={!janta_colegio}
-                        className={styles.radioInput}
-                    />
-                    <span className={styles.radioCircle} />
-                    <span className={styles.radioLabel}>No Colégio PIO</span>
-                </label>
-            </div>
+            {hasTakeoutOption && (
+                <div className={styles.optionsContainer}>
+                    <label className={`${styles.radioOption} ${!janta_colegio ? styles.disabled : ''}`}>
+                        <input
+                            type="radio"
+                            name="dinner"
+                            value="school"
+                            defaultChecked={true}
+                            disabled={!janta_colegio}
+                            className={styles.radioInput}
+                        />
+                        <span className={styles.radioCircle} />
+                        <span className={styles.radioLabel}>No Colégio PIO</span>
+                    </label>
+                </div>
+            )}
         </div>
     );
 }

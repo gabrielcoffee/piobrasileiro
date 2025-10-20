@@ -246,7 +246,8 @@ export function DateSection({ selectedWeekStart, selectedWeekEnd, onWeekChange }
 
             {showMiniCalendar && (
                 <div className={styles.miniCalendar}>
-                    <div className={styles.monthsContainer}>
+                    {/* Desktop: Two months side by side */}
+                    <div className={styles.monthsContainerDesktop}>
                         {/* Left Month */}
                         <div className={styles.monthBlock}>
                             <div className={styles.header}>
@@ -332,8 +333,55 @@ export function DateSection({ selectedWeekStart, selectedWeekEnd, onWeekChange }
                         </div>
                     </div>
 
-                    <div className={styles.footer}>
+                    {/* Mobile: Single month */}
+                    <div className={styles.monthsContainerMobile}>
+                        <div className={styles.monthBlock}>
+                            <div className={styles.header}>
+                                <button className={styles.leftMonthArrow} onClick={goToPreviousMonth}>
+                                    <ChevronLeft size={16} />
+                                </button>
+                                <span className={styles.month}>
+                                    {currentMonth.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' })}
+                                </span>
+                                <button className={styles.rightMonthArrow} onClick={goToNextMonth}>
+                                    <ChevronRight size={16} />
+                                </button>
+                            </div>
+                            <div className={styles.weekDaysContainer}>
+                                <div className={styles.weekDay}>SEG</div>
+                                <div className={styles.weekDay}>TER</div>
+                                <div className={styles.weekDay}>QUA</div>
+                                <div className={styles.weekDay}>QUI</div>
+                                <div translate="no" className={styles.weekDay}>SEX</div>
+                                <div className={styles.weekDay}>SAB</div>
+                                <div className={styles.weekDay}>DOM</div>
+                            </div>
+                            <div className={styles.daysContainer}>
+                                {leftMonthDates.map((date, index) => (
+                                    <div
+                                        key={`mobile-${index}`}
+                                        className={`${styles.day} ${
+                                            !isCurrentMonth(date, currentMonth.getMonth()) 
+                                                ? styles.adjacentMonth 
+                                                : ''
+                                        } ${
+                                            isInSelectedWeek(date) 
+                                                ? isWeekBoundary(date) 
+                                                    ? styles.weekBoundary 
+                                                    : styles.weekMiddle 
+                                                : ''
+                                        }`}
+                                        onClick={() => handleDateClick(date)}
+                                    >
+                                        {date.getDate()}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
 
+                    {/* Footer - Desktop */}
+                    <div className={styles.footerDesktop}>
                         <Button
                             variant="full-white"
                             iconLeft={<RotateCcw />}
@@ -350,11 +398,37 @@ export function DateSection({ selectedWeekStart, selectedWeekEnd, onWeekChange }
                             Semana Atual
                         </Button>
 
-
                         <Button
                             variant="full"
                             iconLeft={<Check />}
                             onClick={handleConfirm}
+                        >
+                            Confirmar
+                        </Button>
+                    </div>
+
+                    {/* Footer - Mobile */}
+                    <div className={styles.footerMobile}>
+                        <Button
+                                variant="full-white"
+                                iconLeft={<RotateCcw />}
+                                onClick={() => {
+                                    setShowMiniCalendar(false);
+                                    setCurrentMonth(new Date());
+                                    setCurWeekStart(getWeekStart(new Date()));
+                                    setCurWeekEnd(getWeekEnd(getWeekStart(new Date())));
+                                    setTempWeekStart(getWeekStart(new Date()));
+                                    setTempWeekEnd(getWeekEnd(getWeekStart(new Date())));
+                                    onWeekChange?.(getWeekStart(new Date()), getWeekEnd(getWeekStart(new Date())));
+                                }}
+                            >
+                            Semana Atual
+                        </Button>
+                        <Button
+                            variant="full"
+                            iconLeft={<Check />}
+                            onClick={handleConfirm}
+                            style={{ width: '100%' }}
                         >
                             Confirmar
                         </Button>

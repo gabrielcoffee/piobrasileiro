@@ -52,6 +52,7 @@
     .inputSearch {
         width: 100% !important;
         padding: 12px 12px;
+        height: 40px;
         padding-left: 40px;
         font-size: 0.875rem;
         transition: all 0.3s ease;
@@ -76,8 +77,6 @@
     }
 
     .buttons > * {
-        padding-left: 8px;
-        padding-right: 8px;
         font-size: 0.875rem;
         min-width: 0;
         overflow: hidden;
@@ -146,4 +145,9 @@
     font-weight: 500;
     line-height: 24px;
     width: 380px;
+}
+
+.dateSection {
+    padding-left: 0px;
+    padding-right: 0px;
 }

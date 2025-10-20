@@ -18,6 +18,8 @@ import { SimpleDateSelect } from '@/components/admin/SimpleDateSelect';
 import { InputTextSearch } from '@/components/ui/InputTextSearch';
 import { InputText } from '@/components/ui/InputText';
 import { Toast } from '@/components/general/Toast';
+import MobileTitle from '@/components/admin/MobileTitle';
+import SaveFooterAdmin from '@/components/admin/SaveFooterAdmin';
 
 export default function GestaoDeReservasPage() {
 
@@ -42,6 +44,7 @@ export default function GestaoDeReservasPage() {
     const [filterQuarto, setFilterQuarto] = useState<string>('');
     const [filterStatus, setFilterStatus] = useState<string>('');
     const [filters, setFilters] = useState<{ key: string, value: string | boolean | number }[]>([]);
+    const [isMobile, setIsMobile] = useState<boolean>(false);
 
     const [searchText, setSearchText] = useState<string>('');
 
@@ -196,8 +199,8 @@ export default function GestaoDeReservasPage() {
     const acoes = (reserva: any) => {
         return (
             <div className={styles.acoes}>
-                <PencilLine size={20} onClick={() => editar(reserva)} style={{cursor: 'pointer'}} />
-                <Trash2 size={20} onClick={() => excluir(reserva)} style={{cursor: 'pointer'}} />
+                <PencilLine size={20} className={styles.actionButton} onClick={() => editar(reserva)} style={{cursor: 'pointer'}} />
+                <Trash2 size={20} className={styles.actionButton} onClick={() => excluir(reserva)} style={{cursor: 'pointer'}} />
             </div>
         );
     }
@@ -334,50 +337,116 @@ export default function GestaoDeReservasPage() {
         fetchNotifications();
     }, []);
 
-    return (
-        <div className={styles.container}>
-            <Card>
-                <CardHeader title="Gestão de Reservas" breadcrumb={["Início", "Hospedagem", "Reservas"]} />
 
-                {notificationsCount > 0 && (
-                <div className={styles.newRequest}>
-                    <span>{notificationsCount > 1 ? `Você tem ${notificationsCount} novas solicitações de hospedagem!` : `Você tem ${notificationsCount} nova solicitação de hospedagem!`}</span>
-                    <div className={styles.newRequestButton}>
-                        <Button variant="full-white" onClick={() => {router.push('/admin/solicitacoes')}}>Verificar</Button>
+    useEffect(() => {
+        setIsMobile(window.innerWidth < 768);
+    }, [window.innerWidth]);
+
+    return (
+        <>
+
+        {!isMobile ? (
+        
+            <div className={styles.container}>
+                <Card>
+                    <CardHeader title="Gestão de Reservas" breadcrumb={["Início", "Hospedagem", "Reservas"]} />
+
+                    {notificationsCount > 0 && (
+                    <div className={styles.newRequest}>
+                        <span>{notificationsCount > 1 ? `Você tem ${notificationsCount} novas solicitações de hospedagem!` : `Você tem ${notificationsCount} nova solicitação de hospedagem!`}</span>
+                        <div className={styles.newRequestButton}>
+                            <Button variant="full-white" onClick={() => {router.push('/admin/solicitacoes')}}>Verificar</Button>
+                        </div>
                     </div>
+                    )}
+
+                    <SearchSection
+                        searchText={searchText}
+                        setSearchText={setSearchText}
+                        searchPlaceholder="Pesquise por nome"
+                        buttons={[
+                            filters.length > 0 ? (
+                                <Button 
+                                onClick={() => handleOpenFilterModal()} 
+                                key="filter" variant="full-white" 
+                                style={{backgroundColor: 'var(--color-primary-foreground)', border: '1px solid var(--color-primary)'}} 
+                                iconLeft={<Filter size={24} />}>
+                                    Alterar filtros
+                                </Button>
+                            ) : (
+                                <Button 
+                                onClick={() => handleOpenFilterModal()} 
+                                key="filter" variant="full-white" 
+                                iconLeft={<Filter size={24} />}>
+                                    Filtrar
+                                </Button>
+                            ),
+                            <Button key="new_booking" variant="full" onClick={() => {setShowNewBookingModal(true); setSelectedBookingData(null);}} iconLeft={<Plus size={20} />}>Nova reserva</Button>
+                        ]}
+                        dateSection={(
+                            <DateSection
+                                selectedWeekStart={selectedWeekStart}
+                                selectedWeekEnd={selectedWeekEnd}
+                                onWeekChange={handleWeekChange}
+                            />
+                        )}
+                    />
+
+                    <Table
+                        filters={filters}
+                        searchText={searchText}
+                        searchKey="nome"
+                        headerItems={[
+                            { key: "nome", label: "Nome" },
+                            { key: "anfitriao", label: "Anfitrião" },
+                            { key: "data_chegada", label: "Chegada" },
+                            { key: "data_saida", label: "Saída" },
+                            { key: "quarto", label: "Quarto" },
+                            { key: "status", label: "Status" },
+                            { key: "acao", label: "Ação" },
+                        ]}
+                        rowItems={reservas || []}
+                        itemsPerPage={6}
+                    />
+                </Card>
+            </div>
+
+        ) : (
+            <div className={styles.mobileContainer}>
+                <MobileTitle title="Gestão de Reservas" />
+
+                <div className={styles.buttonsTop}>
+                    {filters.length > 0 ? (
+                        <Button 
+                        onClick={() => handleOpenFilterModal()} 
+                        key="filter" variant="full-white" 
+                        style={{backgroundColor: 'var(--color-primary-foreground)', border: '1px solid var(--color-primary)'}} 
+                        iconLeft={<Filter size={24} />}>
+                            Alterar filtros
+                        </Button>
+                    ) : (
+                        <Button 
+                        onClick={() => handleOpenFilterModal()} 
+                        key="filter" variant="full-white" 
+                        iconLeft={<Filter size={24} />}>
+                            Filtrar
+                        </Button>
+                    )}
+
+                    <DateSection
+                        selectedWeekStart={selectedWeekStart}
+                        selectedWeekEnd={selectedWeekEnd}
+                        onWeekChange={handleWeekChange}
+                    />
                 </div>
-                )}
+
 
                 <SearchSection
                     searchText={searchText}
                     setSearchText={setSearchText}
                     searchPlaceholder="Pesquise por nome"
-                    buttons={[
-                        filters.length > 0 ? (
-                            <Button 
-                            onClick={() => handleOpenFilterModal()} 
-                            key="filter" variant="full-white" 
-                            style={{backgroundColor: 'var(--color-primary-foreground)', border: '1px solid var(--color-primary)'}} 
-                            iconLeft={<Filter size={24} />}>
-                                Alterar filtros
-                            </Button>
-                        ) : (
-                            <Button 
-                            onClick={() => handleOpenFilterModal()} 
-                            key="filter" variant="full-white" 
-                            iconLeft={<Filter size={24} />}>
-                                Filtrar
-                            </Button>
-                        ),
-                        <Button key="new_booking" variant="full" onClick={() => {setShowNewBookingModal(true); setSelectedBookingData(null);}} iconLeft={<Plus size={20} />}>Nova reserva</Button>
-                    ]}
-                    dateSection={(
-                        <DateSection
-                            selectedWeekStart={selectedWeekStart}
-                            selectedWeekEnd={selectedWeekEnd}
-                            onWeekChange={handleWeekChange}
-                        />
-                    )}
+                    buttons={[]}
+                    dateSection={false}
                 />
 
                 <Table
@@ -396,129 +465,132 @@ export default function GestaoDeReservasPage() {
                     rowItems={reservas || []}
                     itemsPerPage={6}
                 />
-            </Card>
 
-            <Modal
-                title="Nova reserva"
-                buttons={
-                    <>
-                        <Button variant="soft-red" onClick={() => setShowNewBookingModal(false)}>Cancelar</Button>
-                        <Button available={selectedBookingData?.anfitriao_id && (selectedBookingData?.hospede_id || selectedBookingData?.novo_hospede_nome) && selectedBookingData?.data_chegada && selectedBookingData?.data_saida && selectedBookingData?.quarto_id ? true : false} variant="full" onClick={() => handleSaveNewBooking()}>Salvar</Button>
-                    </>
+                <SaveFooterAdmin buttonText="Nova reserva" executeFunction={() => {setShowNewBookingModal(true); setSelectedBookingData(null);}} />
+            </div>
+        )}
+
+        {showSuccessToast && (
+            <Toast 
+                message="Hóspede registrado com sucesso!" 
+                type="success"
+                onClose={() => setShowSuccessToast(false)}
+            />
+        )}
+
+
+        <Modal
+        title="Nova reserva"
+        buttons={
+            <>
+                <Button variant="soft-red" onClick={() => setShowNewBookingModal(false)}>Cancelar</Button>
+                <Button available={selectedBookingData?.anfitriao_id && (selectedBookingData?.hospede_id || selectedBookingData?.novo_hospede_nome) && selectedBookingData?.data_chegada && selectedBookingData?.data_saida && selectedBookingData?.quarto_id ? true : false} variant="full" onClick={() => handleSaveNewBooking()}>Salvar</Button>
+            </>
+        }
+        onClose={() => setShowNewBookingModal(false)}
+        isOpen={showNewBookingModal}
+        >
+        <AddBookingModal
+            bookingDataChange={handleNewBookingChangeData} 
+            bookingData={selectedBookingData}
+        />
+        </Modal>
+
+        <Modal
+        title="Editar reserva"
+        buttons={
+            <>
+                <Button variant="soft-red" onClick={() => setShowEditBookingModal(false)}>Cancelar</Button>
+                <Button available={selectedBookingData?.anfitriao_id && selectedBookingData?.hospede_id && selectedBookingData?.data_chegada && selectedBookingData?.data_saida && selectedBookingData?.quarto_id ? true : false} variant="full" onClick={() => handleEditBooking()}>Salvar</Button>
+            </>
+        }
+        onClose={() => setShowEditBookingModal(false)}
+        isOpen={showEditBookingModal}
+        >
+        <AddBookingModal
+            isEdit={true}
+            bookingDataChange={handleNewBookingChangeData} 
+            bookingData={selectedBookingData}
+        />
+        </Modal>
+
+        <Modal
+        title="Excluir reserva"
+        subtitle="Esta ação é irreversível e resultará na exclusão permanente de todo o histórico desta reserva."
+        buttons={
+            <>
+                <Button variant="soft-red" onClick={() => setShowDeleteBookingModal(false)}>Cancelar</Button>
+                <Button variant="full" style={{backgroundColor: 'var(--color-error)', border: '1px solid var(--color-error)'}} onClick={() => handleDeleteBooking()}>Sim tenho certeza</Button>
+            </>
+        }
+        onClose={() => setShowDeleteBookingModal(false)}
+        isOpen={showDeleteBookingModal}
+        >
+        </Modal>
+
+        <Modal
+        title="Filtrar"
+        onClose={() => setShowFilterModal(false)}
+        isOpen={showFilterModal}
+        buttonsLeft={
+        <Button available={canFilter()} variant="soft-red" onClick={() => clearFilters()}>Limpar filtros</Button>
+        }
+        buttons={
+        <>
+            <Button variant="soft-red" onClick={() => setShowFilterModal(false)}>Cancelar</Button>
+            <Button available={canFilter()} variant="full" onClick={() => handleFiltrar()}>Filtrar</Button>
+        </>
+        }
+        >
+        <div className={styles.filterModalContent}>
+
+            <InputTextSearch
+                label="Anfitrião"
+                value={filterAnfitriao}
+                placeholder="Filtre por anfitrião"
+                onSelect={(option) => setFilterAnfitriao(option.value)}
+                searchOptions={anfitriaoOptions}
+            />
+
+            <InputText
+                label="Nome"
+                value={filterNome}
+                placeholder="Filtre por nome"
+                onChange={(e) => setFilterNome(e.target.value)}
+            />
+
+            <SimpleDateSelect
+                label="Data"
+                selectedDate={filterDate ? new Date(filterDate.split('T')[0] + 'T00:00:00') : null}
+                onDateChange={(value) => setFilterDate(value?.toISOString().split('T')[0])}
+            />
+
+            <InputTextSearch
+                label="Quarto"
+                value={
+                    roomOptions.find((option) => option.key === filterQuarto)?.value || ''
                 }
-                onClose={() => setShowNewBookingModal(false)}
-                isOpen={showNewBookingModal}
-            >
-                <AddBookingModal
-                    bookingDataChange={handleNewBookingChangeData} 
-                    bookingData={selectedBookingData}
+                onSelect={(option: any) => setFilterQuarto(option.key)}
+                searchOptions={roomOptions}
+                placeholder="Filtre por quarto"
+            />
+            
+            <div className={styles.filterStatus}>
+                <DropdownInput
+                    variant="white"
+                    label="Status"
+                    value={filterStatus}
+                    placeholder="Filtre por status"
+                    onChange={(value) => setFilterStatus(value)}
+                    options={[
+                        { key: "ativa", value: "Ativa" },
+                        { key: "prevista", value: "Prevista" },
+                        { key: "encerrada", value: "Encerrada" }
+                    ]}
                 />
-            </Modal>
+            </div>
 
-            <Modal
-                title="Editar reserva"
-                buttons={
-                    <>
-                        <Button variant="soft-red" onClick={() => setShowEditBookingModal(false)}>Cancelar</Button>
-                        <Button available={selectedBookingData?.anfitriao_id && selectedBookingData?.hospede_id && selectedBookingData?.data_chegada && selectedBookingData?.data_saida && selectedBookingData?.quarto_id ? true : false} variant="full" onClick={() => handleEditBooking()}>Salvar</Button>
-                    </>
-                }
-                onClose={() => setShowEditBookingModal(false)}
-                isOpen={showEditBookingModal}
-            >
-                <AddBookingModal
-                    isEdit={true}
-                    bookingDataChange={handleNewBookingChangeData} 
-                    bookingData={selectedBookingData}
-                />
-            </Modal>
-
-            <Modal
-                title="Excluir reserva"
-                subtitle="Esta ação é irreversível e resultará na exclusão permanente de todo o histórico desta reserva."
-                buttons={
-                    <>
-                        <Button variant="soft-red" onClick={() => setShowDeleteBookingModal(false)}>Cancelar</Button>
-                        <Button variant="full" style={{backgroundColor: 'var(--color-error)', border: '1px solid var(--color-error)'}} onClick={() => handleDeleteBooking()}>Sim tenho certeza</Button>
-                    </>
-                }
-                onClose={() => setShowDeleteBookingModal(false)}
-                isOpen={showDeleteBookingModal}
-            >
-            </Modal>
-
-            <Modal
-            title="Filtrar"
-            onClose={() => setShowFilterModal(false)}
-            isOpen={showFilterModal}
-            buttonsLeft={
-                <Button available={canFilter()} variant="soft-red" onClick={() => clearFilters()}>Limpar filtros</Button>
-            }
-            buttons={
-                <>
-                    <Button variant="soft-red" onClick={() => setShowFilterModal(false)}>Cancelar</Button>
-                    <Button available={canFilter()} variant="full" onClick={() => handleFiltrar()}>Filtrar</Button>
-                </>
-            }
-            >
-                <div className={styles.filterModalContent}>
-
-                    <InputTextSearch
-                        label="Anfitrião"
-                        value={filterAnfitriao}
-                        placeholder="Filtre por anfitrião"
-                        onSelect={(option) => setFilterAnfitriao(option.value)}
-                        searchOptions={anfitriaoOptions}
-                    />
-
-                    <InputText
-                        label="Nome"
-                        value={filterNome}
-                        placeholder="Filtre por nome"
-                        onChange={(e) => setFilterNome(e.target.value)}
-                    />
-
-                    <SimpleDateSelect
-                        label="Data"
-                        selectedDate={filterDate ? new Date(filterDate.split('T')[0] + 'T00:00:00') : null}
-                        onDateChange={(value) => setFilterDate(value?.toISOString().split('T')[0])}
-                    />
-
-                    <InputTextSearch
-                        label="Quarto"
-                        value={
-                            roomOptions.find((option) => option.key === filterQuarto)?.value || ''
-                        }
-                        onSelect={(option: any) => setFilterQuarto(option.key)}
-                        searchOptions={roomOptions}
-                        placeholder="Filtre por quarto"
-                    />
-                    
-                    <div className={styles.filterStatus}>
-                        <DropdownInput
-                            variant="white"
-                            label="Status"
-                            value={filterStatus}
-                            placeholder="Filtre por status"
-                            onChange={(value) => setFilterStatus(value)}
-                            options={[
-                                { key: "ativa", value: "Ativa" },
-                                { key: "prevista", value: "Prevista" },
-                                { key: "encerrada", value: "Encerrada" }
-                            ]}
-                        />
-                    </div>
-
-                </div>
-            </Modal>
-
-            {showSuccessToast && (
-                <Toast 
-                    message="Hóspede registrado com sucesso!" 
-                    type="success"
-                    onClose={() => setShowSuccessToast(false)}
-                />
-            )}
         </div>
-    );
+        </Modal>
+    </>);
 }

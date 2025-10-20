@@ -219,3 +219,9 @@
     font-weight: 500;
     color: var(--color-text);
 }
+
+.mealSectionContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}

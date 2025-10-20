@@ -37,9 +37,8 @@
 
 .acoes {
     position: relative;
-
     display: flex;
-    gap: 15px;
+    gap: 1rem;
     justify-content: left;
     align-items: center;
     color: var(--color-primary);
