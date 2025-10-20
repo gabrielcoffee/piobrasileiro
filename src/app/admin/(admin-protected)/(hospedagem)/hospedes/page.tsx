@@ -8,15 +8,16 @@ import { Button } from '@/components/ui/Button';
 import { Check, Filter, PencilLine, Plus, Trash2 } from 'lucide-react';
 import Table from '@/components/admin/Table';
 import Modal from '@/components/admin/Modal';
-import { InputText } from '@/components/ui/InputText';
-import { InputTextSearch } from '@/components/ui/InputTextSearch';
 import { queryApi } from '@/lib/utils';
 import AddHospedeModal from '@/components/admin/AddHospedeModal';
+import MobileTitle from '@/components/admin/MobileTitle';
+import SaveFooterAdmin from '@/components/admin/SaveFooterAdmin';
 
 export default function HospedesPage() {
 
     const [showNewBookingModal, setShowNewBookingModal] = useState<boolean>(false);
     const [guests, setGuests] = useState<any[]>([]);
+    const [isMobile, setIsMobile] = useState<boolean>(false);
 
     const [selectedGuests, setSelectedGuests] = useState<any[]>([]);
     const [showEditGuestModal, setShowEditGuestModal] = useState<boolean>(false);
@@ -95,8 +96,8 @@ export default function HospedesPage() {
     const acoes = (guest: any) => {
         return (
             <div className={styles.acoes}>
-                <PencilLine size={20} onClick={() => editar(guest)} style={{cursor: 'pointer'}} />
-                <Trash2 size={20} onClick={() => excluir(guest)} style={{cursor: 'pointer'}} />
+                <PencilLine className={styles.actionButton} size={20} onClick={() => editar(guest)} style={{cursor: 'pointer'}} />
+                <Trash2 className={styles.actionButton} size={20} onClick={() => excluir(guest)} style={{cursor: 'pointer'}} />
             </div>
         );
     }
@@ -127,15 +128,22 @@ export default function HospedesPage() {
             console.log('Erro ao buscar hospedes', result.error);
         }
     }
+    
+    useEffect(() => {
+        setIsMobile(window.innerWidth < 768);
+    }, [window.innerWidth]);
 
     useEffect(() => {
         fetchGuests();
     }, []);
 
     return (
+        <>
+
+        {!isMobile ? (
         <div className={styles.container}>
             <Card>
-                <CardHeader title="Hóspedes" breadcrumb={["Início", "Hospedagem", "Hóspedes"]} />
+                <CardHeader title="Lista de Hóspedes" breadcrumb={["Início", "Hospedagem", "Hóspedes"]} />
 
                 <SearchSection
                     searchText={searchText}
@@ -169,77 +177,115 @@ export default function HospedesPage() {
                         }
                     }}
                 />
-
-
-
-
-                <Modal
-                    title="Novo hóspede"
-                    isOpen={showNewBookingModal}
-                    onClose={() => setShowNewBookingModal(false)}
-                    buttons={
-                        <>
-                            <Button variant="soft-red" onClick={() => setShowNewBookingModal(false)}>Cancelar</Button>
-                            <Button 
-                            iconLeft={<Check size={20} />} 
-                            variant="full" 
-                            onClick={() => saveNewGuest()} 
-                            available={selectedGuestData?.nome && selectedGuestData?.genero && selectedGuestData?.tipoDocumento && selectedGuestData?.numDocumento ? true : false}>
-                                Salvar
-                            </Button>
-                        </>
-                    }
-                >
-                    <AddHospedeModal
-                        setHospedeData={setSelectedGuestData}
-                        hospedeData={{}}
-                    />
-                </Modal>
-
-
-
-
-                <Modal
-                    title="Editar hóspede"
-                    isOpen={showEditGuestModal}
-                    onClose={() => setShowEditGuestModal(false)}
-                    buttons={
-                        <>
-                            <Button variant="soft-red" onClick={() => setShowEditGuestModal(false)}>Cancelar</Button>
-                            <Button 
-                            iconLeft={<Check size={20} />} 
-                            variant="full" 
-                            onClick={() => saveEditGuest()} 
-                            available={selectedGuestData?.nome && selectedGuestData?.genero && selectedGuestData?.tipoDocumento && selectedGuestData?.numDocumento ? true : false}>
-                                Salvar
-                            </Button>
-                        </>
-                    }
-                >
-                    <AddHospedeModal
-                        setHospedeData={setSelectedGuestData}
-                        hospedeData={selectedGuestData}
-                        isEdit={true}
-                    />
-                </Modal>
-
-
-
-
-                <Modal
-                    title="Excluir hóspede"
-                    subtitle="Esta ação é irreversível e resultará na exclusão permanente de todo o histórico deste hospede."
-                    isOpen={showDeleteGuestModal}
-                    onClose={() => setShowDeleteGuestModal(false)}
-                    buttons={
-                        <>
-                            <Button variant="soft-red" onClick={() => setShowDeleteGuestModal(false)}>Cancelar</Button>
-                            <Button iconLeft={<Check size={20} />} variant="full" style={{backgroundColor: 'var(--color-error)', border: '1px solid var(--color-error)'}} onClick={() => handleDeleteGuest()}>Sim tenho certeza</Button>
-                        </>
-                    }
-                >
-                </Modal>
             </Card>
         </div>
+        ) : (
+            <div className={styles.mobileContainer}>
+                <MobileTitle title="Lista de Hóspedes" />
+
+                <SearchSection
+                    searchText={searchText}
+                    setSearchText={setSearchText}
+                    dateSection={false}
+                    searchPlaceholder="Pesquise por nome"
+                    buttons={[]}
+                />
+
+                <Table
+                    searchText={searchText}
+                    searchKey="nome"
+                    rowItems={guests}
+                    headerItems={[
+                        { key: "nome", label: "Nome" },
+                        { key: "genero", label: "Gênero" },
+                        { key: "documento", label: "Número do documento" },
+                        { key: "funcao", label: "Função" },
+                        { key: "origem", label: "Origem" },
+                        { key: "acao", label: "Ação" },
+                    ]}
+                    itemsPerPage={8}
+                    hasSelector={true}
+                    onSelectionChange={(selectedRows) => {
+                        if (selectedRows.length > 0) {
+                            setSelectedGuests(selectedRows);
+                        } else {
+                            setSelectedGuests([]);
+                        }
+                    }}
+                />
+
+                <SaveFooterAdmin buttonText="Salvar" executeFunction={() => setShowNewBookingModal(true)} />
+            </div>
+
+        )}
+
+            <Modal
+                title="Novo hóspede"
+                isOpen={showNewBookingModal}
+                onClose={() => setShowNewBookingModal(false)}
+                buttons={
+                    <>
+                        <Button variant="soft-red" onClick={() => setShowNewBookingModal(false)}>Cancelar</Button>
+                        <Button 
+                        iconLeft={<Check size={20} />} 
+                        variant="full" 
+                        onClick={() => saveNewGuest()} 
+                        available={selectedGuestData?.nome && selectedGuestData?.genero && selectedGuestData?.tipoDocumento && selectedGuestData?.numDocumento ? true : false}>
+                            Salvar
+                        </Button>
+                    </>
+                }
+            >
+                <AddHospedeModal
+                    setHospedeData={setSelectedGuestData}
+                    hospedeData={{}}
+                />
+            </Modal>
+
+
+
+
+            <Modal
+                title="Editar hóspede"
+                isOpen={showEditGuestModal}
+                onClose={() => setShowEditGuestModal(false)}
+                buttons={
+                    <>
+                        <Button variant="soft-red" onClick={() => setShowEditGuestModal(false)}>Cancelar</Button>
+                        <Button 
+                        iconLeft={<Check size={20} />} 
+                        variant="full" 
+                        onClick={() => saveEditGuest()} 
+                        available={selectedGuestData?.nome && selectedGuestData?.genero && selectedGuestData?.tipoDocumento && selectedGuestData?.numDocumento ? true : false}>
+                            Salvar
+                        </Button>
+                    </>
+                }
+            >
+                <AddHospedeModal
+                    setHospedeData={setSelectedGuestData}
+                    hospedeData={selectedGuestData}
+                    isEdit={true}
+                />
+            </Modal>
+
+
+
+
+            <Modal
+                title="Excluir hóspede"
+                subtitle="Esta ação é irreversível e resultará na exclusão permanente de todo o histórico deste hospede."
+                isOpen={showDeleteGuestModal}
+                onClose={() => setShowDeleteGuestModal(false)}
+                buttons={
+                    <>
+                        <Button variant="soft-red" onClick={() => setShowDeleteGuestModal(false)}>Cancelar</Button>
+                        <Button iconLeft={<Check size={20} />} variant="full" style={{backgroundColor: 'var(--color-error)', border: '1px solid var(--color-error)'}} onClick={() => handleDeleteGuest()}>Sim tenho certeza</Button>
+                    </>
+                }
+            >
+            </Modal>
+        </>
+
     );
 }

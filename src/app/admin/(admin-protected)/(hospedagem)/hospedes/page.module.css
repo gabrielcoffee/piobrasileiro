@@ -5,6 +5,25 @@
     margin-bottom: 1rem;
 }
 
+@media (max-width: 768px) {
+    .actionButton {
+        background-color: var(--color-slate-100);
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        padding: 4px;
+        width: 28px;
+        height: 28px;
+        cursor: pointer;
+    }
+}
+
+.mobileContainer {
+    margin-left: 24px;
+    margin-right: 24px;
+    padding-bottom: 6rem;
+    min-height: 100vh;
+}
+
 .newGuestModalContent {
     display: flex;
     flex-direction: column;

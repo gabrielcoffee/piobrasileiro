@@ -322,14 +322,12 @@ const Table = forwardRef<TableRef, TableProps>(({
     if (rowItems.length === 0) {
         return (
             <div className={styles.emptyTable}>
-                <span>Nenhum item encontrado</span>
-                {/*
-                
-                <span style={{cursor: 'pointer', color: 'var(--color-primary)'}} 
-                    onClick={() => window.location.reload()}>
-                    Tente recarregar a página
+                <span 
+                    style={{cursor: 'pointer', color: 'var(--color-text)', textAlign: 'center'}} 
+                    onClick={() => window.location.reload()}
+                >
+                    Nenhum item encontrado.<br></br> Clique aqui para recarregar a página.
                 </span>
-                */}
             </div>
         )
     }

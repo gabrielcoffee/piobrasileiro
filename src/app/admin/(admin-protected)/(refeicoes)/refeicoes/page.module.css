@@ -6,6 +6,18 @@
     display: block;
 }
 
+@media (max-width: 768px) {
+    .actionButton {
+        background-color: var(--color-slate-100);
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        padding: 4px;
+        width: 28px;
+        height: 28px;
+        cursor: pointer;
+    }
+}
+
 .acoes {
     display: flex;
     gap: 1rem;
@@ -231,7 +243,6 @@
 
     .daySelector {
         gap: 0.5rem;
-        margin-top: 0.5rem;
         display: flex;
         flex-direction: row;
         flex-wrap: wrap;

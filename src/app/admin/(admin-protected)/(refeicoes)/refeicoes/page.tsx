@@ -441,7 +441,7 @@ export default function ListaDeRefeicoesPage() {
     const acoes = (meal: any) => {
         return (
             <div className={styles.acoes}>
-                <PencilLine size={20} onClick={() => editar(meal)} style={{color: 'var(--color-primary)', cursor: 'pointer'}} />
+                <PencilLine className={styles.actionButton} size={20} onClick={() => editar(meal)} style={{color: 'var(--color-primary)', cursor: 'pointer'}} />
             </div>
         )
     }
@@ -612,20 +612,6 @@ export default function ListaDeRefeicoesPage() {
 
                 <MobileTitle title={`Lista de agendamento de refeições`} />
 
-                <SearchSection
-                        searchText={searchText}
-                        setSearchText={setSearchText}
-                        searchPlaceholder="Pesquise por nome"
-                        dateSection={(
-                        <DateSection
-                            selectedWeekStart={selectedWeekStart}
-                            selectedWeekEnd={selectedWeekEnd}
-                            onWeekChange={handleWeekChange}
-                        />
-                        )}
-                        buttons={[]}
-                    />
-
                 <div className={styles.dateHeader}>
                     {dayInfo && (
                     <div className={styles.dayInfoTotal}>
@@ -647,6 +633,20 @@ export default function ListaDeRefeicoesPage() {
                     
                     </div>
                     )}
+
+                    <SearchSection
+                        searchText={searchText}
+                        setSearchText={setSearchText}
+                        searchPlaceholder="Pesquise por nome"
+                        dateSection={(
+                        <DateSection
+                            selectedWeekStart={selectedWeekStart}
+                            selectedWeekEnd={selectedWeekEnd}
+                            onWeekChange={handleWeekChange}
+                        />
+                        )}
+                        buttons={[]}
+                    />
 
                     <div className={styles.daySelector}>
                         {currentWeekDaysButtons()}
