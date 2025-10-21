@@ -1,11 +1,9 @@
 'use client';
 import Card from "@/components/desktop/Card";
 import CardHeader from "@/components/desktop/CardHeader";
-import { Check, CheckCheck, SquareArrowLeft, X } from "lucide-react";
-import { useParams } from "next/navigation";
+import { Check, CheckCheck, LogOut, X } from "lucide-react";
 import styles from "./page.module.css";
-import Link from "next/link";
-import { queryApi, uploadAvatar, uploadAvatarAdmin } from "@/lib/utils";
+import { queryApi, uploadAvatar } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { InputPassword } from "@/components/ui/InputPassword";
 import { InputText } from "@/components/ui/InputText";
@@ -14,10 +12,11 @@ import { Button } from "@/components/ui/Button";
 import ProfileImage from "@/components/profile/ProfileImage";
 import { InputTextBox } from "@/components/ui/InputTextBox";
 import { useAuth } from "@/contexts/AuthContext";
+import { InputDate } from "@/components/ui/InputDate";
 
 
 export default function PerfilAdminPage() {
-    const { refreshUser } = useAuth();    
+    const { logout,refreshUser } = useAuth();    
     const [usuario, setUsuario] = useState<any>(null);
 
     // User data states
@@ -44,6 +43,8 @@ export default function PerfilAdminPage() {
     const [emailRequirement, setEmailRequirement] = useState<boolean>(false);
     const [passwordRequirements, setPasswordRequirements] = useState<boolean>(false);
     const [passwordChanged, setPasswordChanged] = useState<boolean>(false);
+
+    const [dataNascError, setDataNascError] = useState<boolean>(false);
 
     useEffect(() => {
         fetchUsuario();
@@ -232,12 +233,18 @@ export default function PerfilAdminPage() {
                                 onChange={(e) => setNomeCompleto(e.target.value)}
                                 placeholder="Nome completo"
                             />
-                            <InputText
+                            <InputDate
                                 label="Data de nascimento"
                                 value={dataNasc}
-                                onChange={(e) => setDataNasc(e.target.value)}
+                                onChange={(value) => {
+                                    setDataNasc(value);
+                                    setDataNascError(false);
+                                    if (!value || value === '') {
+                                        setDataNascError(true);
+                                    }
+                                }}
                                 placeholder="Data de nascimento"
-                                type="date"
+                                error={dataNascError ? "Data de nascimento inválida" : ""}
                             />
                             <DropdownInput
                                 label="Tipo de documento"
@@ -248,6 +255,7 @@ export default function PerfilAdminPage() {
                                     { key: "id_internacional", value: "ID Internacional" }
                                 ]}
                                 placeholder="Selecione o tipo de documento"
+                                variant="white"
                             />
                             <DropdownInput
                                 label="Tipo de usuário"
@@ -258,6 +266,7 @@ export default function PerfilAdminPage() {
                                     { key: "comum", value: "Comum" }
                                 ]}
                                 placeholder="Selecione o tipo de usuário"
+                                variant="white"
                             />
                         </div>
 
@@ -271,6 +280,7 @@ export default function PerfilAdminPage() {
                                     { key: "f", value: "Feminino" }
                                 ]}
                                 placeholder="Selecione o gênero"
+                                variant="white"
                             />
                             <InputText
                                 label="E-mail"
@@ -314,7 +324,7 @@ export default function PerfilAdminPage() {
                         </Button>
                     </div>
 
-                    <span className={styles.Data}>Alterar senha</span>
+                    <span className={styles.alterarSenhaTitle}>Alterar senha</span>
                     
                     <div className={styles.passwordSection}>
                         
@@ -362,8 +372,14 @@ export default function PerfilAdminPage() {
                     
                 </div>
 
-
-                
+                <Button
+                    onClick={logout}
+                    variant="text"
+                    iconLeft={<LogOut size={20} color="var(--color-error)" />}
+                    className={styles.logoutButton}
+                >
+                    Sair da conta
+                </Button>
             </Card>
         </div>
     )

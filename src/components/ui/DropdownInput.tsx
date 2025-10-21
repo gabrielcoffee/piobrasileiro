@@ -59,11 +59,8 @@ export function DropdownInput({ value, label, error, options, placeholder, onCha
                     {label}
                 </label>
             )}
-            <div 
-                style={{
-                    backgroundColor: variant === 'white' ? 'var(--color-white)' : 'var(--color-slate-100)'
-                }}
-                className={`${styles.dropdown} ${hasError ? styles.dropdownError : ''} ${disabled ? styles.disabled : ''}`}
+            <div
+                className={`${styles.dropdown} ${hasError ? styles.dropdownError : ''} ${disabled ? styles.disabled : ''} ${variant === 'white' ? styles.dropdownWhite : ''}`}
                 onClick={handleToggle}
             >
                 <span className={`${styles.selectedValue} ${ displayValue ? '' : placeholder ? styles.placeholder : ''}`}>

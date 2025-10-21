@@ -188,3 +188,78 @@
     align-items: center;
     transition: background-color 0.2s ease;
 }
+
+.logoutButton {
+    display: none;
+}
+
+/* Mobile styles */
+@media (max-width: 768px) {
+
+    .logoutButton {
+        display: flex;
+        justify-content: flex-start;
+        margin-top: 2rem;
+        width: 100%;
+    }
+
+    .userDataSection {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .leftDataSection,
+    .rightDataSection {
+        flex: none;
+        width: 100%;
+    }
+
+    .passwordSection {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .leftPswdSection,
+    .rightPswdSection {
+        flex: none;
+        width: 100%;
+    }
+
+    .userDataSaveButton {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .passwordSaveButton {
+        width: 100%;
+        margin-top: 1rem;
+    }
+
+    .observacoesSection {
+        margin-right: 0;
+    }
+
+    .Data {
+        font-size: 1.25rem;
+        margin-bottom: 1rem;
+    }
+
+    .alterarSenhaTitle {
+        margin-top: 2rem !important;
+        font-size: 1.25rem;
+        color: var(--color-primary);
+        font-weight: 500;
+    }
+
+    .imageContainer {
+        justify-content: center;
+        margin-bottom: 1rem;
+    }
+
+
+    .userDataSaveButton {
+        padding: 0;
+    }
+}
