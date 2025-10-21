@@ -190,109 +190,112 @@ export default function UsuarioPage() {
                 breadcrumb={["Início", "Usuários"]} 
                 />
 
-                <span className={styles.Data}>Dados</span>
+                <div className={styles.profileCard}>
 
-                <div className={styles.imageContainer}>
-                    <ProfileImage 
-                        uploadAvatar={handleAvatarChange} 
-                        avatarImage={avatar} 
-                    />
-                </div>
+                    <span className={styles.Data}>Dados</span>
 
-                <div className={styles.dataContainer}>
-                    <div className={styles.userDataSection}>
-                        <div className={styles.leftDataSection}>
-                            <InputText
-                                label="Nome completo"
-                                value={nomeCompleto}
-                                onChange={(e) => setNomeCompleto(e.target.value)}
-                                placeholder="Nome completo"
-                            />
-                            <InputDate
-                                label="Data de nascimento"
-                                value={dataNasc}
-                                onChange={(value) => {
-                                    setDataNasc(value);
-                                    setDataNascError(false);
-                                    if (!value || value === '') {
-                                        setDataNascError(true);
-                                    }
-                                }}
-                                placeholder="Data de nascimento"
-                                error={dataNascError ? "Data de nascimento inválida" : ""}
-                            />
-                            <DropdownInput
-                                label="Tipo de documento"
-                                value={tipoDocumento}
-                                onChange={(value) => setTipoDocumento(value)}
-                                options={[
-                                    { key: "cpf", value: "CPF" },
-                                    { key: "id_internacional", value: "ID Internacional" }
-                                ]}
-                                placeholder="Selecione o tipo de documento"
-                            />
-                            <DropdownInput
-                                label="Tipo de usuário"
-                                value={tipoUsuario}
-                                onChange={(value) => setTipoUsuario(value)}
-                                options={[
-                                    { key: "admin", value: "Administrador" },
-                                    { key: "comum", value: "Comum" }
-                                ]}
-                                placeholder="Selecione o tipo de usuário"
-                            />
-                        </div>
-
-                        <div className={styles.rightDataSection}>
-                            <DropdownInput
-                                label="Gênero"
-                                value={genero}
-                                onChange={(value) => setGenero(value)}
-                                options={[
-                                    { key: "m", value: "Masculino" },
-                                    { key: "f", value: "Feminino" }
-                                ]}
-                                placeholder="Selecione o gênero"
-                            />
-                            <InputText
-                                label="E-mail"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="E-mail"
-                                type="email"
-                            />
-                            <InputText
-                                label="Número do documento"
-                                value={numDocumento.length > 11 ? numDocumento.slice(0, 11) : numDocumento}
-                                onChange={(e) => setNumDocumento(e.target.value.length > 11 ? e.target.value.slice(0, 11) : e.target.value)}
-                                placeholder="Número do documento"
-                            />
-                            <InputText
-                                label="Função"
-                                value={funcao}
-                                onChange={(e) => setFuncao(e.target.value)}
-                                placeholder="Função"
-                            />
-                        </div>
-                    </div>
-
-                    <div className={styles.observacoesSection}>
-                        <InputTextBox
-                            label="Observações sobre restrição alimentar"
-                            value={observacoes}
-                            onChange={(e) => setObservacoes(e.target.value)}
-                            placeholder="Digite observações sobre restrições alimentares..."
+                    <div className={styles.imageContainer}>
+                        <ProfileImage 
+                            uploadAvatar={handleAvatarChange} 
+                            avatarImage={avatar} 
                         />
                     </div>
 
-                    <div className={styles.userDataSaveButton}>
-                        <Button
-                            iconLeft={<Check size={20} />}
-                            available={hasUserDataChanges()}
-                            onClick={saveUserData}
-                        >
-                            {isSaving ? 'Salvando...' : 'Salvar alterações'}
-                        </Button>
+                    <div className={styles.dataContainer}>
+                        <div className={styles.userDataSection}>
+                            <div className={styles.leftDataSection}>
+                                <InputText
+                                    label="Nome completo"
+                                    value={nomeCompleto}
+                                    onChange={(e) => setNomeCompleto(e.target.value)}
+                                    placeholder="Nome completo"
+                                />
+                                <InputDate
+                                    label="Data de nascimento"
+                                    value={dataNasc}
+                                    onChange={(value) => {
+                                        setDataNasc(value);
+                                        setDataNascError(false);
+                                        if (!value || value === '') {
+                                            setDataNascError(true);
+                                        }
+                                    }}
+                                    placeholder="Data de nascimento"
+                                    error={dataNascError ? "Data de nascimento inválida" : ""}
+                                />
+                                <DropdownInput
+                                    label="Tipo de documento"
+                                    value={tipoDocumento}
+                                    onChange={(value) => setTipoDocumento(value)}
+                                    options={[
+                                        { key: "cpf", value: "CPF" },
+                                        { key: "id_internacional", value: "ID Internacional" }
+                                    ]}
+                                    placeholder="Selecione o tipo de documento"
+                                />
+                                <DropdownInput
+                                    label="Tipo de usuário"
+                                    value={tipoUsuario}
+                                    onChange={(value) => setTipoUsuario(value)}
+                                    options={[
+                                        { key: "admin", value: "Administrador" },
+                                        { key: "comum", value: "Comum" }
+                                    ]}
+                                    placeholder="Selecione o tipo de usuário"
+                                />
+                            </div>
+
+                            <div className={styles.rightDataSection}>
+                                <DropdownInput
+                                    label="Gênero"
+                                    value={genero}
+                                    onChange={(value) => setGenero(value)}
+                                    options={[
+                                        { key: "m", value: "Masculino" },
+                                        { key: "f", value: "Feminino" }
+                                    ]}
+                                    placeholder="Selecione o gênero"
+                                />
+                                <InputText
+                                    label="E-mail"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="E-mail"
+                                    type="email"
+                                />
+                                <InputText
+                                    label="Número do documento"
+                                    value={numDocumento.length > 11 ? numDocumento.slice(0, 11) : numDocumento}
+                                    onChange={(e) => setNumDocumento(e.target.value.length > 11 ? e.target.value.slice(0, 11) : e.target.value)}
+                                    placeholder="Número do documento"
+                                />
+                                <InputText
+                                    label="Função"
+                                    value={funcao}
+                                    onChange={(e) => setFuncao(e.target.value)}
+                                    placeholder="Função"
+                                />
+                            </div>
+                        </div>
+
+                        <div className={styles.observacoesSection}>
+                            <InputTextBox
+                                label="Observações sobre restrição alimentar"
+                                value={observacoes}
+                                onChange={(e) => setObservacoes(e.target.value)}
+                                placeholder="Digite observações sobre restrições alimentares..."
+                            />
+                        </div>
+
+                        <div className={styles.userDataSaveButton}>
+                            <Button
+                                iconLeft={<Check size={20} />}
+                                available={hasUserDataChanges()}
+                                onClick={saveUserData}
+                            >
+                                {isSaving ? 'Salvando...' : 'Salvar alterações'}
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </Card>

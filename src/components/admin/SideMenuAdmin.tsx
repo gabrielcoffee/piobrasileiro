@@ -33,6 +33,7 @@ export function SideMenuAdmin({ isOpen, onClose }: SideMenuProps) {
                 { id: "quartos", label: "Quartos", href: "/admin/quartos"}
             ]
         },
+        { id: 'perfil', label: 'Meu perfil', icon: UserRound, href: '/admin/perfil' },
         { id: 'logout', label: 'Sair', icon: LogOut, href: '/' },
     ];
 
