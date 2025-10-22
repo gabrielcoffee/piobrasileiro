@@ -7,7 +7,7 @@ import { InputPassword } from "@/components/ui/InputPassword";
 import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
 import styles from "./styles/Login.module.css";
 import { useAuth } from "@/contexts/AuthContext";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Loading } from "../ui/Loading";
 
 interface LoginProps {
@@ -16,6 +16,8 @@ interface LoginProps {
 }
 
 export default function Login({onForgotPasswordClick, onBackClick}: LoginProps) {
+
+    const pathname = usePathname();
 
     // Variables for the login page
     const [email, setEmail] = useState('');
@@ -75,7 +77,7 @@ export default function Login({onForgotPasswordClick, onBackClick}: LoginProps) 
                 Voltar
             </Button>
 
-            <div className={styles.logoContainer}>
+            <div className={`${styles.logoContainer} ${!pathname?.includes('/admin') ? styles.logoContainerUser : ''}`}>
                 <img src="/brasao.png" alt="brasao" className={styles.logo} />
             </div>
 

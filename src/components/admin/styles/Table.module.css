@@ -331,6 +331,7 @@
 
     .scrollToTopButton {
         display: flex;
+        bottom: 6rem;
     }
 
     .pagination {

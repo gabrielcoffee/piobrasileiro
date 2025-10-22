@@ -27,7 +27,7 @@ export default function HospedesPage() {
 
     const saveNewGuest = async () => {
 
-        if (!selectedGuestData.nome || !selectedGuestData.genero || !selectedGuestData.tipoDocumento || !selectedGuestData.numDocumento) {
+        if (!selectedGuestData.nome || !selectedGuestData.genero) {
             console.log('Dados incompletos');
             return;
         }
@@ -51,7 +51,7 @@ export default function HospedesPage() {
 
     const saveEditGuest = async () => {
 
-        if (!selectedGuestData.nome || !selectedGuestData.genero || !selectedGuestData.tipoDocumento || !selectedGuestData.numDocumento) {
+        if (!selectedGuestData.nome || !selectedGuestData.genero) {
             console.log('Dados incompletos');
             return;
         }
@@ -214,7 +214,7 @@ export default function HospedesPage() {
                     }}
                 />
 
-                <SaveFooterAdmin buttonText="Salvar" executeFunction={() => setShowNewBookingModal(true)} />
+                <SaveFooterAdmin buttonText="Novo Hóspede" executeFunction={() => setShowNewBookingModal(true)} />
             </div>
 
         )}
@@ -231,7 +231,7 @@ export default function HospedesPage() {
                         iconLeft={<Check size={20} />} 
                         variant="full" 
                         onClick={() => saveNewGuest()} 
-                        available={selectedGuestData?.nome && selectedGuestData?.genero && selectedGuestData?.tipoDocumento && selectedGuestData?.numDocumento ? true : false}>
+                        available={selectedGuestData?.nome && selectedGuestData?.genero ? true : false}>
                             Salvar
                         </Button>
                     </>
@@ -258,7 +258,7 @@ export default function HospedesPage() {
                         iconLeft={<Check size={20} />} 
                         variant="full" 
                         onClick={() => saveEditGuest()} 
-                        available={selectedGuestData?.nome && selectedGuestData?.genero && selectedGuestData?.tipoDocumento && selectedGuestData?.numDocumento ? true : false}>
+                        available={selectedGuestData?.nome && selectedGuestData?.genero ? true : false}>
                             Salvar
                         </Button>
                     </>

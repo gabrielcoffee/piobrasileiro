@@ -29,10 +29,8 @@
     align-self: center;
 }
 
-@media (min-width: 768px) {
-    .logo {
-        display: none;
-    }
+.logoContainerUser {
+    display: none;
 }
 
 .titleSubtitle {

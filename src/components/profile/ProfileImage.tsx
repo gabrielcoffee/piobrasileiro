@@ -51,7 +51,7 @@ export default function ProfileImage({ avatarImage, uploadAvatar, isCreating = f
 
     return (
         <div className={styles.container}>
-            <div className={styles.profileImageContainer}>
+            <div className={styles.profileImageContainer} onClick={handleProfilePictureChange}>
                 <img
                 src={imageSrc || "/user.png"}
                 alt="Profile"
@@ -60,7 +60,7 @@ export default function ProfileImage({ avatarImage, uploadAvatar, isCreating = f
                 className={styles.profileImage}
                 onError={handleImageError}
             />
-            <button onClick={handleProfilePictureChange} className={styles.editButton}>
+            <button onClick={(e) => { e.stopPropagation(); handleProfilePictureChange(); }} className={styles.editButton}>
                 <Pencil className={styles.pencilIcon} />
             </button>
             </div>

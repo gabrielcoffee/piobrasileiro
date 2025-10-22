@@ -43,6 +43,7 @@
 @media (min-width: 768px) {
     .contentContainer {
         margin-bottom: 3rem;
+        min-height: 150px;
     }
 }
 

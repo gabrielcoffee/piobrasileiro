@@ -83,7 +83,7 @@ export default function AddHospedeModal({ setHospedeData, hospedeData, isEdit = 
                 />
 
                 <DropdownInput
-                    label="*Tipo de documento"
+                    label="Tipo de documento"
                     value={tipoDocumento}
                     onChange={(value) => setTipoDocumento(value)}
                     options={[
@@ -95,7 +95,7 @@ export default function AddHospedeModal({ setHospedeData, hospedeData, isEdit = 
                 />
 
                 <InputText
-                    label="*Número do documento"
+                    label="Número do documento"
                     placeholder="Informe o número do documento"
                     disabled={!tipoDocumento}
                     value={numDocumento.length > 11 ? numDocumento.slice(0, 11) : numDocumento}
@@ -103,14 +103,14 @@ export default function AddHospedeModal({ setHospedeData, hospedeData, isEdit = 
                 />
 
                 <InputText
-                    label="*Função"
+                    label="Função"
                     placeholder="Informe a função ou grau de parentesco"
                     value={funcao}
                     onChange={(e) => setFuncao(e.target.value)}
                 />
 
                 <InputText
-                    label="*Origem"
+                    label="Origem"
                     placeholder="De onde vem?"
                     value={origem}
                     onChange={(e) => setOrigem(e.target.value)}
