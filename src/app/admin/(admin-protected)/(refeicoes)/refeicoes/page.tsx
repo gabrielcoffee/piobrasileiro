@@ -75,7 +75,6 @@ export default function ListaDeRefeicoesPage() {
         if (refeicoes.length === 0) {
             return;
         }
-        
 
         const hasDays = reportDays?.monday || reportDays?.tuesday || reportDays?.wednesday || reportDays?.thursday || reportDays?.friday || reportDays?.saturday || reportDays?.sunday;
 
@@ -92,6 +91,24 @@ export default function ListaDeRefeicoesPage() {
 
             const { weekInfo, notesInfo } = result.data;
 
+            const reportAllowedDays = {
+                0: reportDays?.monday,
+                1: reportDays?.tuesday,
+                2: reportDays?.wednesday,
+                3: reportDays?.thursday,
+                4: reportDays?.friday,
+                5: reportDays?.saturday,
+                6: reportDays?.sunday,
+            }
+
+            // Filter weekInfo.daysInfo array based on reportAllowedDays
+            const filteredWeekInfo = {
+                ...weekInfo,
+                daysInfo: weekInfo.daysInfo.filter((dayInfo: any, index: number) => {
+                    return reportAllowedDays[index as keyof typeof reportAllowedDays];
+                })
+            };
+
             const notesInfoNoBreaks = notesInfo.map((n: any) => {
                 return {
                     name: n.name,
@@ -99,7 +116,7 @@ export default function ListaDeRefeicoesPage() {
                 }
             })
 
-            generateReportPDFLib('print', weekInfo, notesInfoNoBreaks);
+            generateReportPDFLib('print', filteredWeekInfo, notesInfoNoBreaks);
         } else {
             console.error('Erro ao buscar dados:', result.error);
         }
