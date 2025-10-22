@@ -14,8 +14,14 @@ import { Button } from "@/components/ui/Button";
 import Card from "@/components/desktop/Card";
 
 export default function HomePage() {
+
+
     const { isLoading } = useAuth();
     const [isBooked, setIsBooked] = useState(false);
+
+    function handleExternalLink() {
+        window.open('https://www.piobrasileiro.com/hospedagem/', '_blank');
+    }
 
     const fetchWeekMeals = async () => {
         const result = await queryApi('GET', '/user/weekmeals');
@@ -94,7 +100,7 @@ export default function HomePage() {
                     }
                 />
 
-                <Button href="/hospedagem" variant="full" iconLeft={<Bed/>}>
+                <Button onClick={handleExternalLink} variant="full" iconLeft={<Bed/>}>
                     Solicitar hospedagem
                 </Button>
             </div>
@@ -172,7 +178,7 @@ export default function HomePage() {
 
                     <div className={styles.sectionButtons}>
                         <div className={styles.containerButtons}>
-                            <Button href="/hospedagem" variant="full" iconLeft={<Bed/>}>
+                            <Button onClick={handleExternalLink} variant="full" iconLeft={<Bed/>}>
                                 Solicitar hospedagem
                             </Button>
                         </div>

@@ -77,3 +77,7 @@ place all the class names first
 .dayButton.passed:hover {
     background-color: #f5f5f5;
 }
+
+.dayButtonText {
+    color: var(--color-text);
+}

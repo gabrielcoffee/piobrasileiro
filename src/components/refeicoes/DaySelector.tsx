@@ -103,7 +103,7 @@ export default function DaySelector({ mealsList, onDaySelect, onMarkAllMeals = (
                             onClick={() => handleDayClick(index)}
                             disabled={isPast}
                         >
-                            <span>{day.name}</span>
+                            <span className={styles.dayButtonText}>{day.name}</span>
                         </button>
                     )
                 })}

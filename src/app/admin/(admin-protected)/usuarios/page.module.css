@@ -84,6 +84,10 @@
 .avatarInitials {
     width: 35px;
     height: 35px;
+    min-width: 35px;
+    min-height: 35px;
+    max-width: 35px;
+    max-height: 35px;
     border-radius: 50%;
     object-fit: cover;
     background-color: var(--color-slate-200);
