@@ -17,7 +17,7 @@ interface AuthContextType {
     isAuthenticated: boolean;
     isLoading: boolean;
     setIsLoading: (isLoading: boolean) => void;
-    login: (email: string, password: string, remember_me: boolean) => Promise<boolean>;
+    login: (email: string, password: string, remember_me: boolean) => Promise<any>;
     logout: () => void;
     refreshUser: () => Promise<void>;
 }
@@ -83,7 +83,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     // Login
-    const login = async (email: string, password: string, remember_me: boolean): Promise<boolean> => {
+    const login = async (email: string, password: string, remember_me: boolean) => {
         try {
             setIsLoading(true);
 
@@ -95,8 +95,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 body: JSON.stringify({ email, password, remember_me })
             });
 
+            const json = await response.json();
+
             if (response.ok) {
-                const json = await response.json();
                 const token = json.token;
                 const userData = json.data;
 
@@ -105,14 +106,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
                 setUser(userData);
                 setIsAuthenticated(true);
 
-                return true
+                return true;
             }
 
-            return false;
+            return json;
 
         } catch (error) {
             console.log(error);
-            return false
+            return {
+                ok: false,
+                error: 'error'
+            }
         } finally {
             setIsLoading(false);
         }

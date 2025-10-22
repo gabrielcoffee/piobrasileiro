@@ -12,23 +12,10 @@ type ViewType = 'splash' | 'login' | 'forgotPassword' | 'verifyEmail';
 
 export default function LoginPage() {
 
-    const { isAuthenticated, isLoading } = useAuth();
-    const router = useRouter();
-
     const [view, setView] = useState<ViewType>('splash');
 
     const handleViewChange = (newView: ViewType) => {
         setView(newView);
-    }
-
-    useEffect(() => {
-        if (!isLoading && isAuthenticated) {
-            router.push('/home');
-        }
-    }, [isAuthenticated, isLoading, router]);
-
-    if (isLoading || isAuthenticated) {
-        return <Loading />;
     }
 
     return (

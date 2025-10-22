@@ -26,7 +26,7 @@ export default function Login({onForgotPasswordClick, onBackClick}: LoginProps) 
 
     const [emailWrong, setEmailWrong] = useState(false);
     const [passwordWrong, setPasswordWrong] = useState(false);
-
+    
     // Authentication and database request
     const { isAuthenticated, isLoading, login, user } = useAuth();
     const router = useRouter();
@@ -36,14 +36,10 @@ export default function Login({onForgotPasswordClick, onBackClick}: LoginProps) 
             if (user?.role === 'admin') {
                 router.push('/admin/home')
             } else {
-                router.push('/home');
+                router.push('/home')
             }
         }
     }, [isLoading, isAuthenticated, router]);
-
-    if (isLoading) {
-        return <Loading />;
-    }
 
     const handleLogin = async (e: React.FormEvent) => {
         if (email === '') {
@@ -56,12 +52,18 @@ export default function Login({onForgotPasswordClick, onBackClick}: LoginProps) 
         }
         
         e.preventDefault();
-        const success = await login(email, password, rememberMe);
-        if (success) {
+
+        const jsonResponse = await login(email, password, rememberMe);
+
+        if (jsonResponse === true) {
             router.push('/home');
         } else {
-            setEmailWrong(true);
-            setPasswordWrong(true);
+            if (jsonResponse.error === "email_error") {
+                setEmailWrong(true);
+            }
+            if (jsonResponse.error === "password_error") {
+                setPasswordWrong(true);
+            }
         }
     };
     
@@ -93,7 +95,7 @@ export default function Login({onForgotPasswordClick, onBackClick}: LoginProps) 
                 label="E-mail:"
                 placeholder="email@email.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => {setEmail(e.target.value); setEmailWrong(false);}}
                 error={emailWrong ? "E-mail incorreto" : ""}
             />
 
@@ -101,7 +103,7 @@ export default function Login({onForgotPasswordClick, onBackClick}: LoginProps) 
                 label="Senha:"
                 placeholder="Insira sua senha"
                 value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={(e) => {setPassword(e.target.value); setPasswordWrong(false);}}
                 error={passwordWrong ? "Senha incorreta" : ""}
             />
 
