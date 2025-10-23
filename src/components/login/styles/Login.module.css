@@ -18,19 +18,27 @@
     }
 }
 
+
 .logoContainer {
     display: flex;
     justify-content: left;
 }
 
+.logoContainerUser {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .logoContainerUser {
+        display: block;
+    }
+}
+
+
 .logo {
     width: 6rem;
     height: 6rem;
     align-self: center;
-}
-
-.logoContainerUser {
-    display: none;
 }
 
 .titleSubtitle {
