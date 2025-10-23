@@ -2,6 +2,18 @@
     width: 100%;
 }
 
+@media (max-width: 1200px) {
+    .container {
+        font-size: 0.875rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        font-size: 1rem;
+    }
+}
+
 .tableWrapper {
     width: 100%;
     border: 2px solid var(--color-border);
