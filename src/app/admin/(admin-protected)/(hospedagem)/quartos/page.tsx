@@ -216,8 +216,24 @@ export default function QuartosPage() {
                 return roomData;
             });
 
-            // Ordenar quartos por nome
-            quartos.sort((a: any, b: any) => a.numero.localeCompare(b.numero));
+            // Ordenar quartos por número (numeric sorting)
+            quartos.sort((a: any, b: any) => {
+                // Extract numeric part from room number (e.g., "Hospedaria 10" -> 10)
+                const getNumericValue = (roomNumber: string) => {
+                    const match = roomNumber.match(/\d+/);
+                    return match ? parseInt(match[0], 10) : 0;
+                };
+                
+                const numA = getNumericValue(a.numero);
+                const numB = getNumericValue(b.numero);
+                
+                // If numbers are equal, sort alphabetically by full name
+                if (numA === numB) {
+                    return a.numero.localeCompare(b.numero);
+                }
+                
+                return numA - numB;
+            });
             
             setQuartos(quartos);
         } else {

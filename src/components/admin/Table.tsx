@@ -149,7 +149,7 @@ const Table = forwardRef<TableRef, TableProps>(({
             });
         }
     
-        // Step 3: Sort alphabetically by searchKey
+        // Step 3: Two-step sorting (alphabetical then numeric)
         filteredRows.sort((a, b) => {
             const aValue = (a[searchKey]?.toString() || "")
                 .normalize("NFD")
@@ -158,7 +158,27 @@ const Table = forwardRef<TableRef, TableProps>(({
                 .normalize("NFD")
                 .replace(/[\u0300-\u036f]/g, "");
     
-            return aValue.localeCompare(bValue);
+            // Step 1: Extract text and numeric parts
+            const getTextAndNumber = (str: string) => {
+                const textMatch = str.match(/^([^\d]*)/);
+                const numberMatch = str.match(/\d+/);
+                return {
+                    text: textMatch ? textMatch[1].trim() : str,
+                    number: numberMatch ? parseInt(numberMatch[0], 10) : 0
+                };
+            };
+            
+            const aParts = getTextAndNumber(aValue);
+            const bParts = getTextAndNumber(bValue);
+            
+            // Step 2: First sort alphabetically by text part
+            const textComparison = aParts.text.localeCompare(bParts.text);
+            if (textComparison !== 0) {
+                return textComparison;
+            }
+            
+            // Step 3: If text parts are equal, sort numerically by number part
+            return aParts.number - bParts.number;
         });
     
         // Step 4: Store all filtered items and paginate
