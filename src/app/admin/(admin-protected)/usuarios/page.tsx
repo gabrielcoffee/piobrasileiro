@@ -293,9 +293,9 @@ export default function UsuariosPage() {
                                     <img src={u.avatar} alt="Avatar" className={styles.avatar} />
                                 ) : (
                                     
-                                    <span className={styles.avatarInitials}>{getInitials(u.nome_completo)}</span>
+                                    <span translate="no" className={styles.avatarInitials}>{getInitials(u.nome_completo)}</span>
                                 )}
-                                {u.nome_completo}
+                                <span translate="no">{u.nome_completo}</span>
                             </span>
                         ),
                         tipo_usuario: u.tipo_usuario,
@@ -380,9 +380,9 @@ export default function UsuariosPage() {
                                     <img src={u.avatar} alt="Avatar" className={styles.avatar} />
                                 ) : (
                                     
-                                    <span className={styles.avatarInitials}>{getInitials(u.nome_completo)}</span>
+                                    <span translate="no" className={styles.avatarInitials}>{getInitials(u.nome_completo)}</span>
                                 )}
-                                {u.nome_completo}
+                                <span translate="no">{u.nome_completo}</span>
                             </span>
                         ),
                         tipo_usuario: u.tipo_usuario,

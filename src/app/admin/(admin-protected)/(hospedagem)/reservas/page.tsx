@@ -37,6 +37,8 @@ export default function GestaoDeReservasPage() {
     const [showEditBookingModal, setShowEditBookingModal] = useState<boolean>(false);
     const [showDeleteBookingModal, setShowDeleteBookingModal] = useState<boolean>(false);
 
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
     const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
     const [filterDate, setFilterDate] = useState<string>('');
     const [filterNome, setFilterNome] = useState<string>('');
@@ -113,8 +115,8 @@ export default function GestaoDeReservasPage() {
         const result = await queryApi('DELETE', `/admin/accommodations/${selectedBookingData.id}`);
         if (result.success) {
             console.log('Reserva excluida com sucesso');
-            fetchReservas(selectedWeekStart, selectedWeekEnd);
             setShowDeleteBookingModal(false);
+            await fetchReservas(selectedWeekStart, selectedWeekEnd);
             showToast('Reserva excluída com sucesso!', 'success');
         } else {
             console.log('Erro ao excluir reserva', result.error);
@@ -144,8 +146,8 @@ export default function GestaoDeReservasPage() {
 
         if (result.success) {
             console.log('Reserva editada com sucesso');
-            fetchReservas(selectedWeekStart, selectedWeekEnd);
             setShowEditBookingModal(false);
+            await fetchReservas(selectedWeekStart, selectedWeekEnd);
             showToast('Reserva editada com sucesso!', 'success');
         } else {
             console.log('Erro ao editar reserva', result.error);
@@ -192,8 +194,8 @@ export default function GestaoDeReservasPage() {
 
         if (result.success) {
             console.log('Reserva salva com sucesso');
-            fetchReservas(selectedWeekStart, selectedWeekEnd);
             setShowNewBookingModal(false);
+            await fetchReservas(selectedWeekStart, selectedWeekEnd);
             showToast('Reserva salva com sucesso!', 'success');
         } else {
             console.log('Erro ao salvar reserva', result.error);
@@ -234,6 +236,7 @@ export default function GestaoDeReservasPage() {
     }
 
     const fetchReservas = async (startDate: Date, endDate: Date) => {
+        setIsLoading(true);
         const result = await queryApi('POST', '/admin/accommodations/data', {
             startDate: startDate,
             endDate: endDate,
@@ -252,6 +255,10 @@ export default function GestaoDeReservasPage() {
                 }
             });
             setReservas(completeReservas);
+            setIsLoading(false);
+        } else {
+            setIsLoading(false);
+            console.error('Erro ao buscar reservas', result.error);
         }
     }
 

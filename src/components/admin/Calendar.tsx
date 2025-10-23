@@ -171,23 +171,23 @@ export function Calendar() {
                         <div className={styles.calendarMobile}> 
                             {/* Week Days */}
                             <div className={styles.weekDaysContainer}>
-                                <div className={styles.weekDay}>SEGUNDA</div>
-                                <div className={styles.weekDay}>TERÇA</div>
-                                <div className={styles.weekDay}>QUARTA</div>
-                                <div className={styles.weekDay}>QUINTA</div>
-                                <div className={styles.weekDay}>SEXTA</div>
-                                <div className={styles.weekDay}>SÁBADO</div>
-                                <div className={styles.weekDay}>DOMINGO</div>
+                                <div translate='no' className={styles.weekDay}>SEGUNDA</div>
+                                <div translate='no' className={styles.weekDay}>TERÇA</div>
+                                <div translate='no' className={styles.weekDay}>QUARTA</div>
+                                <div translate='no' className={styles.weekDay}>QUINTA</div>
+                                <div translate='no' className={styles.weekDay}>SEXTA</div>
+                                <div translate='no' className={styles.weekDay}>SÁBADO</div>
+                                <div translate='no' className={styles.weekDay}>DOMINGO</div>
                             </div>
 
                             <div className={styles.weekDaysContainerMobile}>
-                                <div className={styles.weekDay}>SEG</div>
-                                <div className={styles.weekDay}>TER</div>
-                                <div className={styles.weekDay}>QUA</div>
-                                <div className={styles.weekDay}>QUI</div>
+                                <div translate='no' className={styles.weekDay}>SEG</div>
+                                <div translate='no' className={styles.weekDay}>TER</div>
+                                <div translate='no' className={styles.weekDay}>QUA</div>
+                                <div translate='no' className={styles.weekDay}>QUI</div>
                                 <div translate='no' className={styles.weekDay}>SEX</div>
-                                <div className={styles.weekDay}>SÁB</div>
-                                <div className={styles.weekDay}>DOM</div>
+                                <div translate='no' className={styles.weekDay}>SÁB</div>
+                                <div translate='no' className={styles.weekDay}>DOM</div>
                             </div>
 
                             {/* Days */}

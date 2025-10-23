@@ -23,7 +23,7 @@ import { useToast } from '@/contexts/ToastContext';
 
 export default function ListaDeRefeicoesPage() {
 
-    const { isLoading, setIsLoading } = useAuth();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const { showToast } = useToast();
 
     const [refeicoes, setRefeicoes] = useState([]);
@@ -199,6 +199,7 @@ export default function ListaDeRefeicoesPage() {
     }
 
     const fetchRefeicoes = useCallback(async (startDate: Date, endDate: Date) => {
+        setIsLoading(true);
         const result = await queryApi('POST', '/admin/meals/data', { startDate, endDate });
     
         if (result.success) {
@@ -213,9 +214,9 @@ export default function ListaDeRefeicoesPage() {
                             {meal.avatar_image_data !== null ? (
                                 <img className={styles.avatar} src={avatar} alt="Avatar" />
                             ) : (
-                                <span className={styles.avatarInitials}>{getInitials(meal.nome)}</span>
+                                <span translate="no" className={styles.avatarInitials}>{getInitials(meal.nome)}</span>
                             )}
-                            {meal.nome}
+                            <span translate="no">{meal.nome}</span>
                         </span>,
                     almoco: getAlmocoText(meal.almoco_colegio, meal.almoco_levar),
                     tipo_usuario: getTipoUsuarioText(meal),
@@ -229,6 +230,7 @@ export default function ListaDeRefeicoesPage() {
         } else {
             console.log('Erro ao buscar refeicoes');
         }
+        setIsLoading(false);
     }, [getAlmocoText, getTipoUsuarioText]);
     
 
@@ -270,10 +272,10 @@ export default function ListaDeRefeicoesPage() {
                     <button 
                         className={styles.dayButton}
                     >
-                        <span className={styles.desktopDaySelectorText}>{date.toLocaleDateString('pt-BR', { weekday: 'short' }).toUpperCase()}</span>
-                        <span className={styles.desktopDaySelectorText}>{date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}</span>
+                        <span translate="no" className={styles.desktopDaySelectorText}>{date.toLocaleDateString('pt-BR', { weekday: 'short' }).toUpperCase()}</span>
+                        <span translate="no" className={styles.desktopDaySelectorText}>{date.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' })}</span>
 
-                        <span className={styles.mobileDaySelectorText}>{date.toLocaleDateString('pt-BR', { weekday: 'long' }).toUpperCase().split('-')[0]}</span>
+                        <span translate="no" className={styles.mobileDaySelectorText}>{date.toLocaleDateString('pt-BR', { weekday: 'long' }).toUpperCase().split('-')[0]}</span>
                     </button>
                 </div>
             )
@@ -314,8 +316,8 @@ export default function ListaDeRefeicoesPage() {
 
         if (result.success) {
             console.log('Refeicao editada com sucesso');
-            fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
             setShowGuestBookingEditModal(false);
+            await fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
             showToast('Agendamento editado com sucesso', 'success');
         } else {
             console.log('Não foi possível editar a refeição');
@@ -349,7 +351,7 @@ export default function ListaDeRefeicoesPage() {
         if (result.success) {
             setShowGuestBookingModal(false);
             console.log('Convidados salvo com sucesso');
-            fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
+            await fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
             showToast('Agendamento salvo com sucesso', 'success');
 
         } else {
@@ -359,9 +361,9 @@ export default function ListaDeRefeicoesPage() {
         }
     }
 
-    const handleGuestBookingEditDelete = () => {
+    const handleGuestBookingEditDelete = async () => {
         setShowGuestBookingEditModal(false);
-        fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
+        await fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
     }
 
     const handleHospedeBookingEdit = async () => {
@@ -378,8 +380,8 @@ export default function ListaDeRefeicoesPage() {
 
         if (result.success) {
             console.log('Hospede editado com sucesso');
-            fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
             setShowHospedeBookingEditModal(false);
+            await fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
             showToast('Alterações salvas com sucesso', 'success');
         } else {
             console.log('Erro ao editar hospede');
@@ -428,7 +430,7 @@ export default function ListaDeRefeicoesPage() {
         if (result.success) {
             console.log('Refeicao salva com sucesso');
             setShowResidentBookingModal(false);
-            fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
+            await fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
             showToast('Agendamento salvo com sucesso', 'success');
         } else {
             console.log(result.message);
@@ -457,8 +459,8 @@ export default function ListaDeRefeicoesPage() {
 
         if (result.success) {
             console.log('Refeicao editada com sucesso');
-            fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
             setShowResidentBookingEditModal(false);
+            await fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
         } else {
             console.log('Erro ao editar refeicao');
         }
@@ -594,9 +596,6 @@ export default function ListaDeRefeicoesPage() {
                             <Button available={selectedDate >= today.toISOString().split('T')[0]} key="new_booking" variant="full" onClick={() => {handleShowBookingModal()}} iconLeft={<Plus size={20} />}>Novo agendamento</Button> 
                         ]}
                     />
-                    
-                    {isLoading ? <Loading /> : (
-                    <>
 
                     <Table
                         searchText={searchText} 
@@ -621,8 +620,8 @@ export default function ListaDeRefeicoesPage() {
                         })
                         }
                         itemsPerPage={7}
+                        isLoading={isLoading}
                     />
-                    </>)}
                 </Card>
             </div>
 
@@ -709,6 +708,7 @@ export default function ListaDeRefeicoesPage() {
                     })
                     }
                     itemsPerPage={7}
+                    isLoading={isLoading}
                 />
 
                 <SaveFooterAdmin buttonText="Novo agendamento" executeFunction={() => handleShowBookingModal()} />
