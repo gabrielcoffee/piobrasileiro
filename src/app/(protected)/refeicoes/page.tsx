@@ -257,6 +257,12 @@ export default function RefeicoesPage() {
 
         setMealsList(newMealsList);
         setHasChanges(true);
+        
+        if (markAsTrue) {
+            showToast('Todas as refeições marcadas com sucesso', 'warning');
+        } else {
+            showToast('Todas as refeições desmarcadas com sucesso', 'warning');
+        }
     };
 
     // Função para deletar convidado

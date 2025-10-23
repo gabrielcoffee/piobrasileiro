@@ -68,7 +68,7 @@ export default function UsuarioPage() {
                 }
 
                 console.log('Dados do usuário salvos com sucesso');
-                router.push('/admin/usuarios');
+                router.push('/admin/usuarios?created=true');
             } else {
                 if (result.error === "email already used") {
                     setEmailUsedError(true);

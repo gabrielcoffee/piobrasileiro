@@ -26,6 +26,7 @@ interface TableProps {
     searchKey?: string;
     filters?: { key: string, value: string | boolean | number }[];
     rowIdKey?: string;
+    isLoading?: boolean;
 }
 
 export interface TableRef {
@@ -44,7 +45,8 @@ const Table = forwardRef<TableRef, TableProps>(({
     searchText = '',
     searchKey = 'nome_completo',
     filters = [],
-    rowIdKey = 'id'
+    rowIdKey = 'id',
+    isLoading = false
 }, ref) => {    
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -318,6 +320,8 @@ const Table = forwardRef<TableRef, TableProps>(({
 
     const mobileItems = getMobileItems();
     const hasMoreItems = !showAllMobile && allFilteredItems.length > itemsPerPage;
+
+
 
     if (rowItems.length === 0) {
         return (

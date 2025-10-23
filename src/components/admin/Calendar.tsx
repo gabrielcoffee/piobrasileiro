@@ -6,12 +6,15 @@ import { useState, useEffect } from 'react';
 import { Button } from '../ui/Button';
 import { queryApi } from '@/lib/utils';
 import SaveFooterAdmin from './SaveFooterAdmin';
+import { useToast } from '@/contexts/ToastContext';
 
 export function Calendar() {
     const [currentMonth, setCurrentMonth] = useState(new Date());
     const [selectedDates, setSelectedDates] = useState<string[]>([]);
     const [selectedToBlockDates, setSelectedToBlockDates] = useState<string[]>([]);
     const [blockedDates, setBlockedDates] = useState<string[]>([]);
+
+    const { showToast } = useToast();
 
     // Generate calendar dates for a given month
     const generateCalendarDates = (year: number, month: number) => {
@@ -86,8 +89,10 @@ export function Calendar() {
             setBlockedDates(blockedDates.filter(date => !selectedDates.includes(date)));
             setSelectedDates([]);
             fetchBlockedDates();
+            showToast('Datas desbloqueadas salvas com sucesso', 'success');
         }
         else {
+            showToast('Ops! Algo deu errado. Tente novamente.', 'error');
             console.log('Erro ao salvar datas desbloqueadas');
         }
     }
@@ -102,8 +107,10 @@ export function Calendar() {
             fetchBlockedDates();
             setSelectedToBlockDates([]);
             setSelectedDates([]);
+            showToast('Datas bloqueadas salvas com sucesso', 'success');
         } else {
             console.log('Erro ao salvar datas bloqueadas');
+            showToast('Ops! Algo deu errado. Tente novamente.', 'error');
         }
     };
     

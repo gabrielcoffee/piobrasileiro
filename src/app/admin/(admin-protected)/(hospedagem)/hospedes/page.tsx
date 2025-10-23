@@ -12,9 +12,11 @@ import { queryApi } from '@/lib/utils';
 import AddHospedeModal from '@/components/admin/AddHospedeModal';
 import MobileTitle from '@/components/admin/MobileTitle';
 import SaveFooterAdmin from '@/components/admin/SaveFooterAdmin';
+import { useToast } from '@/contexts/ToastContext';
 
 export default function HospedesPage() {
 
+    const { showToast } = useToast();
     const [showNewBookingModal, setShowNewBookingModal] = useState<boolean>(false);
     const [guests, setGuests] = useState<any[]>([]);
     const [isMobile, setIsMobile] = useState<boolean>(false);
@@ -43,8 +45,10 @@ export default function HospedesPage() {
         if (result.success) {
             console.log('Hospede salvo com sucesso');
             fetchGuests();
+            showToast('Hóspede registrado com sucesso', 'success');
         } else {
             console.log('Erro ao salvar hospede', result.error);
+            showToast('Ops! Algo deu errado. Tente novamente.', 'error');
         }
         setShowNewBookingModal(false);
     }
@@ -66,8 +70,10 @@ export default function HospedesPage() {
         if (result.success) {
             console.log('Hospede editado com sucesso');
             fetchGuests();
+            showToast('Alterações salvas com sucesso', 'success');
         } else {
             console.log('Erro ao editar hospede', result.error);
+            showToast('Ops! Algo deu errado. Tente novamente.', 'error');
         }
         setShowEditGuestModal(false);
     }
@@ -87,8 +93,10 @@ export default function HospedesPage() {
         if (result.success) {
             console.log('Hospede excluido com sucesso');
             fetchGuests();
+            showToast('Hóspede removido com sucesso', 'success');
         } else {
             console.log('Erro ao excluir hospede', result.error);
+            showToast('Ops! Algo deu errado. Tente novamente.', 'error');
         }
         setShowDeleteGuestModal(false);
     }

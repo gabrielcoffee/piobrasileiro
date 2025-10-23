@@ -13,10 +13,12 @@ import ProfileImage from "@/components/profile/ProfileImage";
 import { InputTextBox } from "@/components/ui/InputTextBox";
 import { useAuth } from "@/contexts/AuthContext";
 import { InputDate } from "@/components/ui/InputDate";
+import { useToast } from "@/contexts/ToastContext";
 
 
 export default function PerfilAdminPage() {
     const { logout,refreshUser } = useAuth();    
+    const { showToast } = useToast();
     const [usuario, setUsuario] = useState<any>(null);
 
     // User data states
@@ -145,8 +147,10 @@ export default function PerfilAdminPage() {
                 setPasswordChanged(true);
                 setCurrentPassword('');
                 setNewPassword('');
+                showToast('Senha modificada com sucesso', 'success');
             } else {
                 console.error('Erro ao alterar senha:', result.error);
+                showToast('Ops! Algo deu errado. Tente novamente.', 'error');
             }
         } catch (error) {
             console.error('Erro ao alterar senha:', error);
@@ -176,8 +180,10 @@ export default function PerfilAdminPage() {
                 console.log('Dados do usuário atualizados com sucesso');
                 fetchUsuario(); // Refresh data
                 await refreshUser(); // Refresh user data in header
+                showToast('Alterações salvas com sucesso', 'success');
             } else {
                 console.error('Erro ao atualizar dados do usuário:', result.error);
+                showToast('Ops! Algo deu errado. Tente novamente.', 'error');
             }
         } catch (error) {
             console.error('Erro ao atualizar dados do usuário:', error);

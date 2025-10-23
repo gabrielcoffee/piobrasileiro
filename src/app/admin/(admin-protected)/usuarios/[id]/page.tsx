@@ -14,10 +14,12 @@ import { Button } from "@/components/ui/Button";
 import ProfileImage from "@/components/profile/ProfileImage";
 import { InputTextBox } from "@/components/ui/InputTextBox";
 import { InputDate } from "@/components/ui/InputDate";
+import { useToast } from "@/contexts/ToastContext";
 
 
 export default function UsuarioPage() {    
     const { id } = useParams();
+    const { showToast } = useToast();
     const [usuario, setUsuario] = useState<any>(null);
     const router = useRouter();
     // User data states
@@ -142,9 +144,11 @@ export default function UsuarioPage() {
             if (result.success) {
                 setIsSaving(true);
                 console.log('Dados do usuário atualizados com sucesso');
+                showToast('Alterações salvas com sucesso', 'success');
                 router.push('/admin/usuarios');
             } else {
                 console.error('Erro ao atualizar dados do usuário:', result.error);
+                showToast('Ops! Algo deu errado. Tente novamente.', 'error');
             }
         } catch (error) {
             console.error('Erro ao atualizar dados do usuário:', error);

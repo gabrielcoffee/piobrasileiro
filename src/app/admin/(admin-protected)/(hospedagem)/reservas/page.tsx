@@ -17,19 +17,19 @@ import { DropdownInput } from '@/components/ui/DropdownInput';
 import { SimpleDateSelect } from '@/components/admin/SimpleDateSelect';
 import { InputTextSearch } from '@/components/ui/InputTextSearch';
 import { InputText } from '@/components/ui/InputText';
-import { Toast } from '@/components/general/Toast';
+import { useToast } from '@/contexts/ToastContext';
 import MobileTitle from '@/components/admin/MobileTitle';
 import SaveFooterAdmin from '@/components/admin/SaveFooterAdmin';
 
 export default function GestaoDeReservasPage() {
 
     const router = useRouter();
+    const { showToast } = useToast();
 
     const [selectedWeekStart, setSelectedWeekStart] = useState<Date>(new Date());
     const [selectedWeekEnd, setSelectedWeekEnd] = useState<Date>(new Date());
     const [selectedBookingData, setSelectedBookingData] = useState<any>(null);
-    const [notificationsCount, setNotificationsCount] = useState<number>(0);
-    const [showSuccessToast, setShowSuccessToast] = useState<boolean>(false);   
+    const [notificationsCount, setNotificationsCount] = useState<number>(0);   
     const [anfitriaoOptions, setAnfitriaoOptions] = useState<any[]>([]);
     const [roomOptions, setRoomOptions] = useState<any[]>([]);
 
@@ -115,8 +115,10 @@ export default function GestaoDeReservasPage() {
             console.log('Reserva excluida com sucesso');
             fetchReservas(selectedWeekStart, selectedWeekEnd);
             setShowDeleteBookingModal(false);
+            showToast('Reserva excluída com sucesso!', 'success');
         } else {
             console.log('Erro ao excluir reserva', result.error);
+            showToast('Erro ao excluir reserva', 'error');
         }
     }
 
@@ -144,8 +146,10 @@ export default function GestaoDeReservasPage() {
             console.log('Reserva editada com sucesso');
             fetchReservas(selectedWeekStart, selectedWeekEnd);
             setShowEditBookingModal(false);
+            showToast('Reserva editada com sucesso!', 'success');
         } else {
             console.log('Erro ao editar reserva', result.error);
+            showToast('Erro ao editar reserva', 'error');
         }
     }
 
@@ -190,9 +194,10 @@ export default function GestaoDeReservasPage() {
             console.log('Reserva salva com sucesso');
             fetchReservas(selectedWeekStart, selectedWeekEnd);
             setShowNewBookingModal(false);
-            setShowSuccessToast(true);
+            showToast('Reserva salva com sucesso!', 'success');
         } else {
             console.log('Erro ao salvar reserva', result.error);
+            showToast('Erro ao salvar reserva', 'error');
         }
     }
 
@@ -470,13 +475,6 @@ export default function GestaoDeReservasPage() {
             </div>
         )}
 
-        {showSuccessToast && (
-            <Toast 
-                message="Hóspede registrado com sucesso!" 
-                type="success"
-                onClose={() => setShowSuccessToast(false)}
-            />
-        )}
 
 
         <Modal

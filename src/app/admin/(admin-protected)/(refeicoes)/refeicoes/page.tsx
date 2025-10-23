@@ -19,10 +19,12 @@ import { Loading } from '@/components/ui/Loading';
 import { useAuth } from '@/contexts/AuthContext';
 import MobileTitle from '@/components/admin/MobileTitle';
 import SaveFooterAdmin from '@/components/admin/SaveFooterAdmin';
+import { useToast } from '@/contexts/ToastContext';
 
 export default function ListaDeRefeicoesPage() {
 
     const { isLoading, setIsLoading } = useAuth();
+    const { showToast } = useToast();
 
     const [refeicoes, setRefeicoes] = useState([]);
     const today = new Date();
@@ -314,8 +316,10 @@ export default function ListaDeRefeicoesPage() {
             console.log('Refeicao editada com sucesso');
             fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
             setShowGuestBookingEditModal(false);
+            showToast('Agendamento editado com sucesso', 'success');
         } else {
             console.log('Não foi possível editar a refeição');
+            showToast('Ops! Algo deu errado. Tente novamente.', 'error');
         }
     }
 
@@ -346,10 +350,12 @@ export default function ListaDeRefeicoesPage() {
             setShowGuestBookingModal(false);
             console.log('Convidados salvo com sucesso');
             fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
+            showToast('Agendamento salvo com sucesso', 'success');
 
         } else {
             console.log('Erro ao salvar convida');
             setShowGuestBookingModal(false);
+            showToast('Ops! Algo deu errado. Tente novamente.', 'error');
         }
     }
 
@@ -374,9 +380,10 @@ export default function ListaDeRefeicoesPage() {
             console.log('Hospede editado com sucesso');
             fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
             setShowHospedeBookingEditModal(false);
+            showToast('Alterações salvas com sucesso', 'success');
         } else {
             console.log('Erro ao editar hospede');
-
+            showToast('Ops! Algo deu errado. Tente novamente.', 'error');
         }
     }
 
@@ -422,8 +429,10 @@ export default function ListaDeRefeicoesPage() {
             console.log('Refeicao salva com sucesso');
             setShowResidentBookingModal(false);
             fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
+            showToast('Agendamento salvo com sucesso', 'success');
         } else {
             console.log(result.message);
+            showToast('Ops! Algo deu errado. Tente novamente.', 'error');
         }
     }
 

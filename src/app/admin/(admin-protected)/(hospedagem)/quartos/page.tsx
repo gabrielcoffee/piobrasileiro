@@ -18,9 +18,11 @@ import { InputDate } from '@/components/ui/InputDate';
 import { SimpleDateSelect } from '@/components/admin/SimpleDateSelect';
 import MobileTitle from '@/components/admin/MobileTitle';
 import SaveFooterAdmin from '@/components/admin/SaveFooterAdmin';
+import { useToast } from '@/contexts/ToastContext';
 
 export default function QuartosPage() {
 
+    const { showToast } = useToast();
     const [quartos, setQuartos] = useState<any[]>([]);
     const [selectedWeekStart, setSelectedWeekStart] = useState<Date>(new Date());
     const [selectedWeekEnd, setSelectedWeekEnd] = useState<Date>(new Date());
@@ -74,9 +76,11 @@ export default function QuartosPage() {
         const result = await queryApi('PUT', `/admin/rooms/toggle-active/${id}`);
 
         if (result.success) {
+            showToast('Quarto ativado com sucesso', 'success');
             console.log('Quarto toggleado com sucesso');
             fetchRooms();
         } else {
+            showToast('Ops! Algo deu errado. Tente novamente.', 'error');
             console.log('Erro ao togglear quarto', result.error);
         }
     }
@@ -88,10 +92,12 @@ export default function QuartosPage() {
 
         if (result.success) {
             console.log('Quarto desativado com sucesso');
+            showToast('Quarto desativado com sucesso', 'success');
             fetchRooms();
             setShowDeactivateModal(false);
             setSelectedRoomForDeactivation(null);
         } else {
+            showToast('Ops! Algo deu errado. Tente novamente.', 'error');
             console.log('Erro ao desativar quarto', result.error);
         }
     }
@@ -233,7 +239,14 @@ export default function QuartosPage() {
 
 
     const saveNewRoom = async () => {
-        const result = await queryApi('POST', '/admin/rooms', {
+
+
+        if (!nome || capacity <= 0) {
+            showToast('Por favor, preencha o nome do quarto e a capacidade', 'error');
+            return;
+        }
+
+        const result = await queryApi('POST', '/admin/rooms/create', {
             numero: nome,
             capacidade: capacity,
             active: active,
@@ -242,8 +255,11 @@ export default function QuartosPage() {
         if (result.success) {
             console.log('Quarto salvo com sucesso');
             fetchRooms();
+            showToast('Quarto adicionado com sucesso', 'success');
+            setShowNewRoomModal(false);
         } else {
             console.log('Erro ao salvar quarto', result.error);
+            showToast('Ops! Algo deu errado. Tente novamente.', 'error');
         }
     }
 
@@ -263,8 +279,10 @@ export default function QuartosPage() {
             console.log('Quarto editado com sucesso');
             fetchRooms();
             setShowEditRoomModal(false);
+            showToast('Alterações salvas com sucesso', 'success');
         } else {
             console.log('Erro ao editar quarto', result.error);
+            showToast('Ops! Algo deu errado. Tente novamente.', 'error');
         }
     }
 
@@ -481,7 +499,7 @@ export default function QuartosPage() {
             buttons={
                 <>
                     <Button variant="soft-red" onClick={() => setShowNewRoomModal(false)}>Cancelar</Button>
-                    <Button variant="full" onClick={() => saveNewRoom()}>Cadastrar</Button>
+                    <Button available={nome && capacity > 0 ? true : false} variant="full" onClick={() => saveNewRoom()}>Cadastrar</Button>
                 </>
             }
             onClose={() => setShowNewRoomModal(false)}

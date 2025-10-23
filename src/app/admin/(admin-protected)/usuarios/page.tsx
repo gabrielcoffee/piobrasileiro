@@ -15,9 +15,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import { DropdownInput } from "@/components/ui/DropdownInput";
 import MobileTitle from "@/components/admin/MobileTitle";
 import SaveFooterAdmin from "@/components/admin/SaveFooterAdmin";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function UsuariosPage() {
 
+    const { showToast } = useToast();
     const [usuarios, setUsuarios] = useState<any[]>([]);
     const [isExcluirModalOpen, setIsExcluirModalOpen] = useState(false);
     const [isInativarModalOpen, setIsInativarModalOpen] = useState(false);
@@ -126,6 +128,14 @@ export default function UsuariosPage() {
 
     useEffect(() => {
         fetchUsuarios();
+        
+        // Check if redirected from user creation
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('created') === 'true') {
+            showToast('Usuário adicionado com sucesso', 'success');
+            // Clean up URL
+            window.history.replaceState({}, '', '/admin/usuarios');
+        }
     }, []);
 
     const deleteUsers = async () => {
@@ -136,6 +146,7 @@ export default function UsuariosPage() {
 
         if (!result.success) {
             console.log('Failed to delete users', result.error);
+            showToast('Ops! Algo deu errado. Tente novamente.', 'error');
             return;
         }
 
@@ -143,6 +154,7 @@ export default function UsuariosPage() {
         setIsExcluirModalOpen(false);
         setCanShowExcluirButtons(false);
         setSelectedUsers([]);
+        showToast('Usuário removido com sucesso', 'success');
     }
 
     const inactivateUsers = async () => {
@@ -153,12 +165,14 @@ export default function UsuariosPage() {
 
         if (!result.success) {
             console.log('Failed to inactivate users', result.error);
+            showToast('Ops! Algo deu errado. Tente novamente.', 'error');
         } else {
             console.log('Users inactivated', result.data);
             setSelectedUsers([]);
             fetchUsuarios();
             setIsInativarModalOpen(false);
             setCanShowExcluirButtons(false);
+            showToast('Alterações salvas com sucesso', 'success');
         }
     }
 
@@ -170,6 +184,7 @@ export default function UsuariosPage() {
 
         if (!result.success) {
             console.log('Failed to toggle active user', result.error);
+            showToast('Ops! Algo deu errado. Tente novamente.', 'error');
             return;
         }
 
@@ -179,6 +194,7 @@ export default function UsuariosPage() {
             setSelectedUsers([]);
             setIsInativarModalOpen(false);
             setCanShowExcluirButtons(false);
+            showToast('Alterações salvas com sucesso', 'success');
         }
     }
 
