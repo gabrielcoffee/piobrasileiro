@@ -3,6 +3,7 @@ import React, { useState, useImperativeHandle, forwardRef, useEffect, useMemo } 
 import styles from './styles/Table.module.css';
 import { ChevronRight, ChevronUp } from 'lucide-react';
 import { Button } from '../ui/Button';
+import { LoadingIcon } from '../ui/LoadingIcon';
 
 // Define types for the table data
 interface TableHeaderItem {
@@ -26,7 +27,6 @@ interface TableProps {
     searchKey?: string;
     filters?: { key: string, value: string | boolean | number }[];
     rowIdKey?: string;
-    isLoading?: boolean;
 }
 
 export interface TableRef {
@@ -46,13 +46,22 @@ const Table = forwardRef<TableRef, TableProps>(({
     searchKey = 'nome_completo',
     filters = [],
     rowIdKey = 'id',
-    isLoading = false
 }, ref) => {    
 
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedRows, setSelectedRows] = useState<Set<string | number>>(new Set());
     const [showAllMobile, setShowAllMobile] = useState(false);
     const [allFilteredItems, setAllFilteredItems] = useState<TableRowItem[]>(rowItems);
+    const [isInitialLoading, setIsInitialLoading] = useState(true);
+    
+    // 5-second loading timer
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsInitialLoading(false);
+        }, 5000);
+
+        return () => clearTimeout(timer);
+    }, []);
     
     // Calculate pagination
     const defaultRows = rowItems;
@@ -324,6 +333,10 @@ const Table = forwardRef<TableRef, TableProps>(({
 
 
     if (rowItems.length === 0) {
+        if (isInitialLoading) {
+            return <LoadingIcon />;
+        }
+        
         return (
             <div className={styles.emptyTable}>
                 <span 
