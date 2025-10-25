@@ -5,7 +5,7 @@ import styles from "./page.module.css";
 
 export default function ResetPasswordPage() {
     return (
-        <div>
+        <>
             <div className={styles.mobileContainer}>
                 <ResetPasswordForm />
             </div>
@@ -18,6 +18,6 @@ export default function ResetPasswordPage() {
                     <ResetPasswordForm />
                 </div>
             </div>
-        </div>
+        </>
     );
 }

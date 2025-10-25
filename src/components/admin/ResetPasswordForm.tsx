@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { InputText } from "@/components/ui/InputText";
 import { ArrowLeftIcon, CheckCheck, Lock, X } from "lucide-react";
-import styles from "../../app/reset-password/page.module.css";
+import styles from "./styles/ResetPasswordForm.module.css";
 import { useRouter, useSearchParams } from "next/navigation";
 
 export default function ResetPasswordForm() {
