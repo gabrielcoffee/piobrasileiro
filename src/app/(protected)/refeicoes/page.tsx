@@ -259,9 +259,9 @@ export default function RefeicoesPage() {
         setHasChanges(true);
         
         if (markAsTrue) {
-            showToast('Todas as refeições marcadas com sucesso', 'warning');
+            showToast('Todas as refeições marcadas com sucesso', 'success');
         } else {
-            showToast('Todas as refeições desmarcadas com sucesso', 'warning');
+            showToast('Todas as refeições desmarcadas com sucesso', 'success');
         }
     };
 

@@ -29,7 +29,15 @@ export default function ListaDeRefeicoesPage() {
     const [refeicoes, setRefeicoes] = useState([]);
     const today = new Date();
     const [selectedWeek, setSelectedWeek] = useState<Date>(new Date());
-    const [selectedDate, setSelectedDate] = useState<string>(new Date().toISOString().split('T')[0]);
+    // Helper to format a Date as YYYY-MM-DD in LOCAL time (avoids UTC shifts)
+    const toLocalYMD = (date: Date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
+    const [selectedDate, setSelectedDate] = useState<string>(toLocalYMD(new Date()));
     const [dayInfo, setDayInfo] = useState<any>(null);
     const [selectedWeekStart, setSelectedWeekStart] = useState<Date>(new Date());
     const [selectedWeekEnd, setSelectedWeekEnd] = useState<Date>(new Date());
@@ -244,10 +252,10 @@ export default function ListaDeRefeicoesPage() {
         
         // If it's the current week, select today's date
         if (weekStart.getTime() === currentWeekStart.getTime()) {
-            setSelectedDate(now.toISOString().split('T')[0]);
+            setSelectedDate(toLocalYMD(now));
         } else {
             // For past or future weeks, select Monday (first day)
-            setSelectedDate(weekStart.toISOString().split('T')[0]);
+            setSelectedDate(toLocalYMD(weekStart));
         }
     };
 
@@ -256,10 +264,10 @@ export default function ListaDeRefeicoesPage() {
         const weekDates = getWeekDates();
 
         const weekDayButtons = weekDates.map((date: Date, index: number) => {
-            const dateString = date.toISOString().split('T')[0];
+            const dateString = toLocalYMD(date);
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            const isPast = date < today;
+            const isPast = toLocalYMD(date) < toLocalYMD(today);
 
             const isSelected = dateString === selectedDate;
             
@@ -494,11 +502,11 @@ export default function ListaDeRefeicoesPage() {
     }
 
     const handleShowBookingModal = () => {
-        if (selectedDate < today.toISOString().split('T')[0]) {
+        if (selectedDate < toLocalYMD(today)) {
             setShowNewBookingModal(false);
             return;
         }
-        if (selectedDate >= today.toISOString().split('T')[0]) {
+        if (selectedDate >= toLocalYMD(today)) {
             setShowNewBookingModal(true);
             return;
         }
@@ -506,12 +514,13 @@ export default function ListaDeRefeicoesPage() {
 
     // Initialize with current week
     useEffect(() => {
+        // setting now date without time
         const now = new Date();
         const currentWeekInfo = getCurrentWeekInfo();
         setSelectedWeekStart(currentWeekInfo.monday);
         setSelectedWeekEnd(currentWeekInfo.sunday);
         setSelectedWeek(now);
-        setSelectedDate(now.toISOString().split('T')[0]);
+        setSelectedDate(toLocalYMD(now));
     }, []);
 
     // Update dayInfo when refeicoes or selectedDate changes
@@ -593,7 +602,7 @@ export default function ListaDeRefeicoesPage() {
                         )}
                         buttons={[
                             <Button key="report" variant="full-white" iconLeft={<Printer size={20}/>} onClick={() => setShowReportModal(true)}>Gerar relatório</Button>,
-                            <Button available={selectedDate >= today.toISOString().split('T')[0]} key="new_booking" variant="full" onClick={() => {handleShowBookingModal()}} iconLeft={<Plus size={20} />}>Novo agendamento</Button> 
+                            <Button available={selectedDate >= toLocalYMD(today)} key="new_booking" variant="full" onClick={() => {handleShowBookingModal()}} iconLeft={<Plus size={20} />}>Novo agendamento</Button> 
                         ]}
                     />
 
@@ -670,7 +679,9 @@ export default function ListaDeRefeicoesPage() {
                             onWeekChange={handleWeekChange}
                         />
                         )}
-                        buttons={[]}
+                        buttons={[
+                            <Button key="report" variant="full-white" iconLeft={<Printer size={20}/>} onClick={() => setShowReportModal(true)}>Gerar relatório</Button>
+                        ]}
                     />
 
                     <div className={styles.daySelector}>

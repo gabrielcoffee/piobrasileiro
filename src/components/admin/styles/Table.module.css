@@ -155,6 +155,12 @@
     gap: 1rem;
 }
 
+@media (max-width: 768px) {
+    .emptyTable {
+        padding: 2rem;
+    }
+}
+
 /* Mobile Card Styles */
 .mobileCardContainer {
     display: none;
@@ -266,7 +272,7 @@
 }
 
 .seenCard {
-    background-color: var(--color-slate-100) !important;
+    background-color: var(--color-slate-50) !important;
 }
 
 .inactiveCard {

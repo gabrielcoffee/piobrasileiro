@@ -353,22 +353,26 @@ const Table = forwardRef<TableRef, TableProps>(({
     const hasMoreItems = !showAllMobile && allFilteredItems.length > itemsPerPage;
 
 
-
-    if (rowItems.length === 0) {
+    if (allFilteredItems.length === 0) {
         if (isLoading || isInitialLoading) {
             return <LoadingIcon />;
         }
-        
+
+        const usedSearchOrFilters = (searchText && searchText.trim().length > 0) || (stableFilters && stableFilters.length > 0);
+        const message = usedSearchOrFilters
+            ? 'Sua busca não retornou resultados. Tente ajustar os filtros.'
+            : 'Não há dados cadastrados no momento. Inicie um novo cadastro para visualizar aqui.';
+
         return (
             <div className={styles.emptyTable}>
-                <span 
-                    style={{cursor: 'pointer', color: 'var(--color-text)', textAlign: 'center'}} 
+                <span
+                    style={{ cursor: 'pointer', color: 'var(--color-text)', textAlign: 'center' }}
                     onClick={() => window.location.reload()}
                 >
-                    Nenhum item encontrado.<br></br> Clique aqui para recarregar a página.
+                    {message}
                 </span>
             </div>
-        )
+        );
     }
 
     return (

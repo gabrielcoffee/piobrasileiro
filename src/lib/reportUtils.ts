@@ -741,9 +741,12 @@ export async function generateReportPDFLib(action: string, weekInfo: any, notesI
     // Generate PDF
     const pdfBytes = await pdfDoc.save();
     
+    // Detect if we're on mobile
+    const isMobile = window.innerWidth < 768;
+    
     if (action === 'save') {
         // Create blob and download
-        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
@@ -759,24 +762,33 @@ export async function generateReportPDFLib(action: string, weekInfo: any, notesI
         const filename = `relatorio-refeicoes-${weekInfo.period.replace(' a ', '-')}.pdf`;
         
         // Create blob with filename
-        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        const blob = new Blob([pdfBytes as any], { type: 'application/pdf' });
         const url = URL.createObjectURL(blob);
         
-        // Open in new tab with filename
-        const printWindow = window.open(url, '_blank');
-        
-        // Set the document title for better print experience
-        if (printWindow) {
-            printWindow.onload = () => {
-                setTimeout(() => {
-                    printWindow.print();
-                }, 1000); // Wait 1 second for PDF to fully load
-            };
-        }
-        
-        // Clean up URL after a delay
-        setTimeout(() => {
+        if (isMobile) {
+            // On mobile, download the PDF instead of trying to print
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            link.click();
             URL.revokeObjectURL(url);
-        }, 10000); // Clean up after 10 seconds
+        } else {
+            // Desktop: Open in new tab with filename
+            const printWindow = window.open(url, '_blank');
+            
+            // Set the document title for better print experience
+            if (printWindow) {
+                printWindow.onload = () => {
+                    setTimeout(() => {
+                        printWindow.print();
+                    }, 1000); // Wait 1 second for PDF to fully load
+                };
+            }
+            
+            // Clean up URL after a delay
+            setTimeout(() => {
+                URL.revokeObjectURL(url);
+            }, 10000); // Clean up after 10 seconds
+        }
     }
 }

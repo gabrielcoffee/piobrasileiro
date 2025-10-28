@@ -16,6 +16,11 @@
     gap: 1rem;
 }
 
+.errorText {
+    color: var(--color-red-600);
+    font-size: 0.875rem;
+}
+
 .inputGroup input,
 .inputGroup textarea {
     background-color: var(--color-white) !important;

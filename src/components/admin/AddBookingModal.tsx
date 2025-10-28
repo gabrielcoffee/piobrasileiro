@@ -62,7 +62,6 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
     const [bookingId, setBookingId] = useState('');
     const [roomData, setRoomData] = useState<any[]>([]);
     const [newHospedeName, setNewHospedeName] = useState('');
-    
     useEffect(() => {
         if (bookingDataChange) {
             bookingDataChange({
@@ -212,7 +211,6 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
                         selectedDate={dataChegada ? new Date(dataChegada.split('T')[0] + 'T00:00:00') : new Date()}
                         onDateChange={(date) => setDataChegada(date?.toISOString())}
                     />
-
                     <SimpleDateSelect
                         label="*Data de saída"
                         cantBeBeforeToday={true}

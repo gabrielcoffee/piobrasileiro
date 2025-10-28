@@ -1,4 +1,4 @@
-import { Calendar, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { Button } from '../ui/Button';
 import styles from './styles/SimpleDateSelect.module.css';
 import { useState, useEffect } from 'react';
@@ -113,8 +113,22 @@ export function SimpleDateSelect({ selectedDate, onDateChange, disabled, label =
                 </Button>
             </div>
 
+            {/* Mobile overlay (always rendered to allow fade-out) */}
+            <div 
+                className={`${styles.mobileOverlay} ${showMiniCalendar ? styles.open : ''}`}
+                onClick={() => setShowMiniCalendar(false)}
+                aria-hidden={!showMiniCalendar}
+            />
+
             {showMiniCalendar && (
                 <div className={styles.miniCalendar}>
+                    {/* Mobile-only header with label (left) and close (right) */}
+                    <div className={styles.mobileHeader}>
+                        <span className={styles.mobileHeaderLabel}>{label}</span>
+                        <button className={styles.mobileHeaderClose} onClick={() => setShowMiniCalendar(false)} aria-label="Fechar calendário">
+                            <X size={18} />
+                        </button>
+                    </div>
                     <div className={styles.monthsContainer}>
                         {/* Month Calendar */}
                         <div className={styles.monthBlock}>

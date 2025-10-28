@@ -75,11 +75,11 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
         }
     }
 
-    // make timer to fetch notifications count every 10 seconds
+    // make timer to fetch notifications count every 5 seconds
     useEffect(() => {
         const timer = setInterval(() => {
             fetchNotifications();
-        }, 10000);
+        }, 5000);
         return () => clearInterval(timer);
     }, []);
     

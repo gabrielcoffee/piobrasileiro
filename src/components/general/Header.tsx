@@ -56,11 +56,11 @@ export function Header({ setSideBarExpanded = (expanded: boolean) => void 0}: He
         }
     }
 
-    // make timer to fetch notifications count every 10 seconds
+    // make timer to fetch notifications count every 5 seconds
     useEffect(() => {
         const timer = setInterval(() => {
             fetchNotificationsCount();
-        }, 10000);
+        }, 5000);
         return () => clearInterval(timer);
     }, [pathname]);
     

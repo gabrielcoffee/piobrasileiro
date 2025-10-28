@@ -25,7 +25,7 @@ export default function ResetPasswordForm() {
             setEmail(params.get("email"));
 
             // Test url:
-            // 
+            //
 
             console.log(token, nome_completo, email);
         }

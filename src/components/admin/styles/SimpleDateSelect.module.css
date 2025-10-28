@@ -162,6 +162,48 @@
         width: 86%;
         margin-left: 0;
         margin-right: 0;
-        transform: none;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .mobileHeader {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.75rem;
+    }
+
+    .mobileHeaderLabel {
+        font-size: 0.95rem;
+        font-weight: 600;
+        color: var(--color-text);
+    }
+
+    .mobileHeaderClose {
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: var(--color-text);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.25rem;
+    }
+
+    /* Mobile overlay with quick fade */
+    .mobileOverlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.25);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 120ms ease-in-out;
+        z-index: 900;
+    }
+
+    .mobileOverlay.open {
+        opacity: 1;
+        pointer-events: auto;
     }
 }
