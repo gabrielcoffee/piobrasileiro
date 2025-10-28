@@ -679,9 +679,7 @@ export default function ListaDeRefeicoesPage() {
                             onWeekChange={handleWeekChange}
                         />
                         )}
-                        buttons={[
-                            <Button key="report" variant="full-white" iconLeft={<Printer size={20}/>} onClick={() => setShowReportModal(true)}>Gerar relatório</Button>
-                        ]}
+                        buttons={[]}
                     />
 
                     <div className={styles.daySelector}>
