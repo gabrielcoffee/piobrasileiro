@@ -11,6 +11,10 @@
     padding: 1.5rem 1rem;
     border-top-left-radius: 15px;
     border-top-right-radius: 15px;
+    /* Fix for iOS Safari bottom toolbar */
+    bottom: env(safe-area-inset-bottom, 0px);
+    /* Use dynamic viewport height for better iOS support */
+    bottom: max(0px, env(safe-area-inset-bottom, 0px));
 }
 
 @media (min-width: 768px) {

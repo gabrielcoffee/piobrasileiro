@@ -1,6 +1,7 @@
 import { Button } from "../ui/Button"
 import styles from "./styles/SaveFooterAdmin.module.css"
 import { Plus } from "lucide-react";
+import { useViewportHeight } from "@/hooks/useViewportHeight";
 
 interface SaveFooterAdminProps {
     buttonText: string;
@@ -9,6 +10,7 @@ interface SaveFooterAdminProps {
 }
 
 export default function SaveFooterAdmin({buttonText, iconLeft = <Plus size={24} />, executeFunction}: SaveFooterAdminProps) {
+    useViewportHeight();
 
     return (
         <div className={styles.container}>
