@@ -5,18 +5,32 @@ import { Button } from "@/components/ui/Button";
 import { InputText } from "@/components/ui/InputText";
 import { ArrowLeftIcon, CheckCheck, Lock, X } from "lucide-react";
 import styles from "./styles/ResetPasswordForm.module.css";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function ResetPasswordForm() {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-
-    const searchParams = useSearchParams();
-    const token = searchParams.get("token");
-    const nome_completo = searchParams.get("nome_completo");
-    const email = searchParams.get("email");
+    const [token, setToken] = useState<string | null>(null);
+    const [nome_completo, setNome_completo] = useState<string | null>(null);
+    const [email, setEmail] = useState<string | null>(null);
 
     const router = useRouter();
+
+    // Get search params manually to avoid Suspense issues
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const params = new URLSearchParams(window.location.search);
+            setToken(params.get("token"));
+            setNome_completo(params.get("nome_completo"));
+            setEmail(params.get("email"));
+
+            // Test url:
+            // 
+
+            console.log(token, nome_completo, email);
+        }
+    }, []);
+
     const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
 
     const [lengthRequirement, setLengthRequirement] = useState(false);
@@ -79,13 +93,13 @@ export default function ResetPasswordForm() {
             setNumberRequirement(false);
         }
 
-        if (!password.includes(nome_completo as string)) {
+        if (nome_completo && !password.includes(nome_completo)) {
             setNameRequirement(true);
         } else {
             setNameRequirement(false);
         }
         
-        if (!password.includes(email as string)) {
+        if (email && !password.includes(email)) {
             setEmailRequirement(true);
         } else {
             setEmailRequirement(false);
@@ -102,7 +116,7 @@ export default function ResetPasswordForm() {
         } else {
             setIsConfirmPasswordValid(true);
         }
-    }, [password, confirmPassword]);
+    }, [password, confirmPassword, nome_completo, email, lengthRequirement, uppercaseRequirement, lowercaseRequirement, numberRequirement, nameRequirement, emailRequirement]);
     
     return (
         <div className={styles.outerContainer}>

@@ -1,4 +1,3 @@
-import { Suspense } from "react";
 import ResetPasswordForm from "@/components/admin/ResetPasswordForm";
 import Splash from "@/components/login/Splash";
 import styles from "./page.module.css";
