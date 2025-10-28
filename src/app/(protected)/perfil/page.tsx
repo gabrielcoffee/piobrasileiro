@@ -176,7 +176,13 @@ export default function PerfilPage() {
     const handleAvatarChange = async (imageFile: File) => {
         // This is where the avatar is updated, returns the base64 string
         const newAvatar = await uploadAvatar(imageFile);
-        setAvatar(newAvatar || null);
+        if (newAvatar) {
+            setAvatar(newAvatar);
+            await refreshUser(); // Refresh user data in context to update header
+            showToast('Foto de perfil atualizada com sucesso!', 'success');
+        } else {
+            showToast('Erro ao atualizar foto de perfil', 'error');
+        }
     }
 
     return (

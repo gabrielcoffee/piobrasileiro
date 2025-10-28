@@ -17,7 +17,7 @@ import { useToast } from "@/contexts/ToastContext";
 
 
 export default function PerfilAdminPage() {
-    const { logout,refreshUser } = useAuth();    
+    const { logout, refreshUser } = useAuth();    
     const { showToast } = useToast();
     const [usuario, setUsuario] = useState<any>(null);
 
@@ -210,7 +210,13 @@ export default function PerfilAdminPage() {
     const handleAvatarChange = async (imageFile: File) => {
         // This is where the avatar is updated, returns the base64 string
         const newAvatar = await uploadAvatar(imageFile);
-        setAvatar(newAvatar || null);
+        if (newAvatar) {
+            setAvatar(newAvatar);
+            await refreshUser(); // Refresh user data in context to update header
+            showToast('Foto de perfil atualizada com sucesso!', 'success');
+        } else {
+            showToast('Erro ao atualizar foto de perfil', 'error');
+        }
     }
 
     return (
