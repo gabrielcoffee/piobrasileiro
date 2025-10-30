@@ -30,6 +30,7 @@ export default function LoginPage() {
                         <Login 
                             onForgotPasswordClick={() => handleViewChange('forgotPassword')}
                             onBackClick={() => handleViewChange('login')}
+                            onAdminLogin={true}
                         />
                     )}
                     

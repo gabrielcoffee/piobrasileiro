@@ -13,9 +13,10 @@ import { Loading } from "../ui/Loading";
 interface LoginProps {
     onForgotPasswordClick: () => void;
     onBackClick: () => void;
+    onAdminLogin?: boolean;
 }
 
-export default function Login({onForgotPasswordClick, onBackClick}: LoginProps) {
+export default function Login({onForgotPasswordClick, onBackClick, onAdminLogin = false}: LoginProps) {
 
     const pathname = usePathname();
 
@@ -33,10 +34,15 @@ export default function Login({onForgotPasswordClick, onBackClick}: LoginProps) 
 
     useEffect(() => {
         if (!isLoading && isAuthenticated) {
-            if (user?.role === 'admin') {
-                router.push('/admin/home')
+
+            if (onAdminLogin) {
+                if (user?.role === 'admin') {
+                    router.push('/admin/home')
+                } else {
+                    router.push('/home')
+                }
             } else {
-                router.push('/home')
+                router.push('/home');
             }
         }
     }, [isLoading, isAuthenticated, router]);
@@ -113,8 +119,8 @@ export default function Login({onForgotPasswordClick, onBackClick}: LoginProps) 
             </div>
 
             <div className={styles.buttonContainer}>
-                <Button available={(email && password) ? true : false} variant="full" onClick={handleLogin} iconRight={<ArrowRightIcon/>}>
-                    Entrar
+                <Button available={(email && password) ? true : false} variant="full" onClick={handleLogin} iconRight={!isLoading ? <ArrowRightIcon/> : undefined}>
+                    {isLoading ? 'Entrando...' : 'Entrar'}
                 </Button>
 
                 <Button variant="text" className={styles.forgotPassword} onClick={onForgotPasswordClick}>

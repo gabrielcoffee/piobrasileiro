@@ -26,6 +26,7 @@
     gap: 1rem;
     margin: auto;
     overflow-y: auto;
+    overflow-x: hidden; /* prevent horizontal jiggle */
 }
 
 /* Mobile top header for bottom modal */
@@ -57,6 +58,10 @@
         border: 1px solid var(--color-border);
         animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         overflow-y: auto;
+        overflow-x: hidden; /* lock horizontal scroll */
+        touch-action: pan-y; /* allow only vertical panning */
+        overscroll-behavior-x: contain; /* block horizontal overscroll glow/bounce */
+        -webkit-overflow-scrolling: touch;
     }
 
     .modalBottomMobile .mobileTopHeader {

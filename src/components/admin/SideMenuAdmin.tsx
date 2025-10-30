@@ -38,11 +38,14 @@ export function SideMenuAdmin({ isOpen, onClose }: SideMenuProps) {
     ];
 
     const toggleSubmenu = (menuId: string) => {
-        setExpandedMenus(prev => 
-            prev.includes(menuId) 
-                ? prev.filter(id => id !== menuId)
-                : [...prev, menuId]
-        );
+        setExpandedMenus(prev => {
+            // If clicking the already open menu, collapse it
+            if (prev.includes(menuId)) {
+                return prev.filter(id => id !== menuId);
+            }
+            // Otherwise, open only this submenu and collapse others
+            return [menuId];
+        });
     };
 
     const isSubmenuExpanded = (menuId: string) => expandedMenus.includes(menuId);
@@ -58,7 +61,7 @@ export function SideMenuAdmin({ isOpen, onClose }: SideMenuProps) {
             return (
                 <div key={item.id} className={styles.menuItemContainer}>
                     <button
-                        className={`${styles.menuItem} ${styles.dropdownButton} ${isActive ? styles.active : ''}`}
+                        className={`${styles.menuItem} ${styles.dropdownButton} ${isActive ? styles.active : ''} ${isExpanded ? styles.expanded : ''}`}
                         onClick={() => toggleSubmenu(item.id)}
                     >
                         <IconComponent size={24}/>
@@ -66,20 +69,22 @@ export function SideMenuAdmin({ isOpen, onClose }: SideMenuProps) {
                         {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                     </button>
                     
-                    {isExpanded && (
-                        <div className={styles.submenu}>
-                            {item.submenu.map((subItem: any) => (
-                                <Link
-                                    key={subItem.id}
-                                    href={subItem.href}
-                                    className={`${styles.submenuItem} ${subItem.href === pathname ? styles.active : ''}`}
-                                    onClick={onClose}
-                                >
-                                    <span className={styles.submenuLabel}>{subItem.label}</span>
-                                </Link>
-                            ))}
-                        </div>
-                    )}
+                    <div 
+                        className={`${styles.submenu} ${isExpanded ? styles.submenuOpen : styles.submenuClosed}`}
+                        aria-hidden={!isExpanded}
+                    >
+                        {item.submenu.map((subItem: any) => (
+                            <Link
+                                key={subItem.id}
+                                href={subItem.href}
+                                className={`${styles.submenuItem} ${subItem.href === pathname ? styles.active : ''}`}
+                                onClick={onClose}
+                                tabIndex={isExpanded ? 0 : -1}
+                            >
+                                <span className={styles.submenuLabel}>{subItem.label}</span>
+                            </Link>
+                        ))}
+                    </div>
                 </div>
             );
         }

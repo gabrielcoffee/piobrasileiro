@@ -20,6 +20,7 @@
 
 .weekLeftArrow {
     background-color: var(--color-white);
+    color: var(--color-text);
     border-radius: 5px;
     padding: 0.5rem;
     cursor: pointer;
@@ -27,6 +28,7 @@
 
 .weekRightArrow {
     background-color: var(--color-white);
+    color: var(--color-text);
     border-radius: 5px;
     padding: 0.5rem;
     cursor: pointer;

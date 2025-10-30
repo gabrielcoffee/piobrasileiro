@@ -40,11 +40,12 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
 
     const toggleSubmenu = (menuId: string) => {
         if (isCollapsed) return; // Don't toggle submenu when collapsed
-        setExpandedMenus(prev => 
-            prev.includes(menuId) 
-                ? prev.filter(id => id !== menuId)
-                : [...prev, menuId]
-        );
+        setExpandedMenus(prev => {
+            if (prev.includes(menuId)) {
+                return prev.filter(id => id !== menuId);
+            }
+            return [menuId];
+        });
     };
 
     const isSubmenuExpanded = (menuId: string) => expandedMenus.includes(menuId);
@@ -104,7 +105,7 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
             return (
                 <div key={item.id} className={styles.menuItemContainer}>
                     <button
-                        className={`${styles.menuItem} ${isActive && !isExpanded ? styles.activeTopMenu : ''}`}
+                        className={`${styles.menuItem} ${isActive && !isExpanded ? styles.activeTopMenu : ''} ${isActive && isExpanded ? styles.activeTopMenuOpen : ''}`}
                         onClick={() => handleMenuClick(item)}
                     >
                         <IconComponent size={24}/>
@@ -116,13 +117,17 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
                         )}
                     </button>
                     
-                    {!isCollapsed && isExpanded && (
-                        <div className={styles.submenu}>
+                    {!isCollapsed && (
+                        <div 
+                            className={`${styles.submenu} ${isExpanded ? styles.submenuOpen : styles.submenuClosed}`}
+                            aria-hidden={!isExpanded}
+                        >
                             {item.submenu.map((subItem: any) => (
                                 <Link
                                     key={subItem.id}
                                     href={subItem.href}
                                     className={`${styles.submenuItem} ${subItem.href === pathname ? styles.active : ''}`}
+                                    tabIndex={isExpanded ? 0 : -1}
                                 >
                                     <span className={styles.submenuLabel}>
                                         <span>{subItem.id !== 'solicitacoes' && subItem.label}</span>

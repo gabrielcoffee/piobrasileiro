@@ -540,10 +540,6 @@ export default function ListaDeRefeicoesPage() {
         setIsMobile(window.innerWidth < 768);
     }, [window.innerWidth]);
 
-    useEffect(() => {
-        fetchRefeicoes(selectedWeekStart, selectedWeekEnd);
-    }, [])
-
         return (
             <>
 

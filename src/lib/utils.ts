@@ -155,9 +155,9 @@ export function convertBufferToBase64(buffer: Buffer) {
 
 
 async function checkFileSize(imageFile: File): Promise<boolean> {
-    const maxSizeInBytes = 10 * 1024 * 1024; // 10MB in bytes
+    const maxSizeInBytes = 20 * 1024 * 1024; // 20MB in bytes
     if (imageFile.size > maxSizeInBytes) {
-        console.error('File size exceeds 10MB limit');
+        console.error('File size exceeds 20MB limit');
         return false;
     }
     return true;
