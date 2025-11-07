@@ -1,8 +1,9 @@
 .mobileContainer {
     margin-left: 24px;
     margin-right: 24px;
-    padding-bottom: 6rem;
+    padding-bottom: calc(6rem + env(safe-area-inset-bottom, 0px));
     min-height: 100vh;
+    min-height: 100dvh; /* Dynamic viewport height for Safari */
 }
 
 .desktopContainer {
