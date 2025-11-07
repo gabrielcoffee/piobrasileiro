@@ -138,6 +138,7 @@ export default function PerfilPage() {
             } else {
                 if (result.status === 401 && result.error === 'Wrong old password') {
                     setPasswordError('Senha atual incorreta');
+                    showToast('Senha atual está incorreta', 'error');
                 } else {
                     console.error('Erro ao alterar senha:', result.error);
                     showToast('Erro ao atualizar senha', 'error');

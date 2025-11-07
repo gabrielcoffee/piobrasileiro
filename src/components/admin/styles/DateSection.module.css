@@ -69,6 +69,27 @@
     display: none;
 }
 
+.mobileHeader {
+    display: none;
+}
+
+.mobileCloseButton {
+    background: none;
+    border: none;
+    color: var(--color-text);
+    cursor: pointer;
+    padding: 0.2rem;
+    padding-bottom: 0.4rem;
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.mobileCloseButton:hover {
+    background-color: var(--color-slate-100);
+}
+
 /* MOBILE */
 @media (max-width: 768px) {
     .container {
@@ -101,7 +122,8 @@
         margin-right: 0;
         position: fixed;
         left: 50%;
-        transform: translateX(-50%);
+        top: 50%;
+        transform: translate(-50%, -50%);
     }
 
     .monthsContainerDesktop {
@@ -110,6 +132,14 @@
 
     .monthsContainerMobile {
         display: flex;
+        flex-direction: column;
+    }
+
+    .mobileHeader {
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+        margin-bottom: 0.5rem;
     }
 
     .footerDesktop {

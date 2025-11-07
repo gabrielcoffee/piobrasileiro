@@ -43,20 +43,20 @@ export default function PerfilAdminPage() {
     const [numberRequirement, setNumberRequirement] = useState<boolean>(false);
     const [nameRequirement, setNameRequirement] = useState<boolean>(false);
     const [emailRequirement, setEmailRequirement] = useState<boolean>(false);
-    const [passwordRequirements, setPasswordRequirements] = useState<boolean>(false);
     const [passwordChanged, setPasswordChanged] = useState<boolean>(false);
 
     const [dataNascError, setDataNascError] = useState<boolean>(false);
+    const [passwordError, setPasswordError] = useState<string>('');
 
     useEffect(() => {
         fetchUsuario();
     }, []);
 
     useEffect(() => {
-        if (newPassword.length < 8) {
-            setLengthRequirement(false);
-        } else {
+        if (newPassword.length >= 8 && newPassword.length <= 64) {
             setLengthRequirement(true);
+        } else {
+            setLengthRequirement(false);
         }
         
         if (!newPassword.match(/[A-Z]/)) {
@@ -77,7 +77,6 @@ export default function PerfilAdminPage() {
             setNumberRequirement(true);
         }   
 
-
         if (!usuario) {
             return;
         }
@@ -92,12 +91,6 @@ export default function PerfilAdminPage() {
             setEmailRequirement(false);
         } else {
             setEmailRequirement(true);
-        }
-
-        if (lengthRequirement && uppercaseRequirement && lowercaseRequirement && numberRequirement && nameRequirement && emailRequirement) {
-            setPasswordRequirements(true);
-        } else {
-            setPasswordRequirements(false);
         }
     }, [newPassword])
 
@@ -131,8 +124,8 @@ export default function PerfilAdminPage() {
     const handlePasswordChange = async () => {
         if (!currentPassword || !newPassword) return;
 
-        if (!passwordRequirements) {
-            console.log('Senha válida');
+        if (!(lengthRequirement && uppercaseRequirement && lowercaseRequirement && numberRequirement && nameRequirement && emailRequirement)) {
+            console.log('Senha inválida');
             return;
         }
 
@@ -147,12 +140,18 @@ export default function PerfilAdminPage() {
                 setPasswordChanged(true);
                 setCurrentPassword('');
                 setNewPassword('');
-                showToast('Senha modificada com sucesso', 'success');
+                showToast('Senha atualizada com sucesso!', 'success');
             } else {
-                console.error('Erro ao alterar senha:', result.error);
-                showToast('Ops! Algo deu errado. Tente novamente.', 'error');
+                if (result.status === 401 && result.error === 'Wrong old password') {
+                    setPasswordError('Senha atual incorreta');
+                    showToast('Senha atual está incorreta', 'error');
+                } else {
+                    console.error('Erro ao alterar senha:', result.error);
+                    showToast('Erro ao atualizar senha', 'error');
+                }
             }
         } catch (error) {
+            showToast('Ops! Algo deu errado. Tente novamente.', 'error');
             console.error('Erro ao alterar senha:', error);
         }
     };
@@ -344,9 +343,13 @@ export default function PerfilAdminPage() {
                             <InputPassword
                                 label="Senha atual"
                                 value={currentPassword}
-                                onChange={(e) => setCurrentPassword(e.target.value)}
+                                onChange={(e) => {
+                                    setCurrentPassword(e.target.value);
+                                    if (passwordError) setPasswordError('');
+                                }}
                                 placeholder="Insira sua senha atual"
                             />
+                            {passwordError && <span className={styles.passwordErrorMessage}>{passwordError}</span>}
                         </div>
 
                         <div className={styles.rightPswdSection}>
@@ -371,7 +374,7 @@ export default function PerfilAdminPage() {
                             <div className={styles.passwordSaveButton}>
                                 <Button
                                     iconLeft={<Check size={20} />}
-                                    available={passwordRequirements}
+                                    available={lengthRequirement && uppercaseRequirement && lowercaseRequirement && numberRequirement && nameRequirement && emailRequirement}
                                     onClick={handlePasswordChange}
                                 >
                                     Salvar senha

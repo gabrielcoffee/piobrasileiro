@@ -125,12 +125,12 @@
 .submenu {
     margin-left: 1rem;
     overflow: hidden;
-    transition: max-height 220ms ease, opacity 180ms ease, transform 220ms ease;
+    transition: max-height 150ms ease-out, opacity 120ms ease-out, transform 150ms ease-out;
     transform-origin: top;
 }
 
 .submenuOpen {
-    max-height: 500px;
+    max-height: 800px;
     opacity: 1;
     transform: translateY(0);
 }
@@ -138,8 +138,9 @@
 .submenuClosed {
     max-height: 0;
     opacity: 0;
-    transform: translateY(-6px);
+    transform: translateY(-4px);
     pointer-events: none;
+    display: block;
 }
 
 .submenuItem {

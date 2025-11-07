@@ -73,18 +73,18 @@ export function SideMenuAdmin({ isOpen, onClose }: SideMenuProps) {
                         className={`${styles.submenu} ${isExpanded ? styles.submenuOpen : styles.submenuClosed}`}
                         aria-hidden={!isExpanded}
                     >
-                        {item.submenu.map((subItem: any) => (
-                            <Link
-                                key={subItem.id}
-                                href={subItem.href}
-                                className={`${styles.submenuItem} ${subItem.href === pathname ? styles.active : ''}`}
-                                onClick={onClose}
+                            {item.submenu.map((subItem: any) => (
+                                <Link
+                                    key={subItem.id}
+                                    href={subItem.href}
+                                    className={`${styles.submenuItem} ${subItem.href === pathname ? styles.active : ''}`}
+                                    onClick={onClose}
                                 tabIndex={isExpanded ? 0 : -1}
-                            >
-                                <span className={styles.submenuLabel}>{subItem.label}</span>
-                            </Link>
-                        ))}
-                    </div>
+                                >
+                                    <span className={styles.submenuLabel}>{subItem.label}</span>
+                                </Link>
+                            ))}
+                        </div>
                 </div>
             );
         }

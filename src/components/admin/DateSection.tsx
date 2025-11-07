@@ -1,4 +1,4 @@
-import { Calendar, Check, ChevronLeft, ChevronRight, RotateCcw } from 'lucide-react';
+import { Calendar, Check, ChevronLeft, ChevronRight, RotateCcw, X } from 'lucide-react';
 import { Button } from '../ui/Button';
 import styles from './styles/DateSection.module.css';
 import { useState, useEffect } from 'react';
@@ -335,6 +335,14 @@ export function DateSection({ selectedWeekStart, selectedWeekEnd, onWeekChange }
 
                     {/* Mobile: Single month */}
                     <div className={styles.monthsContainerMobile}>
+                        <div className={styles.mobileHeader}>
+                            <button 
+                                className={styles.mobileCloseButton}
+                                onClick={() => setShowMiniCalendar(false)}
+                            >
+                                <X size={20} />
+                            </button>
+                        </div>
                         <div className={styles.monthBlock}>
                             <div className={styles.header}>
                                 <button className={styles.leftMonthArrow} onClick={goToPreviousMonth}>
