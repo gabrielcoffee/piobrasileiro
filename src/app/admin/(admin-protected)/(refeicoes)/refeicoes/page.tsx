@@ -479,7 +479,7 @@ export default function ListaDeRefeicoesPage() {
         return (
             <div className={styles.acoes}>
                 <Tooltip text="Editar">
-                    <PencilLine className={styles.actionButton} size={20} onClick={() => editar(meal)} style={{color: 'var(--color-primary)', cursor: 'pointer'}} />
+                    <PencilLine className={styles.actionButton} size={20} onClick={() => editar(meal)} />
                 </Tooltip>
             </div>
         )
