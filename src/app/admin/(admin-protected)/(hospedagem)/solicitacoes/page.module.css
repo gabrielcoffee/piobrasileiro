@@ -25,6 +25,34 @@
     }
 }
 
+@media (max-width: 1300px) {
+    .acoes {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+}
+
+@media (max-width: 1200px) {
+    .acoesText {
+        display: none;
+    }
+    
+    .acoes > button {
+        padding: 0.5rem;
+        width: auto;
+        min-width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .acoes > button > div {
+        margin: 0;
+    }
+}
+
 .seenIcon {
     width: 10px;
     height: 10px;

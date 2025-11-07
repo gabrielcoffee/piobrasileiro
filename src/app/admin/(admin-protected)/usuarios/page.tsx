@@ -281,7 +281,11 @@ export default function UsuariosPage() {
                         tipo_usuario: u.tipo_usuario,
                         funcao: u.funcao,
                         data_nasc: u.data_nasc,
-                        email: u.email,
+                        email: (
+                            <span className={styles.emailWrapper} translate="no">
+                                {u.email}
+                            </span>
+                        ),
                         acao: renderActionCell(u.active, u.user_id),
                     }))}
                     itemsPerPage={8}
@@ -368,7 +372,11 @@ export default function UsuariosPage() {
                         tipo_usuario: u.tipo_usuario,
                         funcao: u.funcao,
                         data_nasc: u.data_nasc,
-                        email: u.email,
+                        email: (
+                            <span className={styles.emailWrapper} translate="no">
+                                {u.email}
+                            </span>
+                        ),
                         acao: renderActionCell(u.active, u.user_id),
                     }))}
                     itemsPerPage={8}

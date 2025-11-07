@@ -72,6 +72,14 @@
     color: var(--color-primary);
 }
 
+@media (max-width: 1200px) {
+    .acoes {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+}
+
 .occupied {
     color: var(--color-error);
     font-weight: 500;

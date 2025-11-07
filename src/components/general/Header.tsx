@@ -79,7 +79,7 @@ export function Header({ setSideBarExpanded = (expanded: boolean) => void 0}: He
 
     useEffect(() => {
         const checkScreenSize = () => {
-            setIsDesktop(window.innerWidth >= 1024);
+            setIsDesktop(window.innerWidth >= 768);
         };
         
         checkScreenSize();

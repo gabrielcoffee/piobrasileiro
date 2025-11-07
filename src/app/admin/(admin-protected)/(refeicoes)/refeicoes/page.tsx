@@ -571,8 +571,14 @@ export default function ListaDeRefeicoesPage() {
                                     <span>almoços</span>
                                 </div>
                                 <div className={styles.almocoOpcoes}>
-                                    <span><strong>{dayInfo.totalAlmocoColegio} No Colégio PIO</strong></span>
-                                    <span><strong>{dayInfo.totalAlmocoLevar}</strong> Para Levar</span>
+                                    <span>
+                                        <strong className={styles.fullText}>{dayInfo.totalAlmocoColegio} No Colégio PIO</strong>
+                                        <span className={styles.shortText}><strong>{dayInfo.totalAlmocoColegio} Colégio</strong></span>
+                                    </span>
+                                    <span>
+                                        <strong className={styles.fullText}>{dayInfo.totalAlmocoLevar}</strong> <span className={styles.fullText}>Para Levar</span>
+                                        <span className={styles.shortText}><strong>{dayInfo.totalAlmocoLevar}</strong> Levar</span>
+                                    </span>
                                 </div>
                                 <div className={styles.totalJanta}>
                                     <span className={styles.bigNum}>{dayInfo.totalJanta}</span>
@@ -655,8 +661,12 @@ export default function ListaDeRefeicoesPage() {
                                 <span>almoços</span>
                             </div>
                             <div className={styles.almocoOpcoes}>
-                                <span><strong>{dayInfo.totalAlmocoColegio} No Colégio PIO</strong></span>
-                                <span><strong>{dayInfo.totalAlmocoLevar}</strong> Para Levar</span>
+                                <span>
+                                    <strong>{dayInfo.totalAlmocoColegio} No Colégio PIO</strong>
+                                </span>
+                                <span>
+                                    <strong>{dayInfo.totalAlmocoLevar}</strong> Para Levar
+                                </span>
                             </div>
                             <div className={styles.totalJanta}>
                                 <span className={styles.bigNum}>{dayInfo.totalJanta}</span>
