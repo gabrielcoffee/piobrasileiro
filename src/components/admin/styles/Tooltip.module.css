@@ -1,0 +1,53 @@
+.tooltipWrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tooltip {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: white;
+    padding: 0.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    white-space: nowrap;
+    z-index: 1000;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-top: 0.5rem;
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 150ms ease-out, visibility 0ms ease-out 150ms;
+}
+
+.tooltipFixed {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    transform: none;
+    margin-top: 0;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0ms ease-out, visibility 0ms ease-out;
+    z-index: 10000;
+}
+
+.tooltipHiding {
+    opacity: 0;
+    transition: opacity 150ms ease-out, visibility 0ms ease-out 150ms;
+}
+
+.icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+

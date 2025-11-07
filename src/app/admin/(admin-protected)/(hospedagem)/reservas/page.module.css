@@ -13,6 +13,14 @@
 }
 
 
+.actionButton {
+    cursor: pointer;
+}
+
+.actionButton:hover {
+    color: #0F2E0E;
+}
+
 .acoes {
     display: flex;
     gap: 1rem;

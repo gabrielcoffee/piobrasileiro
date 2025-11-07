@@ -13,6 +13,7 @@ import AddHospedeModal from '@/components/admin/AddHospedeModal';
 import MobileTitle from '@/components/admin/MobileTitle';
 import SaveFooterAdmin from '@/components/admin/SaveFooterAdmin';
 import { useToast } from '@/contexts/ToastContext';
+import Tooltip from '@/components/admin/Tooltip';
 
 export default function HospedesPage() {
 
@@ -104,8 +105,12 @@ export default function HospedesPage() {
     const acoes = (guest: any) => {
         return (
             <div className={styles.acoes}>
-                <PencilLine className={styles.actionButton} size={20} onClick={() => editar(guest)} style={{cursor: 'pointer'}} />
-                <Trash2 className={styles.actionButton} size={20} onClick={() => excluir(guest)} style={{cursor: 'pointer'}} />
+                <Tooltip text="Editar">
+                    <PencilLine className={styles.actionButton} size={20} onClick={() => editar(guest)} style={{cursor: 'pointer'}} />
+                </Tooltip>
+                <Tooltip text="Excluir" color="var(--color-error)" iconLeft={<Trash2 size={20} />}>
+                    <Trash2 className={styles.actionButton} size={20} onClick={() => excluir(guest)} style={{cursor: 'pointer'}} />
+                </Tooltip>
             </div>
         );
     }

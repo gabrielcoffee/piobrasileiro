@@ -20,6 +20,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import MobileTitle from '@/components/admin/MobileTitle';
 import SaveFooterAdmin from '@/components/admin/SaveFooterAdmin';
 import { useToast } from '@/contexts/ToastContext';
+import Tooltip from '@/components/admin/Tooltip';
 
 export default function ListaDeRefeicoesPage() {
 
@@ -477,7 +478,9 @@ export default function ListaDeRefeicoesPage() {
     const acoes = (meal: any) => {
         return (
             <div className={styles.acoes}>
-                <PencilLine className={styles.actionButton} size={20} onClick={() => editar(meal)} style={{color: 'var(--color-primary)', cursor: 'pointer'}} />
+                <Tooltip text="Editar">
+                    <PencilLine className={styles.actionButton} size={20} onClick={() => editar(meal)} style={{color: 'var(--color-primary)', cursor: 'pointer'}} />
+                </Tooltip>
             </div>
         )
     }

@@ -5,6 +5,14 @@
     margin-bottom: 1rem;
 }
 
+.actionButton {
+    cursor: pointer;
+}
+
+.actionButton:hover {
+    color: #0F2E0E;
+}
+
 @media (max-width: 768px) {
     .actionButton {
         background-color: var(--color-slate-100);

@@ -20,6 +20,7 @@ import { InputText } from '@/components/ui/InputText';
 import { useToast } from '@/contexts/ToastContext';
 import MobileTitle from '@/components/admin/MobileTitle';
 import SaveFooterAdmin from '@/components/admin/SaveFooterAdmin';
+import Tooltip from '@/components/admin/Tooltip';
 
 export default function GestaoDeReservasPage() {
 
@@ -206,8 +207,12 @@ export default function GestaoDeReservasPage() {
     const acoes = (reserva: any) => {
         return (
             <div className={styles.acoes}>
-                <PencilLine size={20} className={styles.actionButton} onClick={() => editar(reserva)} style={{cursor: 'pointer'}} />
-                <Trash2 size={20} className={styles.actionButton} onClick={() => excluir(reserva)} style={{cursor: 'pointer'}} />
+                <Tooltip text="Editar">
+                    <PencilLine size={20} className={styles.actionButton} onClick={() => editar(reserva)} style={{cursor: 'pointer'}} />
+                </Tooltip>
+                <Tooltip text="Excluir" color="var(--color-error)" iconLeft={<Trash2 size={20} />}>
+                    <Trash2 size={20} className={styles.actionButton} onClick={() => excluir(reserva)} style={{cursor: 'pointer'}} />
+                </Tooltip>
             </div>
         );
     }

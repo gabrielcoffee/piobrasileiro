@@ -16,6 +16,7 @@ import { DropdownInput } from "@/components/ui/DropdownInput";
 import MobileTitle from "@/components/admin/MobileTitle";
 import SaveFooterAdmin from "@/components/admin/SaveFooterAdmin";
 import { useToast } from "@/contexts/ToastContext";
+import Tooltip from "@/components/admin/Tooltip";
 
 export default function UsuariosPage() {
 
@@ -26,7 +27,6 @@ export default function UsuariosPage() {
     const [canShowExcluirButtons, setCanShowExcluirButtons] = useState(false);
     const [selectedUsers, setSelectedUsers] = useState<any[]>([]);
     const [searchText, setSearchText] = useState<string>('');
-    const [showExcluirInfoId, setShowExcluirInfoId] = useState<string | null>(null);
     const [showSearchInput, setShowSearchInput] = useState<boolean>(true);
 
     const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
@@ -35,35 +35,12 @@ export default function UsuariosPage() {
 
     const router = useRouter();
 
-    // Close excluir popover on outside click
-    useEffect(() => {
-        if (!showExcluirInfoId) return;
-
-        const handleDocumentClick = (event: MouseEvent) => {
-            const target = event.target as Node;
-
-            const popovers = Array.from(document.querySelectorAll(`.${styles.excluirInfo}`));
-            const actionCells = Array.from(document.querySelectorAll(`.${styles.acoes}`));
-
-            const clickedInsidePopover = popovers.some((el) => el.contains(target));
-            const clickedInsideActions = actionCells.some((el) => el.contains(target));
-
-            if (!clickedInsidePopover && !clickedInsideActions) {
-                setShowExcluirInfoId(null);
-            }
-        };
-
-        document.addEventListener('mousedown', handleDocumentClick);
-        return () => {
-            document.removeEventListener('mousedown', handleDocumentClick);
-        };
-    }, [showExcluirInfoId]);
 
     // Render helpers
     const renderActionCell = (active: boolean, id: string) => (
-        <>
-            <div className={styles.acoes}>
-                {active ? (
+        <div className={styles.acoes}>
+            {active ? (
+                <Tooltip text="Desativar">
                     <PowerOff
                         size={20}
                         className={styles.actionButton}
@@ -72,30 +49,33 @@ export default function UsuariosPage() {
                             setIsInativarModalOpen(true);
                         }}
                     />
-                ) : (
+                </Tooltip>
+            ) : (
+                <Tooltip text="Ativar">
                     <Power
                         size={20}
                         className={styles.actionButton}
                         onClick={() => toggleActiveUser(id)}
                     />
-                )}
-
-                <PencilLine size={20} onClick={() => editar(id)} className={styles.actionButton} />
-                <EllipsisVertical size={20} onClick={() => setShowExcluirInfoId(id)} className={styles.actionButton} />
-            </div>
-
-            {showExcluirInfoId === id && (
-                <div id={id} className={styles.excluirInfo} onClick={() => excluir(id)} style={{ cursor: 'pointer' }}>
-                    <Trash2 size={20} style={{ color: 'var(--color-error)' }} />
-                    <span>Excluir</span>
-                </div>
+                </Tooltip>
             )}
-        </>
+
+            <Tooltip text="Editar">
+                <PencilLine size={20} onClick={() => editar(id)} className={styles.actionButton} />
+            </Tooltip>
+
+            <Tooltip text="Excluir" color="var(--color-error)" iconLeft={<Trash2 size={20} />}>
+                <EllipsisVertical 
+                    size={20} 
+                    onClick={() => excluir(id)} 
+                    className={styles.actionButton} 
+                />
+            </Tooltip>
+        </div>
     );
 
     const excluir = (id: string) => {
         setSelectedUsers([{user_id: id}]);
-        setShowExcluirInfoId(null);
         setIsExcluirModalOpen(true);
     }
 

@@ -19,6 +19,7 @@ import { SimpleDateSelect } from '@/components/admin/SimpleDateSelect';
 import MobileTitle from '@/components/admin/MobileTitle';
 import SaveFooterAdmin from '@/components/admin/SaveFooterAdmin';
 import { useToast } from '@/contexts/ToastContext';
+import Tooltip from '@/components/admin/Tooltip';
 
 export default function QuartosPage() {
 
@@ -114,24 +115,30 @@ export default function QuartosPage() {
         return (
             <div className={styles.acoes}>
                 {room.active ? (
-                    <PowerOff 
-                        className={styles.actionButton}
-                        size={20} 
-                        style={{color: 'var(--color-error)', cursor: 'pointer'}} 
-                        onClick={() => {
-                            setSelectedRoomForDeactivation(room);
-                            setShowDeactivateModal(true);
-                        }} 
-                    />
+                    <Tooltip text="Desativar">
+                        <PowerOff 
+                            className={styles.actionButton}
+                            size={20} 
+                            style={{color: 'var(--color-error)', cursor: 'pointer'}} 
+                            onClick={() => {
+                                setSelectedRoomForDeactivation(room);
+                                setShowDeactivateModal(true);
+                            }} 
+                        />
+                    </Tooltip>
                 ) : (
-                    <Power 
-                        className={styles.actionButton}
-                        size={20} 
-                        style={{cursor: 'pointer'}} 
-                        onClick={() => toggleActiveRoom(room.id)} 
-                    />
+                    <Tooltip text="Ativar">
+                        <Power 
+                            className={styles.actionButton}
+                            size={20} 
+                            style={{cursor: 'pointer'}} 
+                            onClick={() => toggleActiveRoom(room.id)} 
+                        />
+                    </Tooltip>
                 )}
-                <PencilLine className={styles.actionButton} size={20} onClick={() => editar(room)} style={{cursor: 'pointer'}} />
+                <Tooltip text="Editar">
+                    <PencilLine className={styles.actionButton} size={20} onClick={() => editar(room)} style={{cursor: 'pointer'}} />
+                </Tooltip>
             </div>
         );
     }

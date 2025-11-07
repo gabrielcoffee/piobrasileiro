@@ -157,6 +157,10 @@
   font-weight: 600;
 }
 
+.mobileHeader {
+    display: none;
+}
+
 @media (max-width: 768px) {
     .miniCalendar {
         width: 86%;
