@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styles from './page.module.css';
 import Card from '@/components/desktop/Card';
 import CardHeader from '@/components/desktop/CardHeader';
@@ -25,8 +25,8 @@ export default function ValidacaoReservasPage() {
     const router = useRouter();
     const { showToast } = useToast();
 
-    const [selectedWeekStart, setSelectedWeekStart] = useState<Date>(new Date());
-    const [selectedWeekEnd, setSelectedWeekEnd] = useState<Date>(new Date());
+    const [selectedWeekStart, setSelectedWeekStart] = useState<Date>(() => getCurrentWeekInfo().monday);
+    const [selectedWeekEnd, setSelectedWeekEnd] = useState<Date>(() => getCurrentWeekInfo().sunday);
     const [preReservas, setPreReservas] = useState<any[]>([]);
     const [isMobile, setIsMobile] = useState<boolean>(false);
 
@@ -49,15 +49,19 @@ export default function ValidacaoReservasPage() {
 
     const acoes = (pr: any) => (
         <div className={styles.acoes}>
-            <Button className={styles.actionButton} variant="full" iconLeft={<Check size={18} />} onClick={() => validar(pr.id)}>Validar</Button>
+            <Button className={styles.actionButton} variant="full" iconLeft={<Check size={18} />} onClick={() => validar(pr.id)}>Avaliar Validação</Button>
             <Tooltip text="Excluir" color="var(--color-error)" iconLeft={<Trash2 size={20} />}>
                 <Trash2 className={styles.actionButton} size={20} style={{ cursor: 'pointer' }} onClick={() => excluir(pr.id)} />
             </Tooltip>
         </div>
     );
 
+    const fetchSeq = useRef(0);
+
     const fetchPreReservas = async (start: Date, end: Date) => {
+        const seq = ++fetchSeq.current;
         const result = await queryApi('GET', `/admin/pre-reservas?from=${ymd(start)}&to=${ymd(end)}`);
+        if (seq !== fetchSeq.current) return; // resposta obsoleta, ignora
         if (result.success) {
             const rows = (result.data || []).map((pr: any) => ({
                 ...pr,
@@ -87,9 +91,7 @@ export default function ValidacaoReservasPage() {
 
     useEffect(() => {
         setIsMobile(window.innerWidth < 768);
-        const w = getCurrentWeekInfo();
-        setSelectedWeekStart(w.monday);
-        setSelectedWeekEnd(w.sunday);
+        // Semana já inicializada no useState (sem fetch-fantasma / race).
     }, []);
 
     useEffect(() => {
