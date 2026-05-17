@@ -12,6 +12,19 @@
 
 .dateRow {
     margin: 1rem 0;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.dateRow > * {
+    max-width: 33%;
+    width: 100%;
+}
+
+@media (max-width: 768px) {
+    .dateRow > * {
+        max-width: 100%;
+    }
 }
 
 .acoes {
