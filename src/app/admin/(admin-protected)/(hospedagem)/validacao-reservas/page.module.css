@@ -1,0 +1,32 @@
+.container {
+    padding: 24px;
+}
+
+.mobileContainer {
+    margin-left: 24px;
+    margin-right: 24px;
+    padding-bottom: calc(6rem + env(safe-area-inset-bottom, 0px));
+    min-height: 100vh;
+    min-height: 100dvh;
+}
+
+.dateRow {
+    margin: 1rem 0;
+}
+
+.acoes {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.actionButton {
+    cursor: pointer;
+}
+
+@media (max-width: 1200px) {
+    .acoes {
+        gap: 0.5rem;
+    }
+}

@@ -1,0 +1,141 @@
+.backLink {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+.banner {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background-color: #FEF3C7;
+    color: #92400E;
+    border: 1px solid #FAD24F;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin: 1rem 0;
+    font-weight: 500;
+}
+
+.profileCard {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.Data {
+    color: var(--color-primary);
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-top: 1rem;
+}
+
+.roGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem 3rem;
+}
+
+.roField {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.roLabel {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text);
+}
+
+.roValue {
+    font-size: 1rem;
+    color: var(--color-text);
+}
+
+.hospedesList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.hospedeRow {
+    display: flex;
+    align-items: flex-end;
+    gap: 1rem;
+}
+
+.hospedeRow > div:first-child {
+    flex: 3;
+}
+
+.hospedeRow > div:nth-child(2) {
+    flex: 1;
+}
+
+.removeHospede {
+    cursor: pointer;
+    color: var(--color-error);
+    margin-bottom: 0.75rem;
+}
+
+.userDataSection {
+    display: flex;
+    align-items: flex-start;
+    gap: 3rem;
+    margin-top: 1rem;
+}
+
+.leftDataSection,
+.rightDataSection {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.mealTitle {
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.userDataSaveButton {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+    width: 220px;
+    margin-left: auto;
+}
+
+@media (max-width: 768px) {
+    .profileCard {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        background-color: var(--color-white);
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+    }
+    .roGrid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .userDataSection {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    .leftDataSection,
+    .rightDataSection {
+        flex: none;
+        width: 100%;
+    }
+    .userDataSaveButton {
+        width: 100%;
+        margin-left: 0;
+    }
+    .hospedeRow {
+        flex-wrap: wrap;
+    }
+    .backLink {
+        font-size: 1.25rem;
+    }
+}

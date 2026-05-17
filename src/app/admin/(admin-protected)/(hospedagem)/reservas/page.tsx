@@ -35,6 +35,7 @@ export default function GestaoDeReservasPage() {
     const [roomOptions, setRoomOptions] = useState<any[]>([]);
 
     const [showNewBookingModal, setShowNewBookingModal] = useState<boolean>(false);
+    const [showChoiceModal, setShowChoiceModal] = useState<boolean>(false);
     const [showEditBookingModal, setShowEditBookingModal] = useState<boolean>(false);
     const [showDeleteBookingModal, setShowDeleteBookingModal] = useState<boolean>(false);
 
@@ -398,7 +399,7 @@ export default function GestaoDeReservasPage() {
                                     Filtrar
                                 </Button>
                             ),
-                            <Button key="new_booking" variant="full" onClick={() => {setShowNewBookingModal(true); setSelectedBookingData(null);}} iconLeft={<Plus size={20} />}>Nova reserva</Button>
+                            <Button key="new_booking" variant="full" onClick={() => {setShowChoiceModal(true); setSelectedBookingData(null);}} iconLeft={<Plus size={20} />}>Nova reserva</Button>
                         ]}
                         dateSection={(
                             <DateSection
@@ -483,11 +484,25 @@ export default function GestaoDeReservasPage() {
                     itemsPerPage={6}
                 />
 
-                <SaveFooterAdmin buttonText="Nova reserva" executeFunction={() => {setShowNewBookingModal(true); setSelectedBookingData(null);}} />
+                <SaveFooterAdmin buttonText="Nova reserva" executeFunction={() => {setShowChoiceModal(true); setSelectedBookingData(null);}} />
             </div>
         )}
 
 
+
+        <Modal
+        title="Nova reserva"
+        subtitle="Selecione o tipo de reserva"
+        isOpen={showChoiceModal}
+        onClose={() => setShowChoiceModal(false)}
+        buttons={
+            <>
+                <Button variant="full" onClick={() => { setShowChoiceModal(false); setShowNewBookingModal(true); }}>Individual</Button>
+                <Button variant="full-white" onClick={() => { setShowChoiceModal(false); router.push('/admin/reservas/novo'); }}>Em grupo</Button>
+            </>
+        }
+        >
+        </Modal>
 
         <Modal
         comesFromBottomMobile={true}

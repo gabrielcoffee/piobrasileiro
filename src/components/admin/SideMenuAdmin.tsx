@@ -28,6 +28,7 @@ export function SideMenuAdmin({ isOpen, onClose }: SideMenuProps) {
         { id: 'hospedagem', label: 'Hospedagem', icon: Bed, 
             submenu: [
                 { id: "gestao_de_reserva", label: "Gestão de reservas", href: "/admin/reservas"},
+                { id: "validacao_de_reservas", label: "Validação de reservas", href: "/admin/validacao-reservas"},
                 { id: "solicitacoes", label: "Solicitações", href: "/admin/solicitacoes"},
                 { id: "hospedes", label: "Hóspedes", href: "/admin/hospedes"},
                 { id: "quartos", label: "Quartos", href: "/admin/quartos"}
