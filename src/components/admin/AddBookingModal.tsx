@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { InputText } from '../ui/InputText';
 import { InputTextBox } from '../ui/InputTextBox';
 import styles from './styles/AddGuestAdminModal.module.css';
-import { queryApi } from '@/lib/utils';
+import { queryApi, toYMD } from '@/lib/utils';
 import { InputTextSearch } from '../ui/InputTextSearch';
 import { SimpleDateSelect } from './SimpleDateSelect';
 import { Button } from '../ui/Button';
@@ -56,8 +56,8 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
     const [anfitriao, setAnfitriao] = useState('');
     const [hospede, setHospede] = useState('');
     const [quarto, setQuarto] = useState('');
-    const [dataChegada, setDataChegada] = useState(bookingData?.data_chegada || new Date().toISOString());
-    const [dataSaida, setDataSaida] = useState(bookingData?.data_saida || new Date().toISOString());
+    const [dataChegada, setDataChegada] = useState(bookingData?.data_chegada || toYMD(new Date()));
+    const [dataSaida, setDataSaida] = useState(bookingData?.data_saida || toYMD(new Date()));
     const [almoco, setAlmoco] = useState(false);
     const [janta, setJanta] = useState(false);
     const [observacoes, setObservacoes] = useState('');
@@ -224,13 +224,13 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
                         label="*Data de chegada"
                         cantBeBeforeToday={true}
                         selectedDate={dataChegada ? new Date(dataChegada.split('T')[0] + 'T00:00:00') : new Date()}
-                        onDateChange={(date) => setDataChegada(date?.toISOString())}
+                        onDateChange={(date) => setDataChegada(toYMD(date))}
                     />
                     <SimpleDateSelect
                         label="*Data de saída"
                         cantBeBeforeToday={true}
                         selectedDate={dataSaida ? new Date(dataSaida.split('T')[0] + 'T00:00:00') : new Date()}
-                        onDateChange={(date) => setDataSaida(date?.toISOString())}
+                        onDateChange={(date) => setDataSaida(toYMD(date))}
                     />
 
                     <InputTextSearch

@@ -131,6 +131,17 @@ export function getDateString(date: string): string {
     });
 }
 
+// Date -> "YYYY-MM-DD" usando componentes LOCAIS (sem UTC shift).
+// Use ao enviar datas p/ colunas DATE; nunca toISOString() (desloca o dia).
+// ex: toYMD(new Date(2026,5,1)) === "2026-06-01"
+export function toYMD(date: Date | null | undefined): string {
+    if (!date) return '';
+    const y = date.getFullYear();
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    return `${y}-${m}-${d}`;
+}
+
 export function getDateStringAndTime(date: any): string {
 
     const dateObject = new Date(date);

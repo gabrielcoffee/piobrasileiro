@@ -5,7 +5,7 @@ import { Check, SquareArrowLeft, Trash2, UserPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import styles from "../[id]/page.module.css";
 import Link from "next/link";
-import { queryApi } from "@/lib/utils";
+import { queryApi, toYMD } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { InputText } from "@/components/ui/InputText";
 import { InputTextBox } from "@/components/ui/InputTextBox";
@@ -25,8 +25,8 @@ export default function NovaReservaGrupoPage() {
     const [hospedes, setHospedes] = useState<{ nome: string; idade: string }[]>([{ nome: '', idade: '' }]);
     const [anfitriao, setAnfitriao] = useState('');
     const [quarto, setQuarto] = useState('');
-    const [dataChegada, setDataChegada] = useState<string>(new Date().toISOString());
-    const [dataSaida, setDataSaida] = useState<string>(new Date().toISOString());
+    const [dataChegada, setDataChegada] = useState<string>(toYMD(new Date()));
+    const [dataSaida, setDataSaida] = useState<string>(toYMD(new Date()));
     const [almoco, setAlmoco] = useState(false);
     const [janta, setJanta] = useState(false);
     const [cafe, setCafe] = useState(false);
@@ -122,13 +122,13 @@ export default function NovaReservaGrupoPage() {
                                 label="*Data de chegada"
                                 cantBeBeforeToday={true}
                                 selectedDate={dataChegada ? new Date(dataChegada.split('T')[0] + 'T00:00:00') : new Date()}
-                                onDateChange={(d: any) => setDataChegada(d?.toISOString())}
+                                onDateChange={(d: any) => setDataChegada(toYMD(d))}
                             />
                             <SimpleDateSelect
                                 label="*Data de saída"
                                 cantBeBeforeToday={true}
                                 selectedDate={dataSaida ? new Date(dataSaida.split('T')[0] + 'T00:00:00') : new Date()}
-                                onDateChange={(d: any) => setDataSaida(d?.toISOString())}
+                                onDateChange={(d: any) => setDataSaida(toYMD(d))}
                             />
                         </div>
                         <div className={styles.rightDataSection}>
