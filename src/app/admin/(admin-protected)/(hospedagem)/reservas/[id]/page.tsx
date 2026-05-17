@@ -9,6 +9,7 @@ import { queryApi, getDateString } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { InputText } from "@/components/ui/InputText";
 import { InputTextSearch } from "@/components/ui/InputTextSearch";
+import { DropdownInput } from "@/components/ui/DropdownInput";
 import { Button } from "@/components/ui/Button";
 import MealSection from "@/components/admin/MealSection";
 import { useToast } from "@/contexts/ToastContext";
@@ -38,6 +39,8 @@ export default function ReservaPage() {
     const [quarto, setQuarto] = useState('');
     const [almoco, setAlmoco] = useState(false);
     const [janta, setJanta] = useState(false);
+    const [cafe, setCafe] = useState(false);
+    const [formaPagamento, setFormaPagamento] = useState('');
     const [anfitriaoOptions, setAnfitriaoOptions] = useState<Option[]>([]);
     const [quartoOptions, setQuartoOptions] = useState<Option[]>([]);
     const [isSaving, setIsSaving] = useState(false);
@@ -54,6 +57,8 @@ export default function ReservaPage() {
                 nome: h.nome || '',
                 idade: h.idade != null ? String(h.idade) : '',
             })));
+            setCafe(['apenas_cafe', 'cafe_almoco', 'cafe_janta', 'cafe_almoco_janta'].includes(pr.refeicoes));
+            setFormaPagamento(pr.forma_pagamento || '');
         } else {
             console.log('Erro ao buscar pré-reserva', result.error);
         }
@@ -113,6 +118,8 @@ export default function ReservaPage() {
             anfitriao_id: anfitriao,
             almoco,
             janta,
+            cafe,
+            forma_pagamento: formaPagamento || null,
             hospedes: hospedesPayload,
         });
         setIsSaving(false);
@@ -219,6 +226,27 @@ export default function ReservaPage() {
                                 onAlmocoLevarChange={() => {}}
                                 onJantaColegioChange={setJanta}
                                 hasTakeoutOption={false}
+                            />
+
+                            <span className={styles.mealTitle}>Informações extras</span>
+                            <Button
+                                variant={cafe ? 'full' : 'full-white'}
+                                onClick={() => setCafe(v => !v)}
+                            >
+                                {cafe ? 'Com café da manhã' : 'Sem café da manhã'}
+                            </Button>
+                            <p style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', opacity: 0.6, margin: 0 }}>
+                                * Apenas para visualização
+                            </p>
+                            <DropdownInput
+                                label="Forma de pagamento"
+                                value={formaPagamento}
+                                onChange={(value) => setFormaPagamento(value)}
+                                options={[
+                                    { key: 'wise', value: 'Transferência via app Wise' },
+                                    { key: 'dinheiro', value: 'Dinheiro em espécie' },
+                                ]}
+                                placeholder="Selecione"
                             />
                         </div>
                     </div>

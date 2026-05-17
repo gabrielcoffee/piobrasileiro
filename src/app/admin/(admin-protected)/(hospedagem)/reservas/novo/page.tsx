@@ -8,7 +8,9 @@ import Link from "next/link";
 import { queryApi } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { InputText } from "@/components/ui/InputText";
+import { InputTextBox } from "@/components/ui/InputTextBox";
 import { InputTextSearch } from "@/components/ui/InputTextSearch";
+import { DropdownInput } from "@/components/ui/DropdownInput";
 import { SimpleDateSelect } from "@/components/admin/SimpleDateSelect";
 import { Button } from "@/components/ui/Button";
 import MealSection from "@/components/admin/MealSection";
@@ -27,6 +29,9 @@ export default function NovaReservaGrupoPage() {
     const [dataSaida, setDataSaida] = useState<string>(new Date().toISOString());
     const [almoco, setAlmoco] = useState(false);
     const [janta, setJanta] = useState(false);
+    const [cafe, setCafe] = useState(false);
+    const [formaPagamento, setFormaPagamento] = useState('');
+    const [observacoes, setObservacoes] = useState('');
     const [anfitriaoOptions, setAnfitriaoOptions] = useState<Option[]>([]);
     const [quartoOptions, setQuartoOptions] = useState<Option[]>([]);
     const [isSaving, setIsSaving] = useState(false);
@@ -68,6 +73,9 @@ export default function NovaReservaGrupoPage() {
             data_saida: dataSaida,
             almoco,
             janta,
+            cafe,
+            forma_pagamento: formaPagamento || null,
+            observacoes: observacoes || null,
             hospedes: hospedesPayload,
         });
         setIsSaving(false);
@@ -133,6 +141,33 @@ export default function NovaReservaGrupoPage() {
                                 onAlmocoLevarChange={() => {}}
                                 onJantaColegioChange={setJanta}
                                 hasTakeoutOption={false}
+                            />
+
+                            <span className={styles.mealTitle}>Informações extras</span>
+                            <Button
+                                variant={cafe ? 'full' : 'full-white'}
+                                onClick={() => setCafe(v => !v)}
+                            >
+                                {cafe ? 'Com café da manhã' : 'Sem café da manhã'}
+                            </Button>
+                            <p style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', opacity: 0.6, margin: 0 }}>
+                                * Apenas para visualização
+                            </p>
+                            <DropdownInput
+                                label="Forma de pagamento"
+                                value={formaPagamento}
+                                onChange={(value) => setFormaPagamento(value)}
+                                options={[
+                                    { key: 'wise', value: 'Transferência via app Wise' },
+                                    { key: 'dinheiro', value: 'Dinheiro em espécie' },
+                                ]}
+                                placeholder="Selecione"
+                            />
+                            <InputTextBox
+                                label="Observações sobre restrição alimentar"
+                                placeholder="Digite aqui as observações"
+                                value={observacoes}
+                                onChange={(e) => setObservacoes(e.target.value)}
                             />
                         </div>
                     </div>

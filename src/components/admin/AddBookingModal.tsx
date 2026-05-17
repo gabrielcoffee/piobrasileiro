@@ -8,8 +8,9 @@ import { queryApi } from '@/lib/utils';
 import { InputTextSearch } from '../ui/InputTextSearch';
 import { SimpleDateSelect } from './SimpleDateSelect';
 import { Button } from '../ui/Button';
-import { Trash2, UserPlus } from 'lucide-react';
+import { Trash2, UserPlus, ChevronDown, ChevronUp } from 'lucide-react';
 import MealSection from './MealSection';
+import { DropdownInput } from '../ui/DropdownInput';
 
 type Option = {
     key: string;
@@ -62,6 +63,9 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
     const [bookingId, setBookingId] = useState('');
     const [roomData, setRoomData] = useState<any[]>([]);
     const [newHospedeName, setNewHospedeName] = useState('');
+    const [cafe, setCafe] = useState(false);
+    const [formaPagamento, setFormaPagamento] = useState('');
+    const [showExtras, setShowExtras] = useState(false);
     useEffect(() => {
         if (bookingDataChange) {
             bookingDataChange({
@@ -75,9 +79,11 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
                 almoco: almoco,
                 janta: janta,
                 observacoes: observacoes,
-            });
+                cafe: cafe,
+                forma_pagamento: formaPagamento || null,
+            } as any);
         }
-    }, [anfitriao, hospede, quarto, dataChegada, dataSaida, almoco, janta, observacoes, bookingDataChange]);
+    }, [anfitriao, hospede, quarto, dataChegada, dataSaida, almoco, janta, observacoes, cafe, formaPagamento, bookingDataChange]);
 
     const fetchUserAnfitriaoIdAndNames = async () => {
         const result = await queryApi('GET', '/admin/users');
@@ -242,6 +248,39 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
                             hasTakeoutOption={false}
                         />
                     </div>
+                </div>
+
+                {/* Informações extras */}
+                <div className={styles.inputGroup}>
+                    <Button variant="full-white" onClick={() => setShowExtras(v => !v)} iconLeft={showExtras ? <ChevronUp size={18} /> : <ChevronDown size={18} />}>
+                        Informações extras
+                    </Button>
+                    {showExtras && (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
+                            <div>
+                                <span className={styles.mealSectionTitle}>Café da manhã</span>
+                                <Button
+                                    variant={cafe ? 'full' : 'full-white'}
+                                    onClick={() => setCafe(v => !v)}
+                                >
+                                    {cafe ? 'Com café da manhã' : 'Sem café da manhã'}
+                                </Button>
+                                <p style={{ fontSize: '0.7rem', color: 'var(--color-text-muted)', opacity: 0.6, margin: '0.25rem 0 0' }}>
+                                    * Apenas para visualização
+                                </p>
+                            </div>
+                            <DropdownInput
+                                label="Forma de pagamento"
+                                value={formaPagamento}
+                                onChange={(value) => setFormaPagamento(value)}
+                                options={[
+                                    { key: 'wise', value: 'Transferência via app Wise' },
+                                    { key: 'dinheiro', value: 'Dinheiro em espécie' },
+                                ]}
+                                placeholder="Selecione"
+                            />
+                        </div>
+                    )}
                 </div>
 
                 {/* Observações */}

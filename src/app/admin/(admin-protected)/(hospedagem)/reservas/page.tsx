@@ -192,6 +192,8 @@ export default function GestaoDeReservasPage() {
             almoco: selectedBookingData.almoco,
             janta: selectedBookingData.janta,
             observacoes: selectedBookingData.observacoes,
+            cafe: selectedBookingData.cafe,
+            forma_pagamento: selectedBookingData.forma_pagamento,
         });
 
         if (result.success) {
