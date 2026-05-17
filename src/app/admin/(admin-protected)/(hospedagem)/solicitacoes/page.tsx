@@ -5,6 +5,7 @@ import styles from './page.module.css';
 import Card from '@/components/desktop/Card';
 import CardHeader from '@/components/desktop/CardHeader';
 import Table from '@/components/admin/Table';
+import SearchSection from '@/components/admin/SearchSection';
 import { getDateStringAndTime, getDateString, queryApi } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { Eye } from 'lucide-react';
@@ -17,6 +18,7 @@ export default function SolicitacoesPage() {
     const [isDetalhesModalOpen, setIsDetalhesModalOpen] = useState<boolean>(false);
     const [selectedSolicitacao, setSelectedSolicitacao] = useState<any>(null);
     const [isMobile, setIsMobile] = useState<boolean>(false);
+    const [searchText, setSearchText] = useState<string>('');
 
     const acoes = (request: any) => {
         return (
@@ -98,7 +100,17 @@ export default function SolicitacoesPage() {
             <Card>
                 <CardHeader title="Lista de solicitações de reserva" breadcrumb={["Início", "Hospedagem", "Solicitações"]} />
 
+                <SearchSection
+                    searchText={searchText}
+                    setSearchText={setSearchText}
+                    dateSection={false}
+                    searchPlaceholder="Pesquise por nome"
+                    buttons={[]}
+                />
+
                 <Table
+                    searchText={searchText}
+                    searchKey="nome"
                     headerItems={[
                         { key: "criado_em", label: "Solicitado em" },
                         { key: "nome", label: "Nome" },
@@ -117,9 +129,17 @@ export default function SolicitacoesPage() {
             <div className={styles.mobileContainer}>
                 <MobileTitle title="Lista de solicitações de reserva" />
 
-                <div style={{ marginTop: '2rem' }}></div>
+                <SearchSection
+                    searchText={searchText}
+                    setSearchText={setSearchText}
+                    dateSection={false}
+                    searchPlaceholder="Pesquise por nome"
+                    buttons={[]}
+                />
 
                 <Table
+                    searchText={searchText}
+                    searchKey="nome"
                     headerItems={[
                         { key: "criado_em", label: "Solicitado em" },
                         { key: "nome", label: "Nome" },
