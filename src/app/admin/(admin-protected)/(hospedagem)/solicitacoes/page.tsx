@@ -192,6 +192,10 @@ export default function SolicitacoesPage() {
                     <span className={styles.partTitle}>Quantidade de pessoas</span>
                     <span className={styles.partValue}>{selectedSolicitacao?.num_pessoas}</span>
                 </div>
+                <div className={styles.part}>
+                    <span className={styles.partTitle}>Você é padre?</span>
+                    <span className={styles.partValue}>{selectedSolicitacao?.voce_e_padre ? 'Sim' : 'Não'}</span>
+                </div>
             </div>
         </Modal>
 

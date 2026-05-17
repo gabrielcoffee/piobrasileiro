@@ -43,7 +43,8 @@ interface AddBookingModalProps {
         almoco: boolean;
         janta: boolean;
         observacoes: string;
-
+        cafe?: boolean;
+        forma_pagamento?: string | null;
     };
 }
 
@@ -125,10 +126,13 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
             const arrival = dataChegada.split('T')[0];
             const departure = dataSaida.split('T')[0];
 
+            // Intervalo meio-aberto [chegada, saida): o dia de saída libera o
+            // quarto para uma nova reserva começando nesse mesmo dia.
+            // Compara só a data (ignora hora do ISO).
             const overlapCount = room.ocupacoes.filter((ocupacao: any) => {
-                return (arrival <= ocupacao.data_saida && departure >= ocupacao.data_chegada)
-                ||
-                    (arrival >= ocupacao.data_chegada && departure <= ocupacao.data_saida);
+                const ocChegada = String(ocupacao.data_chegada).split('T')[0];
+                const ocSaida = String(ocupacao.data_saida).split('T')[0];
+                return arrival < ocSaida && ocChegada < departure;
             }).length;
 
             const isOccupied = overlapCount >= room.capacidade;
@@ -168,6 +172,11 @@ export default function AddBookingModal({ bookingDataChange, isEdit = false, boo
             setJanta(bookingData.janta || false);
             setObservacoes(bookingData.observacoes || '');
             setBookingId(bookingData.id || '');
+            const c = bookingData.cafe || false;
+            const fp = bookingData.forma_pagamento || '';
+            setCafe(c);
+            setFormaPagamento(fp);
+            if (c || fp) setShowExtras(true);
         }
     }, [bookingData, isEdit]);
 
