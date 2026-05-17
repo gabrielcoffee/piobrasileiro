@@ -51,7 +51,7 @@ export default function ReservaPage() {
     const fetchPreReserva = async () => {
         const result = await queryApi('GET', `/admin/pre-reservas/${id}`);
         if (result.success) {
-            const pr = result.data.data;
+            const pr = result.data;
             setPreReserva(pr);
             setHospedes((pr.hospedes || []).map((h: any) => ({
                 nome: h.nome || '',

@@ -59,7 +59,7 @@ export default function ValidacaoReservasPage() {
     const fetchPreReservas = async (start: Date, end: Date) => {
         const result = await queryApi('GET', `/admin/pre-reservas?from=${ymd(start)}&to=${ymd(end)}`);
         if (result.success) {
-            const rows = (result.data?.data || []).map((pr: any) => ({
+            const rows = (result.data || []).map((pr: any) => ({
                 ...pr,
                 nome: pr.nome_solicitante,
                 data_chegada: getDateString(pr.data_entrada),
