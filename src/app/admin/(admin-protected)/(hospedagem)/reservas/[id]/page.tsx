@@ -57,7 +57,11 @@ export default function ReservaPage() {
                 nome: h.nome || '',
                 idade: h.idade != null ? String(h.idade) : '',
             })));
-            setCafe(['apenas_cafe', 'cafe_almoco', 'cafe_janta', 'cafe_almoco_janta'].includes(pr.refeicoes));
+            // Deriva café/almoço/janta da preferência de refeições do Forms.
+            const r = pr.refeicoes;
+            setCafe(['apenas_cafe', 'cafe_almoco', 'cafe_janta', 'cafe_almoco_janta'].includes(r));
+            setAlmoco(['cafe_almoco', 'cafe_almoco_janta'].includes(r));
+            setJanta(['cafe_janta', 'cafe_almoco_janta'].includes(r));
             setFormaPagamento(pr.forma_pagamento || '');
         } else {
             console.log('Erro ao buscar pré-reserva', result.error);
