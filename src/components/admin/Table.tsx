@@ -28,6 +28,7 @@ interface TableProps {
     filters?: { key: string, value: string | boolean | number }[];
     rowIdKey?: string;
     isLoading?: boolean;
+    disableSort?: boolean;
 }
 
 export interface TableRef {
@@ -48,7 +49,8 @@ const Table = forwardRef<TableRef, TableProps>(({
     filters = [],
     rowIdKey = 'id',
     isLoading = false,
-}, ref) => {    
+    disableSort = false,
+}, ref) => {
 
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedRows, setSelectedRows] = useState<Set<string | number>>(new Set());
@@ -150,6 +152,7 @@ const Table = forwardRef<TableRef, TableProps>(({
         }
     
         // Step 3: Two-step sorting (alphabetical then numeric)
+        if (!disableSort) {
         filteredRows.sort((a, b) => {
             const aValue = (a[searchKey]?.toString() || "")
                 .normalize("NFD")
@@ -180,11 +183,12 @@ const Table = forwardRef<TableRef, TableProps>(({
             // Step 3: If text parts are equal, sort numerically by number part
             return aParts.number - bParts.number;
         });
-    
+        }
+
         // Step 4: Store all filtered items and paginate
         setAllFilteredItems(filteredRows);
         setCurrentPageItems(filteredRows.slice(startIndex, endIndex));
-    }, [searchText, rowItems, searchKey, currentPage, itemsPerPage, startIndex, endIndex, stableFilters]);
+    }, [searchText, rowItems, searchKey, currentPage, itemsPerPage, startIndex, endIndex, stableFilters, disableSort]);
     
     
 

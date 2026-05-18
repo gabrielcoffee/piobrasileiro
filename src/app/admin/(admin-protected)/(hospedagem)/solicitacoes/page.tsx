@@ -42,7 +42,12 @@ export default function SolicitacoesPage() {
     const fetchSolicitacoes = async () => {
         const result = await queryApi('GET', '/admin/requests');
 
-        const requests = result.data.requests;
+        const requests = [...result.data.requests].sort((a: any, b: any) => {
+            if (a.visualizada !== b.visualizada) {
+                return a.visualizada ? 1 : -1;
+            }
+            return new Date(b.criado_em).getTime() - new Date(a.criado_em).getTime();
+        });
 
         const completeRequests = requests.map((request: any) => {
             const solicitado_em = getDateStringAndTime(request.criado_em);  
@@ -109,6 +114,7 @@ export default function SolicitacoesPage() {
                 />
 
                 <Table
+                    disableSort={true}
                     searchText={searchText}
                     searchKey="nome"
                     headerItems={[
@@ -138,6 +144,7 @@ export default function SolicitacoesPage() {
                 />
 
                 <Table
+                    disableSort={true}
                     searchText={searchText}
                     searchKey="nome"
                     headerItems={[
