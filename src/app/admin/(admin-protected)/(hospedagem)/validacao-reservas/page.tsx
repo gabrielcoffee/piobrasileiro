@@ -1,42 +1,31 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './page.module.css';
 import Card from '@/components/desktop/Card';
 import CardHeader from '@/components/desktop/CardHeader';
-import { DateSection } from '@/components/admin/DateSection';
 import Table from '@/components/admin/Table';
+import SearchSection from '@/components/admin/SearchSection';
 import Modal from '@/components/admin/Modal';
 import { Button } from '@/components/ui/Button';
 import { Check, Trash2 } from 'lucide-react';
-import { getCurrentWeekInfo, getDateString, queryApi } from '@/lib/utils';
+import { getDateString, queryApi } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/contexts/ToastContext';
 import MobileTitle from '@/components/admin/MobileTitle';
 import Tooltip from '@/components/admin/Tooltip';
-
-// Local YYYY-MM-DD (avoid UTC shift from toISOString).
-function ymd(d: Date): string {
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
 
 export default function ValidacaoReservasPage() {
 
     const router = useRouter();
     const { showToast } = useToast();
 
-    const [selectedWeekStart, setSelectedWeekStart] = useState<Date>(() => getCurrentWeekInfo().monday);
-    const [selectedWeekEnd, setSelectedWeekEnd] = useState<Date>(() => getCurrentWeekInfo().sunday);
     const [preReservas, setPreReservas] = useState<any[]>([]);
     const [isMobile, setIsMobile] = useState<boolean>(false);
+    const [searchText, setSearchText] = useState<string>('');
 
     const [showDeleteModal, setShowDeleteModal] = useState<boolean>(false);
     const [selectedId, setSelectedId] = useState<string | null>(null);
-
-    const handleWeekChange = (weekStart: Date, weekEnd: Date) => {
-        setSelectedWeekStart(weekStart);
-        setSelectedWeekEnd(weekEnd);
-    };
 
     const validar = (id: string) => {
         router.push(`/admin/reservas/${id}`);
@@ -56,12 +45,8 @@ export default function ValidacaoReservasPage() {
         </div>
     );
 
-    const fetchSeq = useRef(0);
-
-    const fetchPreReservas = async (start: Date, end: Date) => {
-        const seq = ++fetchSeq.current;
-        const result = await queryApi('GET', `/admin/pre-reservas?from=${ymd(start)}&to=${ymd(end)}`);
-        if (seq !== fetchSeq.current) return; // resposta obsoleta, ignora
+    const fetchPreReservas = async () => {
+        const result = await queryApi('GET', `/admin/pre-reservas`);
         if (result.success) {
             const rows = (result.data || []).map((pr: any) => ({
                 ...pr,
@@ -81,7 +66,7 @@ export default function ValidacaoReservasPage() {
         const result = await queryApi('DELETE', `/admin/pre-reservas/${selectedId}`);
         if (result.success) {
             showToast('Pré-reserva excluída', 'success');
-            fetchPreReservas(selectedWeekStart, selectedWeekEnd);
+            fetchPreReservas();
         } else {
             showToast('Ops! Algo deu errado. Tente novamente.', 'error');
         }
@@ -91,14 +76,8 @@ export default function ValidacaoReservasPage() {
 
     useEffect(() => {
         setIsMobile(window.innerWidth < 768);
-        // Semana já inicializada no useState (sem fetch-fantasma / race).
+        fetchPreReservas();
     }, []);
-
-    useEffect(() => {
-        if (selectedWeekStart && selectedWeekEnd) {
-            fetchPreReservas(selectedWeekStart, selectedWeekEnd);
-        }
-    }, [selectedWeekStart, selectedWeekEnd]);
 
     const headerItems = [
         { key: "nome", label: "Nome" },
@@ -114,30 +93,30 @@ export default function ValidacaoReservasPage() {
             <Card>
                 <CardHeader title="Validação de reservas" breadcrumb={["Início", "Hospedagem", "Validação de reservas"]} />
 
-                <div className={styles.dateRow}>
-                    <DateSection
-                        selectedWeekStart={selectedWeekStart}
-                        selectedWeekEnd={selectedWeekEnd}
-                        onWeekChange={handleWeekChange}
-                    />
-                </div>
+                <SearchSection
+                    searchText={searchText}
+                    setSearchText={setSearchText}
+                    dateSection={false}
+                    searchPlaceholder="Pesquise por nome"
+                    buttons={[]}
+                />
 
-                <Table headerItems={headerItems} rowItems={preReservas} itemsPerPage={9} />
+                <Table searchText={searchText} searchKey="nome" headerItems={headerItems} rowItems={preReservas} itemsPerPage={9} />
             </Card>
             </div>
         ) : (
             <div className={styles.mobileContainer}>
                 <MobileTitle title="Validação de reservas" />
 
-                <div className={styles.dateRow}>
-                    <DateSection
-                        selectedWeekStart={selectedWeekStart}
-                        selectedWeekEnd={selectedWeekEnd}
-                        onWeekChange={handleWeekChange}
-                    />
-                </div>
+                <SearchSection
+                    searchText={searchText}
+                    setSearchText={setSearchText}
+                    dateSection={false}
+                    searchPlaceholder="Pesquise por nome"
+                    buttons={[]}
+                />
 
-                <Table headerItems={headerItems} rowItems={preReservas} itemsPerPage={9} />
+                <Table searchText={searchText} searchKey="nome" headerItems={headerItems} rowItems={preReservas} itemsPerPage={9} />
             </div>
         )}
 
