@@ -8,7 +8,7 @@ import Table from '@/components/admin/Table';
 import SearchSection from '@/components/admin/SearchSection';
 import Modal from '@/components/admin/Modal';
 import { Button } from '@/components/ui/Button';
-import { Check, Trash2 } from 'lucide-react';
+import { Check, Trash2, FileSearch } from 'lucide-react';
 import { getDateString, queryApi } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/contexts/ToastContext';
@@ -38,7 +38,7 @@ export default function ValidacaoReservasPage() {
 
     const acoes = (pr: any) => (
         <div className={styles.acoes}>
-            <Button className={styles.actionButton} variant="full" iconLeft={<Check size={18} />} onClick={() => validar(pr.id)}>Avaliar Validação</Button>
+            <Button className={styles.actionButton} variant="outline" iconLeft={<FileSearch size={16} />} style={{ width: 'fit-content', paddingLeft: '10px', paddingRight: '10px', fontSize: '0.875rem' }} onClick={() => validar(pr.id)}>Avaliar Validação</Button>
             <Tooltip text="Excluir" color="var(--color-error)" iconLeft={<Trash2 size={20} />}>
                 <Trash2 className={styles.actionButton} size={20} style={{ cursor: 'pointer' }} onClick={() => excluir(pr.id)} />
             </Tooltip>
