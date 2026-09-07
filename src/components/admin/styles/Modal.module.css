@@ -29,6 +29,10 @@
     overflow-x: hidden; /* prevent horizontal jiggle */
 }
 
+.modalWide {
+    max-width: 800px;
+}
+
 /* Mobile top header for bottom modal */
 .mobileTopHeader {
     display: none;

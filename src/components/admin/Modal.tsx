@@ -11,9 +11,11 @@ interface ModalProps {
     onClose: () => void;
     isOpen: boolean;
     comesFromBottomMobile?: boolean;
+    /** Wider panel on desktop (e-mail previews, long lists). */
+    wide?: boolean;
 }
 
-export default function Modal({ children, buttons, buttonsLeft, title, subtitle, onClose, isOpen, comesFromBottomMobile = false }: ModalProps) {
+export default function Modal({ children, buttons, buttonsLeft, title, subtitle, onClose, isOpen, comesFromBottomMobile = false, wide = false }: ModalProps) {
     
     useEffect(() => {
         if (isOpen) {
@@ -35,7 +37,7 @@ export default function Modal({ children, buttons, buttonsLeft, title, subtitle,
         <div className={styles.overlay} onClick={onClose}>
 
             <div 
-                className={`${styles.modal} ${comesFromBottomMobile ? styles.modalBottomMobile : ''}`} 
+                className={`${styles.modal} ${comesFromBottomMobile ? styles.modalBottomMobile : ''} ${wide ? styles.modalWide : ''}`}
                 onClick={(e) => e.stopPropagation()}
             >
 

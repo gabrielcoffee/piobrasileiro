@@ -1,0 +1,103 @@
+.resultOk {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.resultWarn {
+    color: var(--color-warning);
+    font-weight: 600;
+}
+
+.acoes {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    color: var(--color-primary);
+}
+
+.actionButton {
+    cursor: pointer;
+}
+
+.actionButton:hover {
+    color: #0F2E0E;
+}
+
+@media (max-width: 768px) {
+    .actionButton {
+        background-color: var(--color-slate-100);
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        padding: 4px;
+        width: 28px;
+        height: 28px;
+    }
+}
+
+.detail {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.detailBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.detailLabel {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.message {
+    margin: 0;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-slate-50);
+    white-space: pre-wrap;
+    line-height: 1.5;
+    font-size: 0.95rem;
+    color: var(--color-text);
+}
+
+.recipients {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.recipient {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.recipientName {
+    color: var(--color-text);
+    font-weight: 500;
+}
+
+.recipientEmail {
+    color: var(--color-text-muted);
+    word-break: break-all;
+}
+
+.okIcon {
+    color: var(--color-primary);
+    flex-shrink: 0;
+}
+
+.failIcon {
+    color: var(--color-error);
+    flex-shrink: 0;
+}

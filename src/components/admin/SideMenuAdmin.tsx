@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, LucideSalad, Bed, X, UserRound, LogOut, ChevronDown, ChevronUp } from 'lucide-react';
+import { Home, LucideSalad, Bed, X, UserRound, LogOut, ChevronDown, ChevronUp, Mail } from 'lucide-react';
 import styles from './styles/SideMenuAdmin.module.css';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -19,6 +19,7 @@ export function SideMenuAdmin({ isOpen, onClose }: SideMenuProps) {
     const menuItems = [
         { id: 'home', label: 'Início', icon: Home, href: '/admin/home' },
         { id: 'usuarios', label: 'Usuários', icon: UserRound, href: '/admin/usuarios' },
+        { id: 'comunicados', label: 'Comunicados', icon: Mail, href: '/admin/comunicados' },
         { id: 'refeicoes', label: 'Refeições', icon: LucideSalad,
             submenu: [
                 { id: "lista_de_refeicoes", label: "Lista de refeições", href: "/admin/refeicoes"},

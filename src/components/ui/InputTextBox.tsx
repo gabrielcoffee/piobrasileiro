@@ -6,9 +6,11 @@ interface InputTextBoxProps extends React.ComponentProps<"textarea"> {
     label?: string;
     error?: string;
     leftIcon?: React.ReactNode;
+    /** Hard cap on the value length. Defaults to 250 (historic behaviour). */
+    maxLength?: number;
 }
 
-export function InputTextBox({ value, label, error, className, leftIcon, ...props }: InputTextBoxProps) {
+export function InputTextBox({ value, label, error, className, leftIcon, maxLength = 250, ...props }: InputTextBoxProps) {
 
     const hasError = error && error.length > 0;
     
@@ -30,7 +32,8 @@ export function InputTextBox({ value, label, error, className, leftIcon, ...prop
                 borderColor: hasError ? 'var(--color-error)' : 'var(--color-border)',
                 color: props.disabled ? 'var(--color-text-muted)' : 'var(--color-text)'
             }}
-            value={value && value.length > 250 ? value.slice(0, 250) : value || ''}
+            value={value && value.length > maxLength ? value.slice(0, maxLength) : value || ''}
+            maxLength={maxLength}
             rows={3}
             {...props}
         />

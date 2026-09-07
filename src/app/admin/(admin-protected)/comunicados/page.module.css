@@ -1,0 +1,155 @@
+.page {
+    display: flex;
+    flex-direction: column;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-bottom: 1.75rem;
+    margin-bottom: 1.75rem;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.section:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.step {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    font-size: 0.875rem;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.sectionTitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--color-text);
+}
+
+.fields {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    max-width: 800px;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.field input,
+.field textarea {
+    width: 100%;
+}
+
+.field textarea {
+    min-height: 160px;
+}
+
+.counter {
+    align-self: flex-end;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+}
+
+.counterLimit {
+    color: var(--color-error);
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.75rem;
+}
+
+.actions > * {
+    min-width: 180px;
+}
+
+.summary {
+    margin-right: auto;
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+}
+
+.previewFrame {
+    width: 100%;
+    height: 60vh;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-sm);
+    background-color: #f0f0f0;
+}
+
+.confirmWarning {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-start;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-error-border);
+    border-radius: var(--radius-sm);
+    background-color: var(--color-error-bg);
+    color: var(--color-error-dark);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.confirmWarning svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.confirmSummary {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.95rem;
+    color: var(--color-text);
+}
+
+.confirmSummary strong {
+    font-weight: 600;
+}
+
+@media (max-width: 768px) {
+    .actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+        margin-top: 1.5rem;
+    }
+
+    .actions > * {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .summary {
+        margin-right: 0;
+        text-align: center;
+    }
+
+    .previewFrame {
+        height: 70vh;
+    }
+}
