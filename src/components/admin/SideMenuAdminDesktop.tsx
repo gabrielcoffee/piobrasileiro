@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Home, LucideSalad, Bed, UserRound, LogOut, ChevronDown, ChevronUp, SquareArrowLeft, SquareArrowRight, Mail } from 'lucide-react';
+import { Home, LucideSalad, Bed, UserRound, LogOut, ChevronDown, SquareArrowLeft, SquareArrowRight, Mail } from 'lucide-react';
 import styles from './styles/SideMenuAdminDesktop.module.css';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -21,14 +21,13 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
     const menuItems = [
         { id: 'home', label: 'Início', icon: Home, href: '/admin/home' },
         { id: 'usuarios', label: 'Usuários', icon: UserRound, href: '/admin/usuarios' },
-        { id: 'comunicados', label: 'Comunicados', icon: Mail, href: '/admin/comunicados' },
         { id: 'refeicoes', label: 'Refeições', icon: LucideSalad,
             submenu: [
                 { id: "lista_de_refeicoes", label: "Lista de refeições", href: "/admin/refeicoes"},
                 { id: "calendario", label: "Calendário", href: "/admin/calendario" }
             ]
         },
-        { id: 'hospedagem', label: 'Hospedagem', icon: Bed, 
+        { id: 'hospedagem', label: 'Hospedagem', icon: Bed,
             submenu: [
                 { id: "gestao_de_reserva", label: "Gestão de reservas", href: "/admin/reservas"},
                 { id: "validacao_de_reservas", label: "Validação de reservas", href: "/admin/validacao-reservas"},
@@ -37,6 +36,8 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
                 { id: "quartos", label: "Quartos", href: "/admin/quartos"}
             ]
         },
+        { id: 'divider-comunicados', divider: true },
+        { id: 'comunicados', label: 'Comunicados', icon: Mail, href: '/admin/comunicados' },
         { id: 'logout', label: 'Sair da conta', icon: LogOut, href: '/' },
     ];
 
@@ -85,7 +86,7 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
         }, 5000);
         return () => clearInterval(timer);
     }, []);
-    
+
     useEffect(() => {
         fetchNotifications();
     }, []);
@@ -96,11 +97,18 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
         }
     }, [pathname]);
 
+    // Labels are always rendered: the collapse animation clips them from the
+    // right (see .menuLabelWrap in the CSS) instead of unmounting them, so the
+    // icons never jump.
     const renderMenuItem = (item: any) => {
+        if (item.divider) {
+            return <div key={item.id} className={styles.divider} role="separator" />;
+        }
+
         const IconComponent = item.icon;
         const hasSubmenu = item.submenu && item.submenu.length > 0;
-        const isExpanded = isSubmenuExpanded(item.id);
-        const isActive = item.href === pathname || 
+        const isExpanded = isSubmenuExpanded(item.id) && !isCollapsed;
+        const isActive = item.href === pathname ||
             (hasSubmenu && item.submenu.some((sub: any) => sub.href === pathname));
 
         if (hasSubmenu) {
@@ -109,21 +117,22 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
                     <button
                         className={`${styles.menuItem} ${isActive && !isExpanded ? styles.activeTopMenu : ''} ${isActive && isExpanded ? styles.activeTopMenuOpen : ''}`}
                         onClick={() => handleMenuClick(item)}
+                        aria-expanded={isExpanded}
                     >
-                        <IconComponent size={24}/>
-                        {!isCollapsed && (
-                            <div className={styles.menuLabelContainer}>
+                        <IconComponent size={24} className={styles.menuIcon} />
+                        <span className={styles.menuLabelWrap}>
+                            <span className={styles.menuLabelContainer}>
                                 <span className={styles.menuLabel}>{item.label}</span>
-                                {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-                            </div>
-                        )}
+                                <ChevronDown size={20} className={`${styles.chevron} ${isExpanded ? styles.chevronOpen : ''}`} />
+                            </span>
+                        </span>
                     </button>
-                    
-                    {!isCollapsed && (
-                        <div 
-                            className={`${styles.submenu} ${isExpanded ? styles.submenuOpen : styles.submenuClosed}`}
-                            aria-hidden={!isExpanded}
-                        >
+
+                    <div
+                        className={`${styles.submenu} ${isExpanded ? styles.submenuOpen : ''}`}
+                        aria-hidden={!isExpanded}
+                    >
+                        <div className={styles.submenuInner}>
                             {item.submenu.map((subItem: any) => (
                                 <Link
                                     key={subItem.id}
@@ -133,9 +142,9 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
                                 >
                                     <span className={styles.submenuLabel}>
                                         <span>{subItem.id !== 'solicitacoes' && subItem.label}</span>
-                                        {subItem.id === 'solicitacoes' && 
+                                        {subItem.id === 'solicitacoes' &&
                                         <div className={styles.notification}>
-                                            <span>{subItem.label}</span> 
+                                            <span>{subItem.label}</span>
                                             {notificationsCount > 0 &&
                                                 <div className={styles.notificationCount}>{notificationsCount}
                                                 </div>
@@ -146,7 +155,7 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
                                 </Link>
                             ))}
                         </div>
-                    )}
+                    </div>
                 </div>
             );
         }
@@ -161,28 +170,32 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
                         logout();
                     }}
                 >
-                    <IconComponent size={24}/>
-                    {!isCollapsed && <span className={styles.menuLabel}>{item.label}</span>}
+                    <IconComponent size={24} className={styles.menuIcon} />
+                    <span className={styles.menuLabelWrap}>
+                        <span className={styles.menuLabel}>{item.label}</span>
+                    </span>
                 </button>
             );
         }
 
         return (
-            <Link 
+            <Link
                 key={item.id}
                 href={item.href || '#'}
                 className={`${styles.menuItem} ${isActive ? styles.active : ''}`}
                 onClick={() => handleMenuClick(item)}
             >
-                <IconComponent size={24}/>
-                {!isCollapsed && <span className={styles.menuLabel}>{item.label}</span>}
+                <IconComponent size={24} className={styles.menuIcon} />
+                <span className={styles.menuLabelWrap}>
+                    <span className={styles.menuLabel}>{item.label}</span>
+                </span>
             </Link>
         );
     };
 
     return (
         <div className={`${styles.sideMenuDesktop} ${isCollapsed ? styles.collapsed : ''}`}>
-            
+
             <nav className={styles.navigation}>
 
 
@@ -190,7 +203,7 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
                     const invert = !isCollapsed;
                     setIsCollapsed(invert);
                     set(!invert);
-                }}>
+                }} aria-label={isCollapsed ? 'Expandir menu' : 'Recolher menu'}>
                     {isCollapsed ? <SquareArrowRight size={24} /> : <SquareArrowLeft size={24} />}
                 </button>
 
@@ -198,4 +211,4 @@ export function SideMenuAdminDesktop({ set }: SideMenuAdminDesktopProps) {
             </nav>
         </div>
     );
-} 
+}

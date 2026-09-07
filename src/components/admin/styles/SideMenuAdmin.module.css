@@ -120,27 +120,52 @@
 .menuLabel {
     font-size: 1.25rem;
     font-weight: 500;
-} 
+    flex: 1 1 auto;
+    min-width: 0;
+}
 
+/* Icons keep a fixed 24px column so items with a chevron don't shrink them. */
+.menuIcon {
+    flex: 0 0 24px;
+    width: 24px;
+    height: 24px;
+}
+
+.chevron {
+    flex: 0 0 20px;
+    transition: transform 0.25s ease;
+}
+
+.chevronOpen {
+    transform: rotate(180deg);
+}
+
+.divider {
+    height: 1px;
+    margin: 0.75rem 1.5rem;
+    background-color: var(--color-border);
+}
+
+/* grid-template-rows 0fr -> 1fr animates to the real content height. */
 .submenu {
+    display: grid;
+    grid-template-rows: 0fr;
     margin-left: 1rem;
-    overflow: hidden;
-    transition: max-height 150ms ease-out, opacity 120ms ease-out, transform 150ms ease-out;
-    transform-origin: top;
+    opacity: 0;
+    transition: grid-template-rows 0.28s ease, opacity 0.2s ease;
 }
 
 .submenuOpen {
-    max-height: 800px;
+    grid-template-rows: 1fr;
     opacity: 1;
-    transform: translateY(0);
+    transition: grid-template-rows 0.28s ease, opacity 0.2s ease 0.08s;
 }
 
-.submenuClosed {
-    max-height: 0;
-    opacity: 0;
-    transform: translateY(-4px);
-    pointer-events: none;
-    display: block;
+.submenuInner {
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
 .submenuItem {

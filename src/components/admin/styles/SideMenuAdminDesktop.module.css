@@ -1,3 +1,12 @@
+/*
+ * Collapse/expand: the sidebar width animates 280px <-> 80px. Every menu item
+ * keeps the same left padding in both states, so the icon column never moves;
+ * only the label wrapper (.menuLabelWrap) animates its max-width to 0 and is
+ * clipped from the right. Submenus open/close with the grid-template-rows
+ * 0fr -> 1fr technique, which animates to the real content height (max-height
+ * hacks look abrupt because most of the transition happens off-screen).
+ */
+
 .sideMenuDesktop {
     position: fixed;
     top: 0;
@@ -18,10 +27,10 @@
 
 .toggleButton {
     padding: 1rem;
-    padding-left: 2rem;
+    padding-left: 1.75rem;
     display: flex;
     justify-content: left;
-    align-items: center; 
+    align-items: center;
     color: var(--color-text);
     background-color: transparent;
     border: none;
@@ -30,19 +39,19 @@
 
 .navigation {
     padding: 1rem 0;
-    transition: opacity 0.3s ease;
+    display: flex;
+    flex-direction: column;
 }
 
 .menuItem {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.75rem 1rem;
+    padding: 0.75rem 0.75rem;
     margin: 0 1rem;
+    width: calc(100% - 2rem);
     color: var(--color-text);
     text-decoration: none;
-    border-bottom: 1px solid var(--color-border);
-    width: 100%;
     background: transparent;
     border: none;
     cursor: pointer;
@@ -51,9 +60,36 @@
     text-align: left;
     white-space: nowrap;
     overflow: hidden;
-    max-width: 250px;
     transition: background-color 0.2s ease, color 0.2s ease;
     height: 44px;
+    border-radius: 0.5rem;
+}
+
+/* The icon column must never shrink or shift: fixed size, no flex-shrink.
+ * (Before, the label container's width:100% squeezed the svg of the items
+ * that had a chevron, which is why Refeições/Hospedagem looked smaller.) */
+.menuIcon {
+    flex: 0 0 24px;
+    width: 24px;
+    height: 24px;
+}
+
+/* Label column: clipped from the right while collapsing. */
+.menuLabelWrap {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 220px;
+    overflow: hidden;
+    opacity: 1;
+    transition: max-width 0.3s ease, opacity 0.2s ease 0.05s;
+}
+
+.collapsed .menuLabelWrap {
+    max-width: 0;
+    opacity: 0;
+    transition: max-width 0.3s ease, opacity 0.15s ease;
 }
 
 .menuLabelContainer {
@@ -61,23 +97,34 @@
     align-items: center;
     justify-content: space-between;
     width: 100%;
-}
-
-.collapsed .menuItem {
-    justify-content: center;
-    margin: 0 0.5rem;
-    padding: 1rem 0.5rem;
+    min-width: 0;
 }
 
 .menuLabel {
     font-size: 1.25rem;
     font-weight: 500;
-    transition: opacity 0.3s ease;
-} 
+    white-space: nowrap;
+}
 
-.collapsed .menuLabel {
-    opacity: 0;
-    width: 0;
+.chevron {
+    flex: 0 0 20px;
+    margin-left: 0.5rem;
+    transition: transform 0.25s ease;
+}
+
+.chevronOpen {
+    transform: rotate(180deg);
+}
+
+.divider {
+    height: 1px;
+    margin: 0.75rem 1.5rem;
+    background-color: var(--color-border);
+    transition: margin 0.3s ease;
+}
+
+.collapsed .divider {
+    margin: 0.75rem 1.25rem;
 }
 
 .submenuItem {
@@ -88,15 +135,11 @@
     margin-left: 1.5rem;
     color: var(--color-text);
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: color 0.2s ease, background-color 0.2s ease;
     font-size: 1rem;
     font-weight: 400;
     white-space: nowrap;
     overflow: hidden;
-}
-
-.collapsed .submenuItem {
-    display: none;
 }
 
 .submenuLabel {
@@ -107,11 +150,13 @@
 .logoutButton {
     position: absolute;
     bottom: 0;
-    width: 230px;
+    left: 0;
+    width: calc(100% - 2rem);
     border-top: 1px solid var(--color-border);
+    border-radius: 0;
+    height: auto;
     padding-top: 2rem;
     padding-bottom: 2rem;
-    transition: width 0.3s ease;
     color: var(--color-error);
 }
 
@@ -119,12 +164,6 @@
     .logoutButton {
         display: none;
     }
-}
-
-.collapsed .logoutButton {
-    width: 60px;
-    padding: 1rem 0.5rem;
-    justify-content: center;
 }
 
 .submenuItem:hover {
@@ -140,24 +179,26 @@
 }
 
 .submenu {
+    display: grid;
+    grid-template-rows: 0fr;
     margin-right: 0.5rem;
-    overflow: hidden;
-    transition: max-height 150ms ease-out, opacity 120ms ease-out, transform 150ms ease-out;
-    transform-origin: top;
+    opacity: 0;
+    transition: grid-template-rows 0.28s ease, opacity 0.2s ease;
 }
 
 .submenuOpen {
-    max-height: 800px;
+    grid-template-rows: 1fr;
     opacity: 1;
-    transform: translateY(0);
+    transition: grid-template-rows 0.28s ease, opacity 0.2s ease 0.08s;
 }
 
-.submenuClosed {
-    max-height: 0;
-    opacity: 0;
-    transform: translateY(-4px);
-    pointer-events: none;
-    display: block;
+.submenuInner {
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
 }
 
 .active {
@@ -172,7 +213,6 @@
     border-radius: 0.5rem;
     color: white;
     font-weight: 800 !important;
-    margin-right: 0.5rem;
 }
 
 .notification {
@@ -194,13 +234,6 @@
     border: 1px solid #F9C738;
     border-radius: 100%;
     font-size: 0.9rem;
-}
-
-.menuLabelContainer {
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-    justify-content: space-between;
 }
 
 .menuItem:hover {
@@ -230,7 +263,6 @@
     border-radius: 0.5rem;
     color: var(--color-text);
     font-weight: 800 !important;
-    margin-right: 0.5rem;
 }
 
 /* Do not change colors on hover for the open-active parent */

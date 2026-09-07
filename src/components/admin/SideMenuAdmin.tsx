@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Home, LucideSalad, Bed, X, UserRound, LogOut, ChevronDown, ChevronUp, Mail } from 'lucide-react';
+import { Home, LucideSalad, Bed, X, UserRound, LogOut, ChevronDown, Mail } from 'lucide-react';
 import styles from './styles/SideMenuAdmin.module.css';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -19,7 +19,6 @@ export function SideMenuAdmin({ isOpen, onClose }: SideMenuProps) {
     const menuItems = [
         { id: 'home', label: 'Início', icon: Home, href: '/admin/home' },
         { id: 'usuarios', label: 'Usuários', icon: UserRound, href: '/admin/usuarios' },
-        { id: 'comunicados', label: 'Comunicados', icon: Mail, href: '/admin/comunicados' },
         { id: 'refeicoes', label: 'Refeições', icon: LucideSalad,
             submenu: [
                 { id: "lista_de_refeicoes", label: "Lista de refeições", href: "/admin/refeicoes"},
@@ -35,6 +34,8 @@ export function SideMenuAdmin({ isOpen, onClose }: SideMenuProps) {
                 { id: "quartos", label: "Quartos", href: "/admin/quartos"}
             ]
         },
+        { id: 'divider-comunicados', divider: true },
+        { id: 'comunicados', label: 'Comunicados', icon: Mail, href: '/admin/comunicados' },
         { id: 'perfil', label: 'Meu perfil', icon: UserRound, href: '/admin/perfil' },
         { id: 'logout', label: 'Sair', icon: LogOut, href: '/' },
     ];
@@ -53,6 +54,10 @@ export function SideMenuAdmin({ isOpen, onClose }: SideMenuProps) {
     const isSubmenuExpanded = (menuId: string) => expandedMenus.includes(menuId);
 
     const renderMenuItem = (item: any) => {
+        if (item.divider) {
+            return <div key={item.id} className={styles.divider} role="separator" />;
+        }
+
         const IconComponent = item.icon;
         const hasSubmenu = item.submenu && item.submenu.length > 0;
         const isExpanded = isSubmenuExpanded(item.id);
@@ -66,27 +71,29 @@ export function SideMenuAdmin({ isOpen, onClose }: SideMenuProps) {
                         className={`${styles.menuItem} ${styles.dropdownButton} ${isActive ? styles.active : ''} ${isExpanded ? styles.expanded : ''}`}
                         onClick={() => toggleSubmenu(item.id)}
                     >
-                        <IconComponent size={24}/>
+                        <IconComponent size={24} className={styles.menuIcon} />
                         <span className={styles.menuLabel}>{item.label}</span>
-                        {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
+                        <ChevronDown size={20} className={`${styles.chevron} ${isExpanded ? styles.chevronOpen : ''}`} />
                     </button>
-                    
-                    <div 
-                        className={`${styles.submenu} ${isExpanded ? styles.submenuOpen : styles.submenuClosed}`}
+
+                    <div
+                        className={`${styles.submenu} ${isExpanded ? styles.submenuOpen : ''}`}
                         aria-hidden={!isExpanded}
                     >
+                        <div className={styles.submenuInner}>
                             {item.submenu.map((subItem: any) => (
                                 <Link
                                     key={subItem.id}
                                     href={subItem.href}
                                     className={`${styles.submenuItem} ${subItem.href === pathname ? styles.active : ''}`}
                                     onClick={onClose}
-                                tabIndex={isExpanded ? 0 : -1}
+                                    tabIndex={isExpanded ? 0 : -1}
                                 >
                                     <span className={styles.submenuLabel}>{subItem.label}</span>
                                 </Link>
                             ))}
                         </div>
+                    </div>
                 </div>
             );
         }
@@ -101,7 +108,7 @@ export function SideMenuAdmin({ isOpen, onClose }: SideMenuProps) {
                         logout();
                     }}
                 >
-                    <IconComponent size={24}/>
+                    <IconComponent size={24} className={styles.menuIcon} />
                     <span className={styles.menuLabel}>{item.label}</span>
                 </button>
             );
@@ -114,7 +121,7 @@ export function SideMenuAdmin({ isOpen, onClose }: SideMenuProps) {
                 className={`${styles.menuItem} ${isActive ? styles.active : ''}`}
                 onClick={onClose}
             >
-                <IconComponent size={24}/>
+                <IconComponent size={24} className={styles.menuIcon} />
                 <span className={styles.menuLabel}>{item.label}</span>
             </Link>
         );
