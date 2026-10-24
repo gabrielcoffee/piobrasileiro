@@ -45,7 +45,7 @@ flowchart LR
 | | |
 |---|---|
 | Frontend | Next.js 15 (App Router), React 19, TypeScript, CSS Modules, Lucide icons |
-| Backend | Node.js, Express, PostgreSQL, JWT, bcrypt, Nodemailer ([repo](https://github.com/gabrielcoffee/piobrasileiro-backend)) |
+| Backend | Node.js, Express, PostgreSQL, JWT, bcrypt, SMTP email ([repo](https://github.com/gabrielcoffee/piobrasileiro-backend)) |
 
 ## Project structure
 
