@@ -1,80 +1,72 @@
-# PIO Brasileiro
+# Pio Brasileiro
 
-Meal management system for PIO College, developed to facilitate meal scheduling and control for students and staff.
+**The meal and guest-room booking system for the Pontifical Brazilian College in Rome**, used day to day by its residents and staff.
 
-# User Pages previews:
+Residents book lunch and dinner, bring guests, and request rooms. Admins plan the kitchen, run the guest house, manage users and send announcements by email. I built the whole thing: this Next.js frontend and its [Node.js + PostgreSQL backend](https://github.com/gabrielcoffee/piobrasileiro-backend).
 
-<img width="240" alt="Screenshot 2025-08-28 at 3 02 03 PM" src="https://github.com/user-attachments/assets/a84bb431-0acb-46a7-a1cb-c15e2145b69e" />
-<img width="240" alt="Screenshot 2025-08-28 at 3 03 00 PM" src="https://github.com/user-attachments/assets/2569c91a-dc2d-47cd-a40a-9645144da106" />
-<img width="240" alt="Screenshot 2025-08-28 at 3 03 35 PM" src="https://github.com/user-attachments/assets/43f9ca3b-309f-4061-8b92-96f2b0cd6628" />
-<img width="240" alt="Screenshot 2025-08-28 at 3 03 56 PM" src="https://github.com/user-attachments/assets/be02c160-c479-49dc-a5ba-657b911bb869" />
+**Live:** [piobrasileiroapp.com](https://piobrasileiroapp.com) (sign-in required)
 
+<img width="240" alt="App screenshot" src="https://github.com/user-attachments/assets/a84bb431-0acb-46a7-a1cb-c15e2145b69e" />
+<img width="240" alt="App screenshot" src="https://github.com/user-attachments/assets/2569c91a-dc2d-47cd-a40a-9645144da106" />
+<img width="240" alt="App screenshot" src="https://github.com/user-attachments/assets/43f9ca3b-309f-4061-8b92-96f2b0cd6628" />
+<img width="240" alt="App screenshot" src="https://github.com/user-attachments/assets/be02c160-c479-49dc-a5ba-657b911bb869" />
 
+## What it does
 
-## About the Project
+**For residents**
+- Book lunch and dinner for each day of the week, at the college or to take away, with a booking deadline.
+- Add guests to a meal.
+- Request a room in the guest house for visitors.
+- Manage their profile, photo and password, and get notified before deadlines.
 
-PIO Brasileiro is a modern web application that allows users to:
-- Schedule meals (lunch and dinner) for different days of the week
-- Manage user profiles
-- View notifications about scheduling deadlines
-- Select meal options (at college or to take away)
-- Add guests to meals
+**For admins**
+- A meal calendar and booking overview for planning the kitchen.
+- A full guest house workflow: incoming requests, reservations, validation, rooms and guests.
+- User management with roles.
+- Announcements: pick an email type, choose recipients, preview the rendered email, send, and review the send history per recipient.
 
-## Technologies Used
+## Architecture
 
-### Frontend
-- **Next.js 14** - React framework with App Router
-- **TypeScript** - Static typing for greater code safety
-- **React** - Library for building interfaces
-- **CSS Modules** - Modular and scoped styling
-- **Lucide React** - Icon library
+```mermaid
+flowchart LR
+    U[Residents and admins<br/>mobile and desktop] --> F[Next.js frontend<br/>App Router]
+    F -->|REST + JWT| B[Express API]
+    B --> D[(PostgreSQL)]
+    B --> M[SMTP<br/>transactional email]
+```
 
-### Development
-- **ESLint** - Code linting and formatting
-- **PostCSS** - CSS processing
+- **Route groups for access control.** `(protected)` holds the resident pages and `admin/(admin-protected)` the admin pages. Each group's layout redirects anyone without a session or the right role.
+- **JWT auth with role-based access** on the API, bcrypt password hashing, and email verification and password reset over SMTP.
+- **Mobile first.** Most residents book from their phones, so admin pages have dedicated mobile layouts too.
+- **A small in-house component library** (tables with search, modals, inputs, cards) on CSS Modules and global design tokens, instead of a UI framework.
 
-### Project Structure
+## Stack
+
+| | |
+|---|---|
+| Frontend | Next.js 15 (App Router), React 19, TypeScript, CSS Modules, Lucide icons |
+| Backend | Node.js, Express, PostgreSQL, JWT, bcrypt, Nodemailer ([repo](https://github.com/gabrielcoffee/piobrasileiro-backend)) |
+
+## Project structure
+
 ```
 src/
-├── app/                     
-    ├── (admin-protected)/   # Admin Protected routes
-    ├── (protected)/         # Authenticated user protected routes
-├── components/              
-│   ├── home/                # Home page components
-│   ├── refeicoes/           # Meal components
-│   ├── profile/             # Profile components
-│   └── ui/                  # Interface components
-└── lib/                     # Utilities and configurations
+├── app/
+│   ├── (protected)/              # resident pages: home, meals, guest house, profile
+│   └── admin/(admin-protected)/  # admin: calendar, meals, reservations, rooms, users, announcements
+├── components/                   # shared UI and feature components
+├── contexts/                     # auth session and toasts
+└── lib/                          # utilities
 ```
 
-## Main Features
+## Run locally
 
-### Meal System
-- Lunch and dinner scheduling
-- Location selection (PIO College or to take away)
-- Guest addition
-- Scheduling deadline control
+Start the [backend](https://github.com/gabrielcoffee/piobrasileiro-backend) first, then:
 
-### User Profile
-- View and edit personal information
-- Profile picture upload
-- Password change
+```bash
+npm install
+echo "NEXT_PUBLIC_API_URL=http://localhost:3003" > .env.local
+npm run dev     # http://localhost:3000
+```
 
-### Notifications
-- Real-time notification system
-- Scheduling deadline alerts
-- Notification history
-
-## Component Structure
-
-The project uses a modular architecture with reusable components, these are a few examples:
-
-- **Header** - Header with navigation and notifications
-- **Footer** - Footer with navigation menu
-- **MealCard** - Card for meal scheduling
-- **ImageSelector** - Profile image selector
-- **NotificationMenu** - Notifications menu
-
-## Global CSS Variables
-
-The project uses a consistent design system with global CSS variables for colors, spacing, and borders, ensuring visual uniformity throughout the application.
+Changes are tracked in [CHANGELOG.md](CHANGELOG.md).
