@@ -4,7 +4,7 @@
 
 Residents book lunch and dinner, bring guests, and request rooms. Admins plan the kitchen, run the guest house, manage users and send announcements by email. I built the whole thing: this Next.js frontend and its [Node.js + PostgreSQL backend](https://github.com/gabrielcoffee/piobrasileiro-backend).
 
-**Live:** [piobrasileiroapp.com](https://piobrasileiroapp.com) (sign-in required)
+**Live:** [Website is private for the school members]
 
 <img width="240" alt="App screenshot" src="https://github.com/user-attachments/assets/a84bb431-0acb-46a7-a1cb-c15e2145b69e" />
 <img width="240" alt="App screenshot" src="https://github.com/user-attachments/assets/2569c91a-dc2d-47cd-a40a-9645144da106" />
